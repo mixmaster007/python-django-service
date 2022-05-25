@@ -1,0 +1,110 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Blank Page {% endblock %} 
+
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <!--Header-->
+        <div class="page-header">
+            <h5 class="page-title"> Area Codes LookUp </h5>
+        </div>   
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <!--[Area Find info] start-->
+            <div class="col-sm-12  grid-margin">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Insert up to 50 phon number to serach info about its area code for free</h3>
+                    </div>
+                    <div class="card-body">
+                        <li>(778)930-0509</li>
+                        <li>2113075373</li>                        
+                    </div>
+                    <div class="card-footer">
+                        <div style ="text-align:center;">
+                            <a href="#" class="btn btn-primary">Find Area</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!--[Area Find result] start-->
+            <div class="col-lg-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Search Result</h4>
+                    <a class="card-description">Found : 1 / </a>
+                    <a class="card-description">Not Found:1<a>
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th> # </th>
+                            <th> Data as inserted </th>
+                            <th> Area Code </th>
+                            <th> State </th>
+                            <th> City </th>
+                            <th> Country </th>
+                            <th> Time Zone</th>
+                            <th> URL </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td> 1 </td>
+                            <td> (778)930-0590 </td>
+                            <td>778</td>
+
+                            <td> BC </td>
+                            <td> Vancouver </td>
+                            <td> Canada </td>
+                            <td> Pasipic </td>
+                            <td> areacode.com/778</td>
+
+                          </tr>
+                          <tr>
+                            <td> 2 </td>
+                            <td> 2113075373 </td>
+                            <td>211</td>
+
+                            <td> Not Found </td>
+                            <td> Not Found  </td>
+                            <td> Not Found  </td>
+                            <td> Not Found  </td>
+                            <td> Not Found  </td>
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class = "card-footer">
+                    <div class = "row" style = "text-align:center;">
+                        <div class = "col-sm-4" style ="text-align:left;">
+                            <a href="#" class="btn btn-primary">Copy All Results</a>
+                        </div>
+                        <div class = "col-sm-4" style ="text-align:center;">
+                            <a href="#" class="btn btn-primary">Copy Found Only</a>
+                        </div>
+                        <div class = "col-sm-4" style ="text-align:right;">
+                            <a href="#" class="btn btn-primary">Copy Not Found Only</a>
+                        </div>
+                    </div>
+                                                
+                </div>
+              </div>
+        </div>
+    </div>
+{% endblock content %}
+
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

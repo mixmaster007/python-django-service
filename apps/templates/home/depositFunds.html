@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} DepositFunds {% endblock %} 
+<!-- Specific Plugin CSS goes HERE -->
+{% block plugin_stylesheets %}
+
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="/static/assets/vendors/select2/select2.min.css">
+  <!--<link rel="stylesheet" href="/static/assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">-->
+  <!-- End plugin css for this page -->
+
+{% endblock plugin_stylesheets %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h5 class="page-title"> Deposit Funds </h5>
+        </div>   
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <!--[D F info] start-->
+            <div class="col-sm-12  grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">John Doe</h4>
+                        <p class="card-text">Some example text some example text. Some example text some example text. Some example text some example text. Some example text some example text.</p>
+                    </div>
+                    <div class="card-footer" style="text-align: right;">
+                        <a>For Depoist Histroy  </a><a href="/history.html" >  Click Here</a>
+                    </div>
+
+                </div>
+            </div>
+            <!--[Gate1 Link] end-->
+            <div class="col-sm-12  grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <div class = "row">
+                            <div class = "col-sm-10" style="font-size: 20px;">
+                                <a>Insert amount you like to deposit in USD:  </a><input type="text" style="max-width: 10%">
+                            </div>
+                            <div class = "col-sm-2">
+                                <button type="submit" class="btn btn-primary mb-2">Deposit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="text-align: right;">
+                        <a></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 grid-margin" >
+                <div class="card">
+                    <div class="card-body" style="height:300px;">
+                        <div class="form-group">
+                            <label>Single select box using select 2</label>
+                            <select class="js-example-basic-single" style="width:100%">
+                                <option value="AL">BTC</option>
+                                <option value="WY">ETH</option>
+                                <option value="AM">USDT</option>
+                                <option value="CA">BNB</option>
+                                <option value="RU">Russia</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 grid-margin" >
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Payment Info</h5>
+                    </div>
+                    <div class="card-body" style="height: 300px;">
+                        <div id="morris-bar-stacked-chart" ></div>
+                    </div>
+                </div>
+            </div>
+            
+                
+        </div>
+    <div>
+        
+{% endblock content %}
+<!-- Specific Plugin JS goes HERE  -->
+{% block plugin_javascripts %}
+
+  <script src="/static/assets/vendors/select2/select2.min.js"></script>
+  <script src="/static/assets/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+
+{% endblock plugin_javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/select2.js"></script>
+
+{% endblock javascripts %}

@@ -1,0 +1,115 @@
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+          <a class="sidebar-brand brand-logo" href="index.html"><img src="/static/assets/images/logo.svg" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="/static/assets/images/logo-mini.svg" alt="logo" /></a>
+        </div>
+        <ul class="nav">
+          <li class="nav-item profile">
+            <div class="profile-desc">
+              <div class="profile-pic">
+                <div class="count-indicator">
+                  <img class="img-xs rounded-circle " src="/static/assets/images/faces/face15.jpg" alt="">
+                  <span class="count bg-success"></span>
+                </div>
+                <div class="profile-name">
+                  <h5 class="mb-0 font-weight-normal">
+                    {{ request.user.username }}
+                  </h5>
+                  <span>
+                    {{ request.user.email }}
+                  </span>
+                </div>
+              </div>
+              <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+              <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                <a href="{% url 'logout' %}" class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-dark rounded-circle">
+                      <i class="mdi mdi-logout text-danger"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content">
+                    <p class="preview-subject ellipsis mb-1 text-small">Logout</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </li>
+          <!--NEWS ITEM-->
+          <li class="nav-item nav-category">
+            <span class="nav-link">Navigation</span>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="/index.html">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">NEWS</span>
+            </a>
+          </li>
+          <!--GATE ITEM-->
+          <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" >
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+              <span class="menu-title">Gate1</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="/gate_about.html">Gate About</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G1 Link1</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G1 Link2</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic1" aria-expanded="false" >
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+              <span class="menu-title">Gate2</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic1">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="/gate_about.html">Gate2 About</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G2 Link1</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G2 Link2</a></li>
+              </ul>
+            </div>
+          </li>
+          <!--Area Codes Item Start-->
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="/area_code.html">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Area Codes</span>
+            </a>
+          </li>
+          <!--Area Codes Item End-->
+          <!--History Start-->
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="/history.html">
+              <span class="menu-icon">
+                <i class="mdi mdi-table-large"></i>
+              </span>
+              <span class="menu-title">History</span>
+            </a>
+          </li>
+          <!--History End-->
+           <!--Online Support Start-->
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="/onlineSupport.html">
+              <span class="menu-icon">
+                <i class="mdi mdi-chart-bar"></i>
+              </span>
+              <span class="menu-title">onlineSupport</span>
+            </a>
+          </li>
+          <!--Online Support end-->
+         
+        </ul>
+      </nav>

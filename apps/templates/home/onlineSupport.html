@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Tables {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="content-wrapper">
+    <!--Header-->
+    <div class="page-header">
+        <h1 class="page-title"> Online Support</h1>
+    </div>   
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <!--[D F info] start-->
+        <div class="col-sm-12  grid-margin">
+            <div class="card">
+                <div class="card-header">
+                    <h5>
+                        If support is offline you can always leave your message and wiil
+                        reply as soon as possible once available
+                    </h5>
+                </div>
+                <div class="card-body" style = "height:800px;">
+                    <div class="clearfix"></div>
+                    <h4>This is a Gate1:h4</h4>
+                    <p class="text-muted mb-4">Nulla et mattis nunc. Curabitur scelerisque commodo condimentum. Mauris blandit, velit a consectetur egestas, diam arcu fermentum justo, eget ultrices arcu eros vel erat.</p>
+                    <div class="clearfix"></div>
+                    <h5>This is a Gat1:h5</h5>
+                    <p class="text-muted mb-4">Quisque nec turpis at urna dictum luctus. Suspendisse convallis dignissim eros at volutpat. In egestas mattis dui. Aliquam mattis dictum aliquet. Nulla sapien mauris, eleifend et sem ac, commodo dapibus odio. Vivamus pretium nec odio cursus elementum. Suspendisse molestie ullamcorper ornare.
+                    </p>
+                </div>
+                <div class ="card-footer">
+                    <div class="col-md-12">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Type a message" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+        
+{% endblock content %}
