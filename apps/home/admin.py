@@ -9,17 +9,26 @@ from .models import Gate1Manage
 from .models import Gate2Manage
 from .models import Gate2Manage
 from .models import Format
-
+from .models import Gate_Link
 from .forms import Gate1Form
 # Register your models here
 #admin.site.register(News)
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title','content','publish_date')
+class FomartAdmin(admin.ModelAdmin):
+    list_display = ('phone','DD','YY','MM')
+class GateLinkAdmin(admin.ModelAdmin):
+    list_display = ('Link_Name','assin_link_to_gateway','Link_price','Link_Logo_tiny','Link_Logo_large','Link_Status')
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
 
 admin.site.register(News, NewsAdmin)
 admin.site.register(Gate1Manage)
 admin.site.register(Gate2Manage)
-admin.site.register(Format)
+admin.site.register(Format,FomartAdmin)
+admin.site.register(Gate_Link,GateLinkAdmin)
+#admin.site.register(Format)
+
+
+
