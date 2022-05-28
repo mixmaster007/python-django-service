@@ -28,55 +28,29 @@
                     </div>
                 </div>
             </div>
+            {% for NEWS_ITEMS in news %}
             <div class="card-body">
                 <div class = "row">
                     <div class = "col-4">
-                        <a> Sample News </a>
+                        <a>{{NEWS_ITEMS.title}} </a>
                     </div>
                     <div class = "col-4" style = "text-align:right;">
-                        <a>2022/5/6</a>
+                        <a>{{NEWS_ITEMS.publish_date}}</a>
                     </div>
                     <div class = "col-4" style = "text-align:right;">
                         <span class="menu-icon">
-                            <a class="mdi mdi-menu" data-toggle="collapse" href="#ui-index-new2" aria-expanded="false" ></a>
+                            <a class="mdi mdi-menu" data-toggle="collapse" href="#ui-index-new{{NEWS_ITEMS.id}}" aria-expanded="false" ></a>
                         </span>
                     </div>
                 </div>
                 <hr>
-                <div class="collapse" id="ui-index-new2">
+                <div class="collapse" id="ui-index-new{{NEWS_ITEMS.id}}">
                     <ul class="nav flex-column sub-menu">
-                        <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore
-                        sustainable VHS.</p>
+                        <div style = "margin-left:3%;">{{NEWS_ITEMS.content | safe}}</div>
                     </ul>
                 </div>
             </div>
-            <div class="card-body">
-                <div class = "row">
-                    <div class = "col-4">
-                        <a> Sample News </a>
-                    </div>
-                    <div class = "col-4" style = "text-align:right;">
-                        <a>2022/5/6</a>
-                    </div>
-                    <div class = "col-4" style = "text-align:right;">
-                        <span class="menu-icon">
-                            <a class="mdi mdi-menu" data-toggle="collapse" href="#ui-index-new1" aria-expanded="false" ></a>
-                        </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="collapse" id="ui-index-new1">
-                    <ul class="nav flex-column sub-menu">
-                        <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore
-                        sustainable VHS.</p>
-                    </ul>
-                </div>
-            </div>
-          
+            {% endfor %}
         </div>
     </div>
 </div>

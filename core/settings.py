@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
+    "captcha", # the module name
     'apps.home'  # Enable the inner home (home)
 ]
 
@@ -73,9 +75,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql', # <-- UPDATED line 
-        'NAME'    : 'MyDatabase',                 # <-- UPDATED line 
+        'NAME'    : 'django_database',                 # <-- UPDATED line 
         'USER'    : 'root',                     # <-- UPDATED line
-        'PASSWORD': 'Richman929!@#$%',              # <-- UPDATED line
+        'PASSWORD': '',              # <-- UPDATED line
         'HOST'    : 'localhost',                # <-- UPDATED line
         'PORT'    : '3306',
     }
@@ -126,6 +128,6 @@ STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'apps/static'),
 )
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #############################################################
 #############################################################

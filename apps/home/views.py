@@ -8,15 +8,39 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-
+from .models import News
 
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
-
+    num_news = News.objects.all().count()
+    news = News.objects.all()
+    context = {
+        'num_news':num_news,
+        'news':news,
+    }
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
-
+   
+@login_required(login_url="/login/")
+def depositFunds(request):
+    context={'segmment':'depositFunds'}
+    html_template = loader.get_template('home/depositFunds.html')
+    return HttpResponse(html_template.render(context, request))
+    
+@login_required(login_url="/login/")
+def gate_about(request,primary_key):
+    context={
+        'segmment':'gate_about',
+    }
+    html_template = loader.get_template('home/gate_about.html')
+    return HttpResponse(html_template.render(context, request))
+@login_required(login_url="/login/")
+def gate_link(request,primary_key):
+    context={
+        'segmment':'gate_about',
+    }
+    html_template = loader.get_template('home/gate_link.html')
+    return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def pages(request):

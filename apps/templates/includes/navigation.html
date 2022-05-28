@@ -1,7 +1,7 @@
 
         <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/static/assets/images/logo-mini.svg" alt="logo" /></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'index' %}"><img src="/static/assets/images/logo-mini.svg" alt="logo" /></a>
           </div>
           <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -10,12 +10,12 @@
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
                 <a>Balance : 20.1USD  </a>
-                <a href="/depositFunds.html" style = "margin-left:10px;">Deposit Funds</a>
+                <a href="{% url 'depositFunds' %}" style = "margin-left:10px;">Deposit Funds</a>
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
               <li class="nav-item nav-settings d-none d-lg-block">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{% url 'index' %}">
                   <i class="mdi mdi-view-grid"></i>
                 </a>
               </li>
