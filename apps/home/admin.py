@@ -10,8 +10,7 @@ from .models import Gate2Manage
 from .models import Gate2Manage
 from .models import Format
 from .models import Gate_Link
-from .forms import Gate1Form
-
+from .models import balance
 # Register your models here
 #admin.site.register(News)
 
@@ -33,6 +32,7 @@ class GateLinkAdmin(admin.ModelAdmin):
 
 admin.site.register(News, NewsAdmin)
 admin.site.register(Gate1Manage)
+admin.site.register(balance)
 admin.site.register(Gate2Manage)
 admin.site.register(Format,FomartAdmin)
 admin.site.register(Gate_Link,GateLinkAdmin)

@@ -99,5 +99,7 @@ class Gate_Link(models.Model):
 class balance(models.Model):
        user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
        balance = models.IntegerField(default = 0)
+       def __str__(self):
+        return str(self.user)
 
   
