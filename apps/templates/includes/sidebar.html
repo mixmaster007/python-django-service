@@ -59,9 +59,12 @@
             
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="">Gate About</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G1 Link1</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G1 Link2</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 1 %}">Gate About</a></li>
+                {% for Item in gateLink %}
+                  {% if Item.assin_link_to_gateway == "G1" %}
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  Item.id %}">{{Item.Link_Name}}</a></li>
+                  {% endif %}
+                {% endfor %}
               </ul>
             </div>
           </li>
@@ -75,15 +78,18 @@
             </a>
             <div class="collapse" id="ui-basic1">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/gate_about.html">Gate2 About</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G2 Link1</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/gate_link.html">G2 Link2</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 2 %}">Gate2 About</a></li>
+                {% for Item in gateLink %}
+                  {% if Item.assin_link_to_gateway == "G2" %}
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  Item.id %}">{{Item.Link_Name}}</a></li>
+                  {% endif %}
+                {% endfor %}
               </ul>
             </div>
           </li>
           <!--Area Codes Item Start-->
           <li class="nav-item menu-items">
-            <a class="nav-link" href="/area_code.html">
+            <a class="nav-link" href="{% url 'area_code' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>
               </span>
@@ -93,7 +99,7 @@
           <!--Area Codes Item End-->
           <!--History Start-->
           <li class="nav-item menu-items">
-            <a class="nav-link" href="/history.html">
+            <a class="nav-link" href="{% url 'history' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
               </span>
@@ -103,7 +109,7 @@
           <!--History End-->
            <!--Online Support Start-->
           <li class="nav-item menu-items">
-            <a class="nav-link" href="/onlineSupport.html">
+            <a class="nav-link" href="{% url 'onlineSupport' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-chart-bar"></i>
               </span>

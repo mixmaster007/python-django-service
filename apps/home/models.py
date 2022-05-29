@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from ckeditor.fields import RichTextField 
+from django.utils.html import mark_safe
 
 class News(models.Model):
    
@@ -19,21 +20,25 @@ class News(models.Model):
         return reverse('news-detail', args=[str(self.id)])
 class Gate1Manage(models.Model):
     STA = ''
-    Gate_1_status =  models.BooleanField(null=True)
+    Gate_status =  models.BooleanField(null=True)
     uner_mantatince_messge = models.CharField(max_length = 100,help_text = "Enter field Udermanitain Message")
-    About_Gate_1 = RichTextField()
-    Gate_1_Logo_tiny = models.ImageField(max_length = 100)
+    About_Gate = RichTextField()
+    Gate_Logo_tiny = models.ImageField(max_length = 100)
     Format_Item = models.ForeignKey('Format', on_delete=models.SET_NULL, null=True)
     def __str__(self):
        return "Gate 1 Manage"
+    def get_absolute_url(self):
+        return reverse('G1Manage-detail', args=[str(self.id)])
 class Gate2Manage(models.Model):
-     Gate_2_status =  models.BooleanField(null=True)
+     Gate_status =  models.BooleanField(null=True)
      uner_mantatince_messge = models.CharField(max_length = 100,help_text = "Enter field Udermanitain Message")
-     About_Gate_2 = RichTextField()
-     Gate_2_Logo_tiny = models.ImageField(max_length = 100)
+     About_Gate= RichTextField()
+     Logo_tiny = models.ImageField(max_length = 100)
      Format_Item = models.ForeignKey('Format', on_delete=models.SET_NULL, null=True)
      def __str__(self):
         return "Gate 2 Manage"
+     def get_absolute_url(self):
+        return reverse('G2Manage-detail', args=[str(self.id)])
 class Format(models.Model):
     phone =models.IntegerField(null=True)
     DD = models.IntegerField(null=True)
@@ -60,8 +65,8 @@ class Format(models.Model):
     def __str__(self):
         return str(self.phone)
 class Gate_Link(models.Model):
-    GateOne = 'Go'
-    GateTwo = 'Gt'
+    GateOne = 'G1'
+    GateTwo = 'G2'
     StOne = "At"
     StTwo  = "Hd"
     Link_Name = models.CharField(max_length = 100,help_text = "Enter Link Name")
@@ -74,19 +79,25 @@ class Gate_Link(models.Model):
         (GateTwo, 'Gate 2'),
     ]
     assin_link_to_gateway = models.CharField(
-        max_length=2,
+        max_length=6,
         choices=assin_link_to_gateway_choices,
         default=GateOne,
     )
     
     Link_price = models.IntegerField(null=True)
-    Link_Logo_tiny=models.ImageField(max_length = 100,null = True)
-    Link_Logo_large = models.ImageField(max_length = 100,null= True)
+    Link_Logo_tiny=models.ImageField(upload_to="images/",max_length = 100,null = True)
+    Link_Logo_large = models.ImageField(upload_to="images/",max_length = 100,null= True)
     Link_Status =  models.CharField(
         max_length=2,
         choices=assin_link_status,
         default=StOne,
     )
-
+    def __str__(self):
+        return self.Link_Name
+    def get_absolute_url(self):
+        return reverse('GateLink-detail', args=[str(self.id)])
+class balance(models.Model):
+       user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
+       balance = models.IntegerField(default = 0)
 
   

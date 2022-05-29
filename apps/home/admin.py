@@ -11,6 +11,7 @@ from .models import Gate2Manage
 from .models import Format
 from .models import Gate_Link
 from .forms import Gate1Form
+
 # Register your models here
 #admin.site.register(News)
 
@@ -20,6 +21,13 @@ class FomartAdmin(admin.ModelAdmin):
     list_display = ('phone','DD','YY','MM')
 class GateLinkAdmin(admin.ModelAdmin):
     list_display = ('Link_Name','assin_link_to_gateway','Link_price','Link_Logo_tiny','Link_Logo_large','Link_Status')
+    def Link_Logo_tiny_preview(self, obj):
+        return obj.Link_Logo_tiny_preview
+
+    Link_Logo_tiny_preview.short_description = 'Link_Logo_tiny_preview'
+    Link_Logo_tiny_preview.allow_tags = True
+
+   
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
 

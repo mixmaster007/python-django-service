@@ -8,92 +8,59 @@
 {% block content %}
 <div class="content-wrapper">
     <div class="page-header">
-        <h5 class="page-title"> About Gate1 </h5>
+        <h5 class="page-title"> About Gate {{pk}} </h5>
     </div>   
     <!-- [ Main Content ] start -->
     
         <!--[D F info] start-->
-        
+        {% for ABOUT_ITEM in about %}
         <div class="col-sm-12 grid-margin">
             <div class="card">
                 <div class="card-header">
-                    <h5>About Gate1</h5>
+                    <h5>About Gate  {{ pk }}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="clearfix"></div>
-                    <h4>This is a Gate1:h4</h4>
-                    <p class="text-muted mb-4">Nulla et mattis nunc. Curabitur scelerisque commodo condimentum. Mauris blandit, velit a consectetur egestas, diam arcu fermentum justo, eget ultrices arcu eros vel erat.</p>
-                    <div class="clearfix"></div>
-                    <h5>This is a Gat1:h5</h5>
-                    <p class="text-muted mb-4">Quisque nec turpis at urna dictum luctus. Suspendisse convallis dignissim eros at volutpat. In egestas mattis dui. Aliquam mattis dictum aliquet. Nulla sapien mauris, eleifend et sem ac, commodo dapibus odio. Vivamus pretium nec odio cursus elementum. Suspendisse molestie ullamcorper ornare.
-                    </p>
-                    
+                    <p>{{ABOUT_ITEM.About_Gate | safe}}</p>
                 </div>
             </div>
         </div>
+        {% endfor %}
         <!--[About Gate1] end-->
         <!--[Gate1 Link] start-->
         <div class="col-sm-12 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <div class = "row">
+                    {% for GL_ITEM in gateLink %}
+                        {% if pk == 1  %}
+                            {% if GL_ITEM.assin_link_to_gateway == "G1" %}
+                                <div class="col">
+                                    <a href={% url 'gate_link'  GL_ITEM.id %}>
+                                        <img class="img-xs rounded-circle" src={{ GL_ITEM.Link_Logo_tiny.url }} alt="">
+                                    
+                                        <p class="text-muted mb-4">{{GL_ITEM.Link_Name}}</p>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                        {% if GL_ITEM.assin_link_to_gateway == "G2" %}
                         <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link1" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
+                            <div class="col">
+                                <a href={% url 'gate_link'  GL_ITEM.id %}>
+                                    <img class="img-xs rounded-circle" src={{ GL_ITEM.Link_Logo_tiny.url }} alt="">
+                                
+                                    <p class="text-muted mb-4">{{GL_ITEM.Link_Name}}</p>
+                                </a>
+                            </div>
                         </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link2" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link3" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link4" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link5" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link6" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link7" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link8" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link9" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary" title="G1 Link10" data-toggle="tooltip"></button>
-                            <div class="clearfix"></div>
-                            <p class="text-muted mb-4">G1 Link1</p>
-                        </div>
+                    {% endif %}
+                        {% endif %} 
+                    {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-        <!--[Gate1 Link] end-->
+
         <!--[Batch ID] start-->
         <div class="col-sm-12 grid-margin" >
             <div class="card">
