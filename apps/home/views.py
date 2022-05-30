@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django import template
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.template import loader
 from django.urls import reverse
 from .models import News
@@ -13,13 +13,24 @@ from .models import Gate1Manage
 from .models import Gate2Manage
 from .models import Gate_Link
 from .models import balance
+from .models import Message
 import pprint
 @login_required(login_url="/login/")
 def index(request):
     num_news = News.objects.all().count()
     news = News.objects.all()
-    GateLink = Gate_Link.objects.all()    
-    user = balance.objects.get(user=request.user)
+    GateLink = Gate_Link.objects.all() 
+    pp = pprint.PrettyPrinter(indent = 4)
+    if balance.objects.filter(user=request.user).exists(): 
+        pp.pprint("Not Balance!!,so")
+        user = balance.objects.get(user=request.user)
+    else:
+        new_balance = balance.objects.create(user=request.user,balance = 0)
+        new_balance.save()
+        user = balance.objects.get(user=request.user)
+
+
+  
     
     context = {
         'num_news':num_news,
@@ -68,11 +79,19 @@ def gate_about(request,pk):
 def gate_link(request,pk):
     GateLink = Gate_Link.objects.all()  
     user = balance.objects.get(user=request.user)
+    try:
+        if request.POST['gatelink_insertdata']:
+            data_arry_line = request.POST['gatelink_insertdata'].split("\r\n")
+            
+            pp = pprint.PrettyPrinter(indent = 4)
+            pp.pprint(data_arry_line)
+    except:
+        pp = pprint.PrettyPrinter(indent = 4)
+        pp.pprint("EROOR:ERROR")
     context={
         'segmment':'gate_link',
         "gateLink":GateLink,
         'balance':user.balance,
-
     }
     html_template = loader.get_template('home/gate_link.html')
     return HttpResponse(html_template.render(context, request))
@@ -135,3 +154,16 @@ def pages(request):
     except:
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
+def send_message(request):
+    message = request.POST['message']
+    new_message = Message.objects.create(value=message, user = request.user)
+    new_message.save()
+    return HttpResponse("Message sent successfull")
+def get_message(request):
+    messages = Message.objects.filter(user="root")
+    return JsonResponse({"messages":list(messages.values())})
+def send_gatelink_insertdata(request):
+   
+    insertdata = request.POST['gatelink_insertdata']
+ 
+    return HttpResponse("Message sent successfull")

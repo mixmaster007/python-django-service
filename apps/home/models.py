@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from ckeditor.fields import RichTextField 
 from django.utils.html import mark_safe
-
+from datetime import datetime
 class News(models.Model):
    
     title = models.CharField(max_length=200)
@@ -39,7 +39,7 @@ class Gate2Manage(models.Model):
         return "Gate 2 Manage"
      def get_absolute_url(self):
         return reverse('G2Manage-detail', args=[str(self.id)])
-class Format(models.Model):
+class gate(models.Model):
     phone =models.IntegerField(null=True)
     DD = models.IntegerField(null=True)
     MM = models.IntegerField(null=True)
@@ -97,9 +97,22 @@ class Gate_Link(models.Model):
     def get_absolute_url(self):
         return reverse('GateLink-detail', args=[str(self.id)])
 class balance(models.Model):
-       user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
-       balance = models.IntegerField(default = 0)
-       def __str__(self):
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
+    balance = models.IntegerField(default = 0)
+    def __str__(self):
         return str(self.user)
+class Format(models.Model):
+    Members_View_Format =  models.CharField(max_length = 100)
+    Admin_Setting = models.CharField(max_length=100)
+    def __str__(self):
+        return str(self.id)
+    def get_absolute_url(self):
+        return reverse('format-detail', args=[str(self.id)])
+class Message(models.Model):
+    value = models.CharField(max_length=1000000)
+    date = models.DateTimeField(default=datetime.now, blank=True)
+    user = models.CharField(max_length=1000000)
+  
+
 
   

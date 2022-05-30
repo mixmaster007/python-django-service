@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="/static/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/static/assets/vendors/css/vendor.bundle.base.css">
-
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- Specific Plugin CSS goes HERE -->
     {% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
 
@@ -61,10 +61,29 @@
     <script src="/static/assets/js/misc.js"></script>
     <script src="/static/assets/js/settings.js"></script>
     <script src="/static/assets/js/todolist.js"></script>
+    
     <!-- endinject -->
 
     <!-- Specific Page JS goes HERE  -->
     {% block javascripts %}{% endblock javascripts %}
 
   </body>
+  <script type="text/javascript">
+    $(document).on('submit','#onlineSupport_post_form',function(e){
+      e.preventDefault();
+  
+      $.ajax({
+        type:'POST',
+        url:'send_message',
+        data:{
+          message:$('#onlineSupport_message').val(),
+          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(data){
+           alert(data)
+        }
+      });
+      document.getElementById('onlineSupport_message').value = ''
+    });
+  </script>
 </html>

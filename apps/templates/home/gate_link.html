@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body">
                     <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
+                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked>
                         <label class="custom-control-label" for="customRadio1"> Phone Number #DD # MM # YY </label>
                     </div>
                     <hr>
@@ -66,21 +66,23 @@
         <div class="col-sm-12 grid-margin">
             <div class="card">
                 <div class = "card-header">
-                    <h4>John Doe</h4>
+                    <h4>Insert Data</h4>
                 </div>
 
                 <div class = "card-body">
-                  
-                    <p >Some example text some example text. Some example text 
-                        some example text. Some example text some example text. Some example text some example text.</p>
-                    
+                    <form method = "post" action = "">
+                        {% csrf_token %}
+                        <textarea name="gatelink_insertdata" id = "gatelink_insertdata" rows="10" cols="30" style="
+                        width: 100%;"></textarea>
+                        <button name ="123" class="btn btn-primary"  type="submit" value = "send_data">Preview Data</button>
+                    </form>                                       
                 </div>
                                             
-                <div class="card-footer">
+                <!--<div class="card-footer">
                     <div style ="text-align:right;">
                         <a href="#" class="btn btn-primary">Preview Data</a>
                     </div>
-                </div>
+                </div>-->
 
             </div>
         </div>

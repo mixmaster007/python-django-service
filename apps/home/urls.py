@@ -13,11 +13,19 @@ urlpatterns = [
     path('', views.index, name='home'),
     path ('index/' ,views.index,name='index'),
     path ('depositFunds' ,views.depositFunds,name='depositFunds'),
+
     path ('gate_about/<int:pk>' ,views.gate_about,name='gate_about'),
+
     path ('gate_link/<int:pk>' ,views.gate_link,name='gate_link'),
+    #path ('send_gatelink_insertdata',views.send_gatelink_insertdata ,name = 'send_gatelink_insertdata'),
     path ('area_code' ,views.area_code,name='area_code'),
+
     path ('history' ,views.history,name='history'),
+
+
     path ('onlineSupport' ,views.onlineSupport,name='onlineSupport'),
+    path('send_message', views.send_message, name='send_message'),
+    path('get_message', views.get_message, name='get_message'),
     #rl(r'^gate_about/$', views.gate_about, name='gate_about'),
     #path ('gate_link/<int:pk>' ,views.gate_link,{'id':pk},name='gate_link'),
     

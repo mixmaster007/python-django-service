@@ -11,13 +11,14 @@ from .models import Gate2Manage
 from .models import Format
 from .models import Gate_Link
 from .models import balance
+from .models import Message
 # Register your models here
 #admin.site.register(News)
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title','content','publish_date')
 class FomartAdmin(admin.ModelAdmin):
-    list_display = ('phone','DD','YY','MM')
+    list_display = ('id','Members_View_Format','Admin_Setting')
 class GateLinkAdmin(admin.ModelAdmin):
     list_display = ('Link_Name','assin_link_to_gateway','Link_price','Link_Logo_tiny','Link_Logo_large','Link_Status')
     def Link_Logo_tiny_preview(self, obj):
@@ -36,6 +37,7 @@ admin.site.register(balance)
 admin.site.register(Gate2Manage)
 admin.site.register(Format,FomartAdmin)
 admin.site.register(Gate_Link,GateLinkAdmin)
+admin.site.register(Message)
 #admin.site.register(Format)
 
 

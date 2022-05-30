@@ -6,6 +6,29 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script>
+    $(document).ready(function(){
+    
+    setInterval(function(){
+        $.ajax({
+            type: 'GET',
+            url : "get_message",
+            success: function(response){
+                console.log(response);
+                $("#display").empty();
+                for (var key in response.messages)
+                {
+                    var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+response.messages[key].date+"</span></div>";
+                    $("#display").append(temp);
+                }
+            },
+            error: function(response){
+                alert('An error occured')
+            }
+        });
+    },1000);
+    })
+</script>
 <div class="content-wrapper">
     <!--Header-->
     <div class="page-header">
@@ -23,21 +46,19 @@
                     </h5>
                 </div>
                 <div class="card-body" style = "height:800px;">
-                    <div class="clearfix"></div>
-                    <h4>This is a Gate1:h4</h4>
-                    <p class="text-muted mb-4">Nulla et mattis nunc. Curabitur scelerisque commodo condimentum. Mauris blandit, velit a consectetur egestas, diam arcu fermentum justo, eget ultrices arcu eros vel erat.</p>
-                    <div class="clearfix"></div>
-                    <h5>This is a Gat1:h5</h5>
-                    <p class="text-muted mb-4">Quisque nec turpis at urna dictum luctus. Suspendisse convallis dignissim eros at volutpat. In egestas mattis dui. Aliquam mattis dictum aliquet. Nulla sapien mauris, eleifend et sem ac, commodo dapibus odio. Vivamus pretium nec odio cursus elementum. Suspendisse molestie ullamcorper ornare.
-                    </p>
+                    <div id="display"  class="clearfix"></div>
+                    
+                    </div>
                 </div>
                 <div class ="card-footer">
                     <div class="col-md-12">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Type a message" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">Send</button>
-                            </div>
+                            <form id = "onlineSupport_post_form">
+                                {% csrf_token %}
+                                <input type="text"  name="onlineSupport_message" id = "onlineSupport_message" placeholder="Type a message">
+                                <button class="btn btn-primary" type="submit" value = "send_message">Send</button>
+                               
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -45,7 +66,5 @@
         </div>
     </div>
 </div>
-
-    
-        
+      
 {% endblock content %}
