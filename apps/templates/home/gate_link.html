@@ -207,8 +207,8 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class = "row">
-                                        <input type ="hidden" id ="msg_running_batch_id" value ="{{forloop.counter}}">
-                                        <div class ="col" id="glb_batch_id">Batch ID:{{forloop.counter}}</div>
+                                        <input type ="hidden" id ="msg_running_batch_id" value ="{{i.batch_id}}">
+                                        <div class ="col" id="glb_batch_id">Batch ID:{{i.batch_id}}</div>
                                         <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
                                         <div class ="col" style="text-align: center;" id="glb_batch_start_time" >Start time:{{i.start_time}}</div>
                                         <div class ="col" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.start_time}}</div>

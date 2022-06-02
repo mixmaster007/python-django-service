@@ -32,7 +32,7 @@ class GateLinkAdmin(admin.ModelAdmin):
     Link_Logo_tiny_preview.allow_tags = True
 
 class GateAdmin(admin.ModelAdmin):
-    list_display=('phone','YY','MM','DD','batch_id','gate_link_name')   
+    list_display=('phone','YY','MM','DD','batch_id','status','gate_link_name')   
 class BatchAdmin(admin.ModelAdmin):
     list_display=('batch_id','status','total','start_time','finish_time','link_name')   
 #class Gate1Admin(admin.ModelAdmin):

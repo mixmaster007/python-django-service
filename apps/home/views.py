@@ -114,7 +114,7 @@ def gate_about(request,pk):
     else:
         about =  Gate2Manage.objects.all()
     GateLink = Gate_Link.objects.all()    
-
+    tmp_gate = Gate.objects.filter()
     context={
         'pk' : pk,
         'about':about,
@@ -236,15 +236,19 @@ def gate_link(request,pk):
                    
                     if Gate.objects.filter(gate_link_name='#').exists(): 
                         Gate.objects.filter(gate_link_name='#').delete()
+                pp.pprint("---------Create Batch Test------------")
                 new_Batch =Batch.objects.create(
                         total = cnt1,
                         batch_id = tmp_batch_id,
                         link_name = name,
                 )
+                
                 new_Batch.save()
                 context['segment'] = "gate_link_result"
                 context['Gate'] = Gate.objects.all()
-                context['Batch']= tmp_batch = Batch.objects.all()
+                context['Batch']= Batch.objects.all()
+                context['Total_Batch']=Batch.objects.all().count()
+                pp.pprint("___END___")
         except:
             pp.pprint("This is execpt:Post[real_data]")
     

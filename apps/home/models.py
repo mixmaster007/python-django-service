@@ -4,6 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from sre_constants import SUCCESS
+from timeit import default_timer
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -57,35 +58,7 @@ class Gate2Manage(models.Model):
         return "Gate 2 Manage"
     def get_absolute_url(self):
         return reverse('G2Manage-detail', args=[str(self.id)])
-class Gate(models.Model):
-    phone =models.CharField(max_length= 100,default=0)
-    DD = models.IntegerField(default=0)
-    MM = models.IntegerField(default=0)
-    YY = models.IntegerField(default=0)
-    string1 =  models.CharField(max_length =100 , default="#")
-    string2 = models.CharField(max_length= 100 , default="#")
-    string3 = models.CharField(max_length= 100, default="#")
-    string4 = models.CharField(max_length= 100, default="#")
-    string5 = models.CharField(max_length= 100, default="#")
-    string6 = models.CharField(max_length= 100, default="#")
-    string7 = models.CharField(max_length= 100, default="#")
-    string8 = models.CharField(max_length= 100, default="#")
-    string9 = models.CharField(max_length= 100, default="#")
-    string10 = models.CharField(max_length= 100, default="#")
-    result1 = models.CharField(max_length= 100, default="#")
-    result2 = models.CharField(max_length= 100, default="#")
-    result3 = models.CharField(max_length= 100, default="#")
-    result4 = models.CharField(max_length= 100, default="#")
-    result5 = models.CharField(max_length= 100, default="#")
-    batch_id = models.IntegerField(default=0)
-    status = models.IntegerField(default=0,help_text="0:In_Queue,1:Processing,2:Fail,3:Success")
-    gate_link_name = models.CharField(max_length = 100, default="#",help_text = "Enter field gate_link_name")
-    inserted_text = models.CharField(max_length = 100, default="#")
-    def __str__(self):
-        return self.gate_link_name
-    def get_absolute_url(self):
-        return reverse('Gate-detail', args=[str(self.id)])
-    
+
   
 
 class Format(models.Model):
@@ -135,12 +108,12 @@ class balance(models.Model):
         return str(self.user)
 
 class Message(models.Model):
-    value = models.CharField(max_length=10000)
+    value = models.CharField(max_length=100)
     date = models.DateTimeField(default=datetime.now, blank=True)
-    user = models.CharField(max_length=10000)
+    user = models.CharField(max_length=100)
 class TempFormat(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
-    tmpStr =  models.CharField(max_length=10000)
+    tmpStr =  models.CharField(max_length=100)
     def __str__(self):
         return self.tmpStr
 class Batch(models.Model):
@@ -150,7 +123,7 @@ class Batch(models.Model):
     succeed = models.IntegerField(default=0)
     done = models.IntegerField(default=0)
     start_time = models.TimeField(default=datetime.now().strftime('%H:%M:%S') , blank=True)
-    finish_time =models.TimeField(default=0, blank=True)
+    finish_time =models.TimeField(default=datetime.now().strftime('%H:%M:%S') ,blank=True)
     fail = models.IntegerField(default=0)
     remains =models.IntegerField(default=0)
     link_name = models.CharField(max_length = 100,default="#")
@@ -158,3 +131,33 @@ class Batch(models.Model):
         return str(self.batch_id)
     def get_absolute_url(self):
         return reverse('Batch-detail', args=[str(self.id)])
+class Gate(models.Model):
+    phone =models.CharField(max_length= 100,default=0)
+    DD = models.IntegerField(default=0)
+    MM = models.IntegerField(default=0)
+    YY = models.IntegerField(default=0)
+    string1 =  models.CharField(max_length =100 , default="#")
+    string2 = models.CharField(max_length= 100 , default="#")
+    string3 = models.CharField(max_length= 100, default="#")
+    string4 = models.CharField(max_length= 100, default="#")
+    string5 = models.CharField(max_length= 100, default="#")
+    string6 = models.CharField(max_length= 100, default="#")
+    string7 = models.CharField(max_length= 100, default="#")
+    string8 = models.CharField(max_length= 100, default="#")
+    string9 = models.CharField(max_length= 100, default="#")
+    string10 = models.CharField(max_length= 100, default="#")
+    result1 = models.CharField(max_length= 100, default="#")
+    result2 = models.CharField(max_length= 100, default="#")
+    result3 = models.CharField(max_length= 100, default="#")
+    result4 = models.CharField(max_length= 100, default="#")
+    result5 = models.CharField(max_length= 100, default="#")
+    batch_id = models.IntegerField(default=0)
+    status = models.IntegerField(default=0,help_text="0:In_Queue,1:Processing,2:Fail,3:Success")
+    gate_link_name = models.CharField(max_length = 100, default="#",help_text = "Enter field gate_link_name")
+    inserted_text = models.CharField(max_length = 100, default="#")
+    def __str__(self):
+        return self.gate_link_name
+
+    def get_absolute_url(self):
+        return reverse('Gate-detail', args=[str(self.id)])
+    
