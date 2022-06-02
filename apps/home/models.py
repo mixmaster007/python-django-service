@@ -135,12 +135,12 @@ class balance(models.Model):
         return str(self.user)
 
 class Message(models.Model):
-    value = models.CharField(max_length=1000000)
+    value = models.CharField(max_length=10000)
     date = models.DateTimeField(default=datetime.now, blank=True)
-    user = models.CharField(max_length=1000000)
+    user = models.CharField(max_length=10000)
 class TempFormat(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
-    tmpStr =  models.CharField(max_length=1000000)
+    tmpStr =  models.CharField(max_length=10000)
     def __str__(self):
         return self.tmpStr
 class Batch(models.Model):
