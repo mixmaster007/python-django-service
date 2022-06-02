@@ -14,21 +14,7 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-$(document).on('submit','#onlineSupport_post_form',function(e){
-  e.preventDefault();
-  $.ajax({
-    type:'POST',
-    url:'/send_message',
-    data:{
-      message:$('#onlineSupport_message').val(),
-      csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-    },
-    success: function(data){
-       //alert(data)
-    }
-  });
-  document.getElementById('onlineSupport_message').value = ''
-});
+
 
 /*function getAllTodos(url) {
   fetch(url, {
@@ -67,7 +53,7 @@ function addTodo(url, payload) {
   .then(data => {
     console.log(data);
   });
-}*/
+}
 
 
 function updateTodo(url, payload) {
@@ -101,3 +87,4 @@ function deleteTodo(url) {
     console.log(data);
   });
 }
+*/
