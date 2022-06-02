@@ -6,7 +6,7 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<script>
+<!--<script>
     $(document).ready(function(){
     
     setInterval(function(){
@@ -23,12 +23,12 @@
                 }
             },
             error: function(response){
-                alert('An error occured')
+                //alert('An error occured')
             }
         });
     },1000);
     })
-</script>
+</script>-->
 <div class="content-wrapper">
     <!--Header-->
     <div class="page-header">
@@ -55,8 +55,8 @@
                         <div class="input-group mb-3">
                             <form id = "onlineSupport_post_form">
                                 {% csrf_token %}
-                                <input type="text"  name="onlineSupport_message" id = "onlineSupport_message" placeholder="Type a message">
-                                <button class="btn btn-primary" type="submit" value = "send_message">Send</button>
+                                <input type="text"  name="onlineSupport_message" id = "onlineSupport_message" width="100%">
+                                <button class="btn btn-primary"   value ="send_message">Send</button>
                                
                             </form>
                         </div>

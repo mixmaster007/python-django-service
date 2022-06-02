@@ -6,57 +6,128 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script>
+    $(document).ready(function(){
+    
+        setInterval(function(){
+            $.ajax({
+                type: 'POST',
+                url : "/get_link_info",
+                data:{
+                    message:$('#msg_running_batch_id').val(),
+                    csrfmiddlewaretoken:getCookie("csrftoken"),
+                },
+                success: function(response){
+                    console.log(response.gate[0].gate_link_name);
+                    for(kkk in response.batch)
+                    {
+                        var i = 0;
+                        var temp=""
+                        temp_kkk = response.batch[kkk];
+                        $("#glb_batch_finish_time").empty();
+                        $("#glb_batch_start_time").empty();
+                        $("#glb_batch_status").empty();
+                        $("#glb_batch_total").empty();
+                        $("#glb_batch_success").empty();
+                        $("#glb_batch_done").empty();
+                        $("#glb_batch_remains").empty();
+                        $("#glb_batch_fail").empty();
+                        $("#glb_gate_body").empty();
+                        var temp ="Finish time:" + temp_kkk.finish_time;
+                        $("#glb_batch_finish_time").append(temp);
+                        var temp ="Start time:" + temp_kkk.start_time;
+                        $("#glb_batch_start_time").append(temp);
+                        var temp ="Status:" + temp_kkk.status;
+                        $("#glb_batch_status").append(temp);
+                        var temp ="Total:" + temp_kkk.total;
+                        $("#glb_batch_total").append(temp);
+                        var temp ="Successd:" + temp_kkk.succeed;
+                        $("#glb_batch_success").append(temp);
+                        var temp ="Done:" + temp_kkk.done;
+                        $("#glb_batch_done").append(temp);
+                        var temp ="Remains:" +temp_kkk.remains;
+                        $("#glb_batch_remains").append(temp);
+                        var temp ="Fails:" + temp_kkk.fail;
+                        $("#glb_batch_fail").append(temp);
+                        
+                        for (var key in response.gate)
+                        {
+                            i++;
+                            var mm=response.gate[key];
+                            temp+="<tr><td>"+i+"</td><td>"+mm.inserted_text+"</td>";
+                            if(mm.status == 1)
+                            {
+                                temp+="<td><div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
+                            }
+                            else 
+                            {
+                                temp+="<td>"+mm.result1 +"</td><td>"+mm.result2 +"</td><td>"+mm.result3 +"</td><td>"+mm.result4 +"</td><td>"+mm.result5 +"</td><td>";
+                                if(mm.status == 0) temp+="In_Queue";
+                                else if(mm.status == 2) temp+="Fail";
+                                else if(mm.status == 3) temp+="Done";
+                                temp+="</td>"
+                            }
+                            temp+="</tr>"
+                        }
+                    }
+                    $("#glb_gate_body").append(temp);
+                },
+                error: function(response){
+                    //alert('An error occured')
+                }     
+            });
+        },1000);
+    })
+</script>
 <div class="content-wrapper">
     <div class="page-header">
-        <h5 class="page-title">
-            Gate Link
-            <!--<div class="col-sm-3">
-                <i class="fab fa-angellist text-c-purple f-50"></i>
+        
+        <div class = "col-sm-12">
+            <div class ="row">
+            <div class = "col-sm-4">   
+                <img class="img-xs rounded-circle" src={{ logo.url }} alt="">         
             </div>
-            <div class="col-sm-6">
-                <div class="page-header-title" style="text-align: center;">
-                    <h2 class="m-b-10">Gate 2 Link 1</h2>
-                </div>
+            <div class = "col-sm-4">
+                <h5 class="page-title" >
+                    {{Name}}
+                </h5>
             </div>
-                <div class="col-sm-3" style="text-align: right;">
-                    <p  ><h4> Cost:0.00025</h4></p>
-                    <p> <h3> Creadit </h3> </p>
-                </div>
-            </div>-->
-           
-        </h5>
+            <div class = "col-sm-4" style="text-align: right;">
+               <a>Cost:{{Cost}}USD</a>
+            </div>
+        </div>
+        </div>
     </div>   
     <!-- [ Main Content ] start -->
     <div class="row">
-        <!--[D F info] start-->
+        <!--[Select info] start-->
         <div class="col-sm-12  grid-margin">
             <div class="card">
                 <div class="card-header" style="text-align: Center;" >
                     <p style="font-size: 150%;color: #ffffff;">Please select insert format</p>
                 </div>
                 <div class="card-body">
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked>
-                        <label class="custom-control-label" for="customRadio1"> Phone Number #DD # MM # YY </label>
+                    <form method = "POST" >
+                        {% csrf_token %}
+                        {% for II in link_format %}
+                            <div class="custom-control custom-radio" id="testppp">
+                                
+                                <input type="radio" id="{{II}}" name="radio" value = "{{II}}" class="custom-control-input" >
+                                <label class="custom-control-label" for="{{II}}"> {{II.Members_View_Format}}</label>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    <p style = "color:red">#-delimiter,any 1 none -alphanumeric symbol(not letter or number)</p>
+                    <div style ="text-align:right;">
+                        <button type = "submit"  value ="send_format" class="btn btn-primary">Save Fomart</button>
                     </div>
-                    <hr>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio2">Phone Number #DD # MM # YYYY</label>
-                    </div>
-                    <hr>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio3">Phone Number #YY # MM # DD</label>
-                    </div>
+                    </form>
                 </div>
                 <div class="card-footer">
                     <div style = "text-align:left;">
-                        <p style = "color:red">#-delimiter,any 1 none -alphanumeric symbol(not letter or number)</p>
+                        
                     
-                        <div style ="text-align:right;">
-                            <a href="#" class="btn btn-primary">Save Fomart</a>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -68,109 +139,199 @@
                 <div class = "card-header">
                     <h4>Insert Data</h4>
                 </div>
-
-                <div class = "card-body">
                     <form method = "post" action = "">
                         {% csrf_token %}
-                        <textarea name="gatelink_insertdata" id = "gatelink_insertdata" rows="10" cols="30" style="
-                        width: 100%;"></textarea>
-                        <button name ="123" class="btn btn-primary"  type="submit" value = "send_data">Preview Data</button>
-                    </form>                                       
-                </div>
-                                            
-                <!--<div class="card-footer">
-                    <div style ="text-align:right;">
-                        <a href="#" class="btn btn-primary">Preview Data</a>
-                    </div>
-                </div>-->
+                        <div class = "card-body">
+                            <textarea name="gatelink_previewData" id = "gatelink_previewData" rows="10" cols="30" style="
+                            width: 100%;"></textarea>
+                        </div>
+                        <div class="card-footer">
+                            <div style ="text-align:right;">
+                                <button name ="123" class="btn btn-primary"  type="submit" value = "send_data">Preview Data</button>
+                            </div>
+                        </div>
 
+                       
+                    </form>                                       
             </div>
         </div>
         <!--[Gate1 Link] end-->
+        <!--[Preview Data] Start-->
+        {% if segment == "gate_link_info" %}
+            <div class="col-sm-12 grid-margin">
+                <form method = "post" action="">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class = "card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    {% for II in format_array %}
+                                        <th>{{II}}</th>
+                                    {% endfor %}
+                                    <th>check</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                {% for III in data_array %}
+                                
+                                <tr>
+                                    <td> {{forloop.counter}} </td>
+                                    {% for II in III %}
+                                        <td>{{II}} </td>
+                                    {% endfor %}
+                                    <th><input type="checkbox" name = "check" value = "{{III}}"></th>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                        <hr></hr>
+                        <div style ="text-align:right;">
+                            <button class="btn btn-primary" name="real_data"  value="ok" type="submit" >Insert Data</button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
         <!--[Batch ID] start-->
-        <div class = "col-sm 12 grid-margin">
-            <div class="card">
-                <div class="card-header">
-                <div class = "row">
-                    <div class ="col">Batch ID:3</div>
-                    <div class ="col"><a href="#">Retry the Fails ones again click here</a></div>
-                    <div class ="col">Start time:3:23</div>
-                    <div class ="col">Finish time:3:23</div>
-                </div>
-                </div>
-                <div class="card-body">
-                    <div class="clearfix"></div>
-                    <div class = "row">
-                        <div class ="col">Status:Finished</div>
-                        <div class ="col">Total:9</div>
-                        <div class ="col">Successd:12</div>
-                        <div class ="col">Done:18</div>
-                        <div class ="col">Remains:0</div>
-                        <div class ="col">Expand Frame+</div>
-                    </div>
-                    
-                </div>
-            
-            </div>
-        </div>
-        <div class="col-sm-12 grid-margin">
-
-            <div class="card">
-                <div class="card-header">
-                <div class = "row">
-                    <div class ="col">Batch ID:3</div>
-                    <div class ="col"><a href="#">Retry the Fails ones again click here</a></div>
-                    <div class ="col">Start time:3:23</div>
-                    <div class ="col">Finish time:3:23</div>
-                </div>
-                </div>
-                <div class="card-body">
-                    <div class="clearfix"></div>
-                    <div class = "row">
-                        <div class ="col">Status:Finished</div>
-                        <div class ="col">Total:9</div>
-                        <div class ="col">Successd:12</div>
-                        <div class ="col">Done:18</div>
-                        <div class ="col">Remains:0</div>
-                        <div class ="col">Expand Frame+</div>
-                    </div>
-                    
-                </div>
-            
-            </div>
-        </div>
-        <div class="col-sm-12 grid-margin">
-        
-
-            <div class="card">
-                <div class="card-header">
-                <div class = "row">
-                    <div class ="col">Batch ID:3</div>
-                    <div class ="col"><a href="#">Retry the Fails ones again click here</a></div>
-                    <div class ="col">Start time:3:23</div>
-                    <div class ="col">Finish time:3:23</div>
-                </div>
-                </div>
-                <div class="card-body">
-                    <div class="clearfix"></div>
-                    <div class = "row">
-                        <div class ="col">Status:Finished</div>
-                        <div class ="col">Total:9</div>
-                        <div class ="col">Successd:12</div>
-                        <div class ="col">Done:18</div>
-                        <div class ="col">Remains:0</div>
-                        <div class ="col">Expand Frame+</div>
-                    </div>
-                    
-                </div>
-            
-            </div>
-        </div>
+        {% if Total_Batch != 0 %}
+            {% for i in Batch %}
+                {% if i.link_name == Name %}
+                    {% if i.status == "Running" %}
+                        <div class="col-sm-12 grid-margin">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class = "row">
+                                        <input type ="hidden" id ="msg_running_batch_id" value ="{{forloop.counter}}">
+                                        <div class ="col" id="glb_batch_id">Batch ID:{{forloop.counter}}</div>
+                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
+                                        <div class ="col" style="text-align: center;" id="glb_batch_start_time" >Start time:{{i.start_time}}</div>
+                                        <div class ="col" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.start_time}}</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class = "row">
+                                        <div class ="col" id = "glb_batch_status">Status:{{i.status}}</div>
+                                        <div class ="col" id = "glb_batch_total">Total:{{i.total}}</div>
+                                        <div class ="col" id = "glb_batch_success">Successd:{{i.succeed}}</div>
+                                        <div class ="col" id = "glb_batch_done">Done:{{i.done}}</div>
+                                        <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
+                                        <div class ="col" id = "glb_batch_remains">Remains:{{i.remains}}</div>
+                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
+                                    </div>
+                                    <div class="collapse" id="col_gate_link_{{forloop.counter}}">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" style="text-align: center;" >
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Data as Inserted</th>
+                                                    <th> SQL Field 1</th>
+                                                    <th> SQL Field 2</th>
+                                                    <th> SQL Field 3</th>
+                                                    <th> SQL Field 4</th>
+                                                    <th> SQL Field 5</th>
+                                                    <th> Status </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id ="glb_gate_body">
+                                                
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div> 
+                        </div>
+                    {%else%}
+                        <div class="col-sm-12 grid-margin">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class = "row">
+                                        <div class ="col">Batch ID:{{forloop.counter}}</div>
+                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
+                                        <div class ="col" style="text-align: center;">Start time:{{i.start_time}}</div>
+                                        <div class ="col" style="text-align: right;">Finish time:{{i.start_time}}</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class = "row">
+                                        <div class ="col">Status:{{i.status}}</div>
+                                        <div class ="col">Total:{{i.total}}</div>
+                                        <div class ="col">Successd:{{i.succeed}}</div>
+                                        <div class ="col">Done:{{i.done}}</div>
+                                        <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
+                                        <div class ="col">Remains:{{i.remains}}</div>
+                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
+                                    </div>
+                                    <div class="collapse" id="col_gate_link_{{forloop.counter}}">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Data as Inserted</th>
+                                                    <th> SQL Field 1</th>
+                                                    <th> SQL Field 2</th>
+                                                    <th> SQL Field 3</th>
+                                                    <th> SQL Field 4</th>
+                                                    <th> SQL Field 5</th>
+                                                    <th> Status </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="text-align: center;">
+                                                {% for III in Gate %}
+                                                    {% if III.batch_id == i.batch_id %}
+                                                        <tr>
+                                                            <td> {{forloop.counter}} </td>
+                                                            <td> {{III.inserted_text}} </td>
+                                                            {% if III.status == 1 %}
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> Processing</td>
+                                                            {% else %}
+                                                            <td> {{III.result1}} </td>
+                                                            <td> {{III.result2}} </td>
+                                                            <td> {{III.result3}} </td>
+                                                            <td> {{III.result4}} </td>
+                                                            <td> {{III.result5}} </td>
+                                                            <td>
+                                                                {% if III.status == 0 %} 
+                                                                    In_Queue
+                                                                {% elif III.status == 2 %}
+                                                                    Fail
+                                                                {% elif III.status == 3 %}
+                                                                    Done
+                                                                {% endif %}
+                                                            </td>
+                                                            {% endif %}
+                                                        </tr>
+                                                        
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div> 
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         <!--[Batch ID] end-->    
-
     </div>
-</div>
 
-   
-        
+</div>
 {% endblock content %}

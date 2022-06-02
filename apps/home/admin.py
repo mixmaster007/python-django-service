@@ -12,8 +12,12 @@ from .models import Format
 from .models import Gate_Link
 from .models import balance
 from .models import Message
+from .models import Gate
+from .models import Batch
+from .models import TempFormat
 # Register your models here
 #admin.site.register(News)
+admin.site.site_header = "DataFlair Django Tutorials"
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title','content','publish_date')
@@ -27,18 +31,23 @@ class GateLinkAdmin(admin.ModelAdmin):
     Link_Logo_tiny_preview.short_description = 'Link_Logo_tiny_preview'
     Link_Logo_tiny_preview.allow_tags = True
 
-   
+class GateAdmin(admin.ModelAdmin):
+    list_display=('phone','YY','MM','DD','batch_id','gate_link_name')   
+class BatchAdmin(admin.ModelAdmin):
+    list_display=('batch_id','status','total','start_time','finish_time','link_name')   
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
 
 admin.site.register(News, NewsAdmin)
+admin.site.register(Gate,GateAdmin)
 admin.site.register(Gate1Manage)
 admin.site.register(balance)
 admin.site.register(Gate2Manage)
 admin.site.register(Format,FomartAdmin)
 admin.site.register(Gate_Link,GateLinkAdmin)
 admin.site.register(Message)
-#admin.site.register(Format)
+admin.site.register(TempFormat)
+admin.site.register(Batch,BatchAdmin)
 
 
 

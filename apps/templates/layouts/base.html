@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="/static/assets/images/favicon.png" />
 
     <title>
-        Django Corona Dark - {% block title %}{% endblock %} | AppSeed
+         OUR DJANGO PROJECT - {% block title %}{% endblock %} 
     </title>
 
     <link rel="stylesheet" href="/static/assets/vendors/mdi/css/materialdesignicons.min.css">
@@ -66,24 +66,23 @@
 
     <!-- Specific Page JS goes HERE  -->
     {% block javascripts %}{% endblock javascripts %}
-
+    <script src="/static/assets/my_assets/js/main.js"></script>
   </body>
   <script type="text/javascript">
     $(document).on('submit','#onlineSupport_post_form',function(e){
-      e.preventDefault();
-  
-      $.ajax({
-        type:'POST',
-        url:'send_message',
-        data:{
-          message:$('#onlineSupport_message').val(),
-          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-        },
-        success: function(data){
-           alert(data)
-        }
-      });
-      document.getElementById('onlineSupport_message').value = ''
-    });
+  e.preventDefault();
+  $.ajax({
+    type:'POST',
+    url:'/send_message',
+    data:{
+      message:$('#onlineSupport_message').val(),
+      csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+    },
+    success: function(data){
+       //alert(data)
+    }
+  });
+  document.getElementById('onlineSupport_message').value = ''
+});
   </script>
 </html>
