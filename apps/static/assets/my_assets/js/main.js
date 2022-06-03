@@ -15,7 +15,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-
 /*function getAllTodos(url) {
   fetch(url, {
     headers: {
@@ -88,3 +87,4 @@ function deleteTodo(url) {
   });
 }
 */
+

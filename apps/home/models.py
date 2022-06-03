@@ -79,8 +79,8 @@ class Gate_Link(models.Model):
         (StTwo, 'Hidden'),
     ]
     assin_link_to_gateway_choices = [
-        (GateOne, 'Gate 1'),
-        (GateTwo, 'Gate 2'),
+        (GateOne, 'Gate1'),
+        (GateTwo, 'Gate2'),
     ]
     assin_link_to_gateway = models.CharField(
         max_length=6,
@@ -156,8 +156,19 @@ class Gate(models.Model):
     gate_link_name = models.CharField(max_length = 100, default="#",help_text = "Enter field gate_link_name")
     inserted_text = models.CharField(max_length = 100, default="#")
     def __str__(self):
-        return self.gate_link_name
+        return str(self.phone)
 
     def get_absolute_url(self):
         return reverse('Gate-detail', args=[str(self.id)])
-    
+class AreaCode(models.Model):
+    area_code = models.CharField(max_length= 10, default="000")
+    State = models.CharField(max_length= 10, default="#")
+    City = models.CharField(max_length= 100, default="#")
+    Country = models.CharField(max_length= 100, default="#")
+    Time_Zone = models.CharField(max_length= 100, default="#")
+    URL = models.CharField(max_length= 100, default="#")
+    def __str__(self):
+        return self.area_code
+    def get_absolute_url(self):
+        return reverse('AreaCode-detail', args=[str(self.id)])
+

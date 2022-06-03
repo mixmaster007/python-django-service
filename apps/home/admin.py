@@ -15,6 +15,7 @@ from .models import Message
 from .models import Gate
 from .models import Batch
 from .models import TempFormat
+from .models import AreaCode
 # Register your models here
 #admin.site.register(News)
 admin.site.site_header = "DataFlair Django Tutorials"
@@ -34,7 +35,9 @@ class GateLinkAdmin(admin.ModelAdmin):
 class GateAdmin(admin.ModelAdmin):
     list_display=('phone','YY','MM','DD','batch_id','status','gate_link_name')   
 class BatchAdmin(admin.ModelAdmin):
-    list_display=('batch_id','status','total','start_time','finish_time','link_name')   
+    list_display=('batch_id','status','total','start_time','finish_time','link_name')  
+class AreacodehAdmin(admin.ModelAdmin):
+    list_display=('area_code','State','City','Country','Time_Zone','URL') 
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
 
@@ -48,6 +51,7 @@ admin.site.register(Gate_Link,GateLinkAdmin)
 admin.site.register(Message)
 admin.site.register(TempFormat)
 admin.site.register(Batch,BatchAdmin)
+admin.site.register(AreaCode,AreacodehAdmin)
 
 
 

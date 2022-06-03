@@ -27,6 +27,8 @@ urlpatterns = [
     path('send_message', views.send_message, name='send_message'),
     path('get_message/', views.get_message, name='get_message'),
     path('get_link_info', views.get_link_info, name='get_link_info'),
+    path('get_area_all', views.get_area_all, name='get_area_all'),#Get area data for Copy  button in area page
+  
     #rl(r'^gate_about/$', views.gate_about, name='gate_about'),
     #path ('gate_link/<int:pk>' ,views.gate_link,{'id':pk},name='gate_link'),
     

@@ -19,9 +19,16 @@ from .models import Message
 from .models import TempFormat
 from .models import Gate
 from .models import Batch
+from .models import AreaCode
 from django.core import serializers
 import json
 import pprint
+def mid(str,index,count):
+    tmp_str=""
+    for i in range(index,index+count):
+        tmp_str+=str[i]
+    return tmp_str
+
 def check_BatchID():
     return Batch.objects.all().count()
     """
@@ -108,17 +115,37 @@ def depositFunds(request):
 def gate_about(request,pk):
     user = balance.objects.get(user=request.user)
     pp = pprint.PrettyPrinter(indent = 4)
+    pp.pprint("TEST____________Gate ABOUT________STRTE")
     pp.pprint(pk)
     if pk == 1 :
         about = Gate1Manage.objects.all()
     else:
         about =  Gate2Manage.objects.all()
-    GateLink = Gate_Link.objects.all()    
-    tmp_gate = Gate.objects.filter()
+    GateLink = Gate_Link.objects.all()   
+    gate = Gate.objects.all()
+    batch = Batch.objects.all()
+    pp.pprint(GateLink)
+    if pk == 1:
+        ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G1')
+    else:
+        ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G2') 
+    tmp_batch=[]
+    tmp_total_count = 0
+    for kkk1 in batch:
+        for kkk in ness_GateLink:
+            if kkk1.link_name == kkk.Link_Name:
+                tmp_batch.append(kkk1)
+                tmp_total_count+=1
+    
+    pp.pprint(tmp_total_count)
     context={
         'pk' : pk,
         'about':about,
-        "gateLink":GateLink,
+        "nes_gateLink":ness_GateLink,
+        'gateLink':GateLink,
+        'batch':tmp_batch,
+        'gate':gate,
+        'total_batch':tmp_total_count,
         'balance':user.balance,
         
     }
@@ -257,12 +284,42 @@ def gate_link(request,pk):
 
 @login_required(login_url="/login/")
 def area_code(request):
+    pp = pprint.PrettyPrinter(indent = 4)
     user = balance.objects.get(user=request.user)
     GateLink = Gate_Link.objects.all()    
     context = {
        'gateLink':GateLink,
        'balance':user.balance,
     }
+    if request.method == 'POST': 
+        try:
+            if request.POST['area_inputData']:
+                phonenumber_arry = request.POST['area_inputData'].strip().split("\r\n")
+                pp.pprint(phonenumber_arry) 
+                tmp_area_array =[]
+                tmp_find_result=[]
+                for pn in phonenumber_arry:
+                    tmp_area=""
+                    #pp.pprint(mid(pn,i,3).isnumeric)
+                    for i in range(len(pn)):
+                        tmp_area = mid(pn,i,3)
+                        if tmp_area.isnumeric():
+                            break
+                    tmp_area_array.append(tmp_area)
+                    if AreaCode.objects.filter(area_code = tmp_area).exists():
+                        ttt= AreaCode.objects.get(area_code = tmp_area)
+                        tmp_find_result.append([pn,ttt.area_code,ttt.State,ttt.City,ttt.Country,ttt.Time_Zone,ttt.URL])                                              
+                    else:
+                        tmp_find_result.append([pn,tmp_area,"NotFound","NotFound","NotFound","NotFound","NotFound"])                                                    
+                context['segment']="in(p)_response"
+                context['area_array']=tmp_area_array
+                context['phonenumber_arry']=phonenumber_arry
+                context['in_data']=request.POST['area_inputData'].strip()
+                context['find_result']=tmp_find_result
+                pp.pprint(tmp_area_array)
+                pp.pprint(context['in_data'])
+        except:
+            pp.pprint("This is execpt:Post[area_inputData]")
     html_template = loader.get_template('home/area_code.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -364,4 +421,25 @@ def get_link_info(request):
         "batch":list(batch.values()),
     }
    #pp.pprint(context)
+    return JsonResponse(context)
+def get_area_all(request):
+    """
+     if AreaCode.objects.filter(area_code = tmp_area).exists():
+        ttt= AreaCode.objects.get(area_code = tmp_area)
+        tmp_find_result.append([pn,ttt.area_code,ttt.State,ttt.City,ttt.Country,ttt.Time_Zone,ttt.URL])                                              
+        else:
+        tmp_find_result.append([pn,tmp_area,"NotFound","NotFound","NotFound","NotFound","NotFound"])                                                    
+    """
+    if request.POST['message'] == 'ALL':
+        context ={
+            "item":"all"
+        }
+    elif request.POST['message'] == 'FND':
+        context ={
+            "item":"FND"
+        }
+    else:
+        context = {
+            "item":"NFD"
+        }
     return JsonResponse(context)
