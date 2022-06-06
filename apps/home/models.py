@@ -15,7 +15,7 @@ class News(models.Model):
    
     title = models.CharField(max_length=200)
     content =  RichTextField()
-    publish_date = models.DateField()
+    publish_date = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return self.title
     def get_absolute_url(self):
@@ -111,6 +111,8 @@ class Message(models.Model):
     value = models.CharField(max_length=100)
     date = models.DateTimeField(default=datetime.now, blank=True)
     user = models.CharField(max_length=100)
+    def __str__(self):
+        return self.value
 class TempFormat(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
     tmpStr =  models.CharField(max_length=100)

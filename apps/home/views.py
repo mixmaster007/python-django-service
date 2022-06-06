@@ -22,6 +22,7 @@ from .models import Batch
 from .models import AreaCode
 from django.core import serializers
 import json
+import re
 import pprint
 def mid(str,index,count):
     tmp_str=""
@@ -39,13 +40,50 @@ def check_BatchID():
             x=i.batch_id 
     return x  
     """
-def convert_format(data,n):
+def check_format(format,data):
+    pp = pprint.PrettyPrinter(indent = 4)
+    pp.pprint("__________Check_format_______________")
+    context ={}
+    
+    if len(format) != len(data):
+        context ={
+            'data':data[:len(format)],
+            'error_flag':'true',
+            'error':{
+                "style":"count error",
+                'phone':data[0],
+            }
+        }
+    else:
+        tmp_check_dic ={} 
+        tmp_error_str = ""
+        for i in range(len(format)):
+            tmp_check_dic[str(format[i])] = data[i]
+        if  int(tmp_check_dic['DD']) == 0 or int(tmp_check_dic['DD']) > 31:
+            tmp_error_str+= tmp_check_dic['DD'] + ":is not valid Day value\r\n"
+        if int(tmp_check_dic['MM']) == 2 and  int(tmp_check_dic['DD'])>28:
+            tmp_error_str+= tmp_check_dic['DD'] + ":is not valid Day value\r\n"
+        if int(tmp_check_dic['MM']) ==0 or int(tmp_check_dic['MM']) >12:
+            tmp_error_str+= tmp_check_dic['MM'] + ":is not valid Month value\r\n"
+        context['data'] = data
+        if tmp_error_str != "":
+            context['error_flag'] ="true"
+            context['error'] = {
+                "style":tmp_error_str,
+                'phone':data[0],
+            }
+        else:
+            context['error_flag'] ="false"
+    pp.pprint(context)
+    return context
+def convert_format(data):
     pp = pprint.PrettyPrinter(indent = 4)
     pp.pprint("Test(convert_format)-------input data----------")
     pp.pprint(data)
     if len(data) <5:  # Check to empty string
         return ""
-    pb_format_array= data.split(n)
+    
+    pb_format_array = re.split('[^a-zA-Z0-9()+-]', data)
     pp.pprint("Test(convert_format)-------split data----------")
     pp.pprint(pb_format_array)
     if len(pb_format_array[1])>2:
@@ -73,6 +111,7 @@ def convert_format(data,n):
     x = "#".join(pb_format_array)
     pp.pprint("Test(convert_format)-------out data----------")
     pp.pprint(x)
+       
     return x
   
     
@@ -80,7 +119,8 @@ def convert_format(data,n):
 @login_required(login_url="/login/")
 def index(request):
     num_news = News.objects.all().count()
-    news = News.objects.all()
+    news = News.objects.order_by('-publish_date').all()
+        #Comment.objects.order_by('-datetime')
     GateLink = Gate_Link.objects.all() 
     pp = pprint.PrettyPrinter(indent = 4)
     if balance.objects.filter(user=request.user).exists(): 
@@ -166,7 +206,6 @@ def gate_link(request,pk):
     #for index in range(len(link_format_tmp)):
     #    link_format={"id":index,"key":link_format_tmp[index]}
     #    pp.pprint(index)
-    
     user = balance.objects.get(user=request.user)
     context={
         'segment':"gate_link",
@@ -181,30 +220,36 @@ def gate_link(request,pk):
         'link_format':link_format_tmp
     }
     if request.method == 'POST':
-        try:
-            if request.POST['radio']:
-                selected_format = request.POST['radio']
-                r = convert_format(selected_format,'#')
-                if TempFormat.objects.filter(user=request.user).exists(): 
-                    TempFormat.objects.filter(user=request.user).delete()
-                new_TmpFormat = TempFormat.objects.create(user=request.user,tmpStr=r)
-                new_TmpFormat.save()   
-        except:
-            pp.pprint("This is execpt:Post[radio]")
-        try:
-            if request.POST['gatelink_previewData']:
-                data_arry_line = request.POST['gatelink_previewData'].split("\r\n")
+        tmp_previewData =request.POST.get('gatelink_previewData')
+        
+        if tmp_previewData != None:
+            check_flag =  request.POST.get('status_inserted_format')
+            if check_flag != "ok":
+                context['segment'] = "gate_link_error_nosel"
+            else:
+                pp.pprint("_________Arrive signal of gateLink_previewData_________")
+                data_arry_line = tmp_previewData.split("\r\n")
+                tmp_format_array= str(TempFormat.objects.get(user=request.user)).split('#')
                 i=0
-                xx=[]
+                tmp_data_array=[]
+                tmp_error_arry = []
                 for ii in data_arry_line:
-                    r=convert_format(ii,'#')
-                    if r !="":
-                        xx.append(r.split('#'))
-                context['data_array']=xx    
-                context['segment'] = "gate_link_info"
-                context['format_array']=str(TempFormat.objects.get(user=request.user)).split('#')
-        except:
-            pp.pprint("This is execpt:Post[gatelink_inserdata]")
+                    r=convert_format(ii)
+                    if r != "":
+                        tmp_chek= check_format(tmp_format_array,r.split('#'))
+                        tmp_data_array.append(tmp_chek['data'])
+                        if(tmp_chek['error_flag'] == 'true'):
+                            tmp_error_arry.append(tmp_chek['error'])
+                if len(tmp_data_array) != 0:
+                    if len(tmp_error_arry) == 0:
+                        context['error_flag'] = 'no_error'
+                    else:
+                        context['error_flag'] = 'error'
+                        context['error_arry'] = tmp_error_arry
+                    context['segment'] = "gate_link_info"   
+                    context['data_array']=tmp_data_array
+                    context['format_array']=tmp_format_array
+                pp.pprint(context)
         try:
             if request.POST['real_data']:
                 check = request.POST.getlist('check')
@@ -294,6 +339,7 @@ def area_code(request):
     if request.method == 'POST': 
         try:
             if request.POST['area_inputData']:
+                
                 phonenumber_arry = request.POST['area_inputData'].strip().split("\r\n")
                 pp.pprint(phonenumber_arry) 
                 tmp_area_array =[]
@@ -341,47 +387,26 @@ def onlineSupport(request):
     context = {
        'gateLink':GateLink,
        'balance':user.balance,
+        'user_name':request.user,
     }
     html_template = loader.get_template('home/onlineSupport.html')
     return HttpResponse(html_template.render(context, request))
 
 
-@login_required(login_url="/login/")
-def pages(request):
-    context = {}
-    # All resource paths end in .html.
-    # Pick out the html file name from the url. And load that template.
-    try:
-
-        load_template = request.path.split('/')[-1]
-
-        if load_template == 'admin':
-            return HttpResponseRedirect(reverse('admin:index'))
-        context['segment'] = load_template
-
-        html_template = loader.get_template('home/' + load_template)
-        return HttpResponse(html_template.render(context, request))
-
-    except template.TemplateDoesNotExist:
-
-        html_template = loader.get_template('home/page-404.html')
-        return HttpResponse(html_template.render(context, request))
-
-    except:
-        html_template = loader.get_template('home/page-500.html')
-        return HttpResponse(html_template.render(context, request))
 def send_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
     message = request.POST['message']
+    user_name = request.POST['user']
     pp.pprint(message)
-    new_message = Message.objects.create(value=message, user = request.user)
+    new_message = Message.objects.create(value = message,user = user_name)
     new_message.save()
-    return HttpResponse("Message sent successfull")
+    return JsonResponse({"messages":"123"})
 def get_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
     messages = Message.objects.filter(user="killer")
     pp.pprint(messages)
-    return JsonResponse({"messages":list(messages.values())})
+    list(messages.values())
+    return JsonResponse({"messages": list(messages.values())})
 def send_gatelink_insertdata(request):
    
     insertdata = request.POST['gatelink_insertdata']
@@ -443,3 +468,14 @@ def get_area_all(request):
             "item":"NFD"
         }
     return JsonResponse(context)
+def Gl_Send_InsertData(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+           
+    selected_format = request.POST.get("seleted_data")
+    pp.pprint(selected_format)
+    result = convert_format(selected_format)
+    if TempFormat.objects.filter(user=request.user).exists(): 
+       TempFormat.objects.filter(user=request.user).delete()
+    new_TmpFormat = TempFormat.objects.create(user=request.user,tmpStr=result)
+    new_TmpFormat.save()   
+    return JsonResponse({'item':'ok'})

@@ -22,10 +22,11 @@ urlpatterns = [
 
     path ('history' ,views.history,name='history'),
 
-
+    
+    path ('Gl_Send_InsertData' ,views.Gl_Send_InsertData,name='Gl_Send_InsertData'),
     path ('onlineSupport' ,views.onlineSupport,name='onlineSupport'),
     path('send_message', views.send_message, name='send_message'),
-    path('get_message/', views.get_message, name='get_message'),
+    path('get_message', views.get_message, name='get_message'),
     path('get_link_info', views.get_link_info, name='get_link_info'),
     path('get_area_all', views.get_area_all, name='get_area_all'),#Get area data for Copy  button in area page
   

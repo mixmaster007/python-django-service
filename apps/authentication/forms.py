@@ -56,7 +56,7 @@ class SignUpForm(UserCreationForm):
                 "class": "form-control"
             }
         ))
-    capatchacode = CaptchaField()
+    capatchacode = CaptchaField(error_messages={"invalid": "Verification code error"})
 
     class Meta:
         model = User

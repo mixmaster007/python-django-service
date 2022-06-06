@@ -31,7 +31,8 @@ class GateLinkAdmin(admin.ModelAdmin):
 
     Link_Logo_tiny_preview.short_description = 'Link_Logo_tiny_preview'
     Link_Logo_tiny_preview.allow_tags = True
-
+class MessageAdmin(admin.ModelAdmin):
+     list_display=('user','value','date')
 class GateAdmin(admin.ModelAdmin):
     list_display=('phone','YY','MM','DD','batch_id','status','gate_link_name')   
 class BatchAdmin(admin.ModelAdmin):
@@ -48,7 +49,7 @@ admin.site.register(balance)
 admin.site.register(Gate2Manage)
 admin.site.register(Format,FomartAdmin)
 admin.site.register(Gate_Link,GateLinkAdmin)
-admin.site.register(Message)
+admin.site.register(Message,MessageAdmin)
 admin.site.register(TempFormat)
 admin.site.register(Batch,BatchAdmin)
 admin.site.register(AreaCode,AreacodehAdmin)

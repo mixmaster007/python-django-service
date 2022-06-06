@@ -76,7 +76,7 @@
                     //alert('An error occured')
                 }     
             });
-        },1000);
+        },1000000);
     })
 </script>
 <div class="content-wrapper">
@@ -107,8 +107,8 @@
                     <p style="font-size: 150%;color: #ffffff;">Please select insert format</p>
                 </div>
                 <div class="card-body">
-                    <form method = "POST" >
-                        {% csrf_token %}
+                    <form >
+                        
                         {% for II in link_format %}
                             <div class="custom-control custom-radio" id="testppp">
                                 
@@ -119,7 +119,7 @@
                         {% endfor %}
                     <p style = "color:red">#-delimiter,any 1 none -alphanumeric symbol(not letter or number)</p>
                     <div style ="text-align:right;">
-                        <button type = "submit"  value ="send_format" class="btn btn-primary">Save Fomart</button>
+                        <a onclick="GateLink_Send_Insertd_Data()" name=" Gl_Send_InsertData" class="btn btn-primary">Save Fomart</a>
                     </div>
                     </form>
                 </div>
@@ -138,16 +138,24 @@
             <div class="card">
                 <div class = "card-header">
                     <h4>Insert Data</h4>
+                   
                 </div>
                     <form method = "post" action = "">
                         {% csrf_token %}
+                        <input type ="hidden" name ="status_inserted_format" id = "status_inserted_format" value="">
                         <div class = "card-body">
                             <textarea name="gatelink_previewData" id = "gatelink_previewData" rows="10" cols="30" style="
                             width: 100%;"></textarea>
+                            {% if segment == "gate_link_error_nosel" %}
+                            <div style="text-align: right;color: red;" id ="gl_error_preivewData">
+                                <a >Error!Seletet Format Check</a> 
+                            </div>
+                           
+                            {% endif %}
                         </div>
                         <div class="card-footer">
                             <div style ="text-align:right;">
-                                <button name ="123" class="btn btn-primary"  type="submit" value = "send_data">Preview Data</button>
+                                <button name ="123" class="btn btn-primary"  ontype="submit" value = "send_data">Preview Data</button>
                             </div>
                         </div>
 
@@ -163,8 +171,8 @@
                     {% csrf_token %}
                     <div class="card">
                         <div class = "card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
+                        <div class="table-responsive" >
+                            <table class="table table-bordered" style="text-align: center;">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -177,11 +185,21 @@
                             
                             <tbody>
                                 {% for III in data_array %}
-                                
                                 <tr>
                                     <td> {{forloop.counter}} </td>
                                     {% for II in III %}
-                                        <td>{{II}} </td>
+                                        {% if forloop.first %}
+                                            <td>
+                                                {{II}}
+                                                {% for kk in error_arry %}
+                                                    {% if kk.phone ==  II %}
+                                                        <p style="text-align: center;color: red;">{{kk.style}}</p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        {% else %}
+                                            <td>{{II}}</td>
+                                        {% endif %}
                                     {% endfor %}
                                     <th><input type="checkbox" name = "check" value = "{{III}}"></th>
                                 </tr>
@@ -334,4 +352,36 @@
     </div>
 
 </div>
+<script>
+    function GateLink_Send_Insertd_Data() {
+        var getSelectedValue = document.querySelector( 'input[name="radio"]:checked');   
+            if(getSelectedValue == null) 
+            {   
+                alert("Please Select Insert Format");  
+            }  
+            else
+            {
+                document.getElementById('status_inserted_format').value = "ok"
+               
+                $.ajax({
+                        type: 'POST',
+                        url : "/Gl_Send_InsertData",
+                        data:{
+                            seleted_data:getSelectedValue.value,
+                            message:"FND",
+                            csrfmiddlewaretoken:getCookie("csrftoken"),
+                        },
+                        success: function(response){
+                            alert("Success Seleted Formart")
+                            $("#gl_error_preivewData").empty();
+                        },
+                        error: function(response){
+                            alert('An error occured')
+                        } 
+                    }
+                )
+            }    
+                
+    }
+</script>
 {% endblock content %}

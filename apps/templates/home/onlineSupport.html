@@ -6,7 +6,7 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<!--<script>
+<script>
     $(document).ready(function(){
     
     setInterval(function(){
@@ -26,9 +26,9 @@
                 //alert('An error occured')
             }
         });
-    },1000);
+    },1000000);
     })
-</script>-->
+</script>
 <div class="content-wrapper">
     <!--Header-->
     <div class="page-header">
@@ -46,19 +46,47 @@
                     </h5>
                 </div>
                 <div class="card-body" style = "height:800px;">
-                    <div id="display"  class="clearfix"></div>
-                    
+                    <div id="display"  class="clearfix" data-spy="scroll"></div>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    uisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+                    <p>quisq</p>
+
                     </div>
                 </div>
                 <div class ="card-footer">
-                    <div class="col-md-12">
-                        <div class="input-group mb-3">
-                            <form id = "onlineSupport_post_form">
-                                {% csrf_token %}
-                                <input type="text"  name="onlineSupport_message" id = "onlineSupport_message" width="100%">
-                                <button class="btn btn-primary"   value ="send_message">Send</button>
-                               
-                            </form>
+                    <div class="row">
+                        <div class = "col-sm-10">
+                            <input type="hidden" name="onlineSupport_message_username" id="onlineSupport_message_username" value="{{user_name}}"/>
+                            <input type="text"  name="onlineSupport_message" id = "onlineSupport_message" style = "width: 100%;">
+                        </div>
+                        <div class = "col-sm-2">
+                            <button class="btn btn-primary"  onclick="send_message_click()">Send</button>
                         </div>
                     </div>
                 </div>
@@ -66,5 +94,25 @@
         </div>
     </div>
 </div>
-      
+<script>
+    function send_message_click() {
+        $.ajax({
+            type: 'POST',
+            url : "send_message",
+            data:{
+                user:$('#onlineSupport_message_username').val(),
+                message:$('#onlineSupport_message').val(),
+                csrfmiddlewaretoken:getCookie("csrftoken"),
+            },
+            success: function(response){
+                console.log(response.messages);
+            },
+            error: function(response){
+                alert('An error occured')
+            } 
+            }
+        )    
+    }
+    
+</script> 
 {% endblock content %}
