@@ -21,9 +21,9 @@ urlpatterns = [
     path ('area_code' ,views.area_code,name='area_code'),
 
     path ('history' ,views.history,name='history'),
-
     
     path ('Gl_Send_InsertData' ,views.Gl_Send_InsertData,name='Gl_Send_InsertData'),
+    path ('GateLink_Send_Preview_Data' ,views.GateLink_Send_Preview_Data,name='GateLink_Send_Preview_Data'),
     path ('onlineSupport' ,views.onlineSupport,name='onlineSupport'),
     path('send_message', views.send_message, name='send_message'),
     path('get_message', views.get_message, name='get_message'),

@@ -76,7 +76,7 @@
                     //alert('An error occured')
                 }     
             });
-        },1000000);
+        },100000);
     })
 </script>
 <div class="content-wrapper">
@@ -119,7 +119,7 @@
                         {% endfor %}
                     <p style = "color:red">#-delimiter,any 1 none -alphanumeric symbol(not letter or number)</p>
                     <div style ="text-align:right;">
-                        <a onclick="GateLink_Send_Insertd_Data()" name=" Gl_Send_InsertData" class="btn btn-primary">Save Fomart</a>
+                        <a onclick="GateLink_Send_Insertd_Data()" name="Gl_Send_InsertData" class="btn btn-primary">Save Fomart</a>
                     </div>
                     </form>
                 </div>
@@ -132,7 +132,7 @@
                 </div>
             </div>
         </div>
-        <!--[About Gate1] end-->
+        <!--[Select info] end-->
         <!--[Gate1 Link] start-->
         <div class="col-sm-12 grid-margin">
             <div class="card">
@@ -140,22 +140,18 @@
                     <h4>Insert Data</h4>
                    
                 </div>
-                    <form method = "post" action = "">
-                        {% csrf_token %}
+                    <form name ="gatelink_preview_form">
+                        
                         <input type ="hidden" name ="status_inserted_format" id = "status_inserted_format" value="">
                         <div class = "card-body">
-                            <textarea name="gatelink_previewData" id = "gatelink_previewData" rows="10" cols="30" style="
+                            <textarea name="gatelink_previewData_oh" id = "gatelink_previewData_oh" rows="10" cols="30" style="
                             width: 100%;"></textarea>
-                            {% if segment == "gate_link_error_nosel" %}
                             <div style="text-align: right;color: red;" id ="gl_error_preivewData">
-                                <a >Error!Seletet Format Check</a> 
                             </div>
-                           
-                            {% endif %}
                         </div>
                         <div class="card-footer">
                             <div style ="text-align:right;">
-                                <button name ="123" class="btn btn-primary"  ontype="submit" value = "send_data">Preview Data</button>
+                                <a onclick="GateLink_Send_Preview_Data()" name="GateLink_Send_Preview_Data" class="btn btn-primary">Preview Data</a>
                             </div>
                         </div>
 
@@ -165,57 +161,16 @@
         </div>
         <!--[Gate1 Link] end-->
         <!--[Preview Data] Start-->
-        {% if segment == "gate_link_info" %}
-            <div class="col-sm-12 grid-margin">
-                <form method = "post" action="">
-                    {% csrf_token %}
-                    <div class="card">
-                        <div class = "card-body">
-                        <div class="table-responsive" >
-                            <table class="table table-bordered" style="text-align: center;">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    {% for II in format_array %}
-                                        <th>{{II}}</th>
-                                    {% endfor %}
-                                    <th>check</th>
-                                </tr>
-                            </thead>
-                            
-                            <tbody>
-                                {% for III in data_array %}
-                                <tr>
-                                    <td> {{forloop.counter}} </td>
-                                    {% for II in III %}
-                                        {% if forloop.first %}
-                                            <td>
-                                                {{II}}
-                                                {% for kk in error_arry %}
-                                                    {% if kk.phone ==  II %}
-                                                        <p style="text-align: center;color: red;">{{kk.style}}</p>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </td>
-                                        {% else %}
-                                            <td>{{II}}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <th><input type="checkbox" name = "check" value = "{{III}}"></th>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            </table>
-                        </div>
-                        <hr></hr>
-                        <div style ="text-align:right;">
-                            <button class="btn btn-primary" name="real_data"  value="ok" type="submit" >Insert Data</button>
-                        </div>
-                    </div>
-                    </div>
-                </form>
-            </div>
-        {% endif %}
+        <div class="col-sm-12 grid-margin"  >
+            <form method ="post" action="">
+                {% csrf_token %}
+                <div class="card" id = "gatelink_result_data">
+
+                </div>
+            </form>
+                               
+        </div>
+        
         <!--[Batch ID] start-->
         {% if Total_Batch != 0 %}
             {% for i in Batch %}
@@ -362,7 +317,6 @@
             else
             {
                 document.getElementById('status_inserted_format').value = "ok"
-               
                 $.ajax({
                         type: 'POST',
                         url : "/Gl_Send_InsertData",
@@ -372,7 +326,7 @@
                             csrfmiddlewaretoken:getCookie("csrftoken"),
                         },
                         success: function(response){
-                            alert("Success Seleted Formart")
+                            alert("Success Formart Select")
                             $("#gl_error_preivewData").empty();
                         },
                         error: function(response){
@@ -381,6 +335,71 @@
                     }
                 )
             }    
+                
+    }
+    function GateLink_Send_Preview_Data() {
+      
+        //alert(document.forms["gatelink_preview_form"]["GateLink_Send_Preview_Data"].value);
+        str_pre = document.getElementById('gatelink_previewData_oh').value;
+        if(document.getElementById('status_inserted_format').value != "ok") 
+        {   
+            document.getElementById('gl_error_preivewData').innerHTML ="<a >Error!Select Format Check</a>"; 
+        }  
+        else
+        {
+
+            $.ajax({
+                    type: 'POST',
+                    url : "/GateLink_Send_Preview_Data",
+                    data:{
+                        gatelink_previewData_oo:str_pre,
+                        csrfmiddlewaretoken:getCookie("csrftoken"),
+                    },
+                    success: function(response){
+                        temp_str111="<div class = \"card-body\"><div class=\"table-responsive\"> "    
+                        temp_str111+="<table class=\"table table-bordered\" style=\"text-align: center;\"><thead><tr><th>id</th>";
+                        for(kk in response.format_array)
+                        {
+                            temp_str111+="<th>"+response.format_array[kk]+"</th>"
+                        }
+                        temp_str111+="<th>CHECK</th></tr></thead><tbody>"
+                        var tmp_id = 0;
+                        for(kk in response.data_array)
+                        {
+                            tmp_id = parseInt(kk)+1;
+                            var temp_return_str = ""
+                            temp_str111+="<tr><td>"+tmp_id.toString()+"</td>";
+                            for(k in response.format_array)
+                            {
+                                temp_return_str+=response.data_array[kk][response.format_array[k]]+"#";
+                                if(k == 0)
+                                {
+                                    temp_str111+="<td>"+response.data_array[kk][response.format_array[k]]+"<p style=\"text-align: center;color: red;\">";
+                                    temp_str111+=response.data_array[kk].error+"</p></td>"
+                                } 
+                                else
+                                {
+                                    temp_str111+="<td>"+response.data_array[kk][response.format_array[k]]+"</td>"
+                                }
+                            }
+                            temp_str111+="<td><input type=\"checkbox\" name = \"check\" value = " +temp_return_str+"></td></tr>";
+                            console.log("______RESOPONSE _DATA ______________");
+                            console.log(temp_return_str);
+                                
+                        }
+                   
+                        temp_str111+="</table></div><hr></hr><div style =\"text-align:right;\"><button "
+                        temp_str111+="class=\"btn btn-primary\" name=\"real_data\"  value=\"ok\" type=\"submit\" >Insert Data</button>"
+                        temp_str111+="</div></div>"
+                        console.log(temp_str111);
+                        $("#gatelink_result_data").append(temp_str111);
+                    },
+                    error: function(response){
+                        alert('An error occured')
+                    } 
+                }
+            )
+        }    
                 
     }
 </script>
