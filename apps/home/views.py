@@ -3,7 +3,6 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
-from tkinter.messagebox import NO
 from django.shortcuts import redirect
 from posixpath import split
 from django import template
