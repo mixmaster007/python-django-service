@@ -466,7 +466,7 @@ def send_message(request):
     return JsonResponse({"messages":"123"})
 def get_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
-    messages = Message.objects.filter(Q(user="killer") | Q(user = request.user))
+    messages = Message.objects.filter(Q(user="root") | Q(user = request.user))
     return JsonResponse({"messages": list(messages.values())})
 def send_gatelink_insertdata(request):
    

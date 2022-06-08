@@ -21,7 +21,7 @@
                 { 
                     var dateT = new Date(response.messages[key].date);
                     str=dateT.toLocaleString();
-                    if(response.messages[key].user == "killer")
+                    if(response.messages[key].user == "root")
                     {
                         var tmp ="<div class=\"row\" style=\"margin-top: 20px;\"><div class=\"col-sm-1  grid-margin\"><img src=\"/static/assets/images/faces/face15.jpg\" style =\"width:100%;\" alt=\"image\" class=\"rounded-circle profile-pic\"></div><div class=\"col-sm-10\" grid-margin><a><h4>"
                         tmp+= str+":"+response.messages[key].user +"</h4></a><hr style=\"margin-top:0;\"></hr><a>"+response.messages[key].value+"</a></div></div>"
