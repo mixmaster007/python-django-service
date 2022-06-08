@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
+from email import contentmanager, message
 from django.shortcuts import redirect
 from posixpath import split
 from django import template
@@ -48,6 +49,7 @@ def check_format(format,data,format_user):
     pp.pprint(format)
     pp.pprint(data)
     pp.pprint(format_user)
+ 
     if len(format) != len(data):
         if len(format) >len(data):
             for i in range(len(format)):
@@ -55,17 +57,20 @@ def check_format(format,data,format_user):
                     tmp_check_dic[str(format[i])] = ""
                 else:
                     tmp_check_dic[str(format[i])] = data[i]
-                tmp_check_dic['error']="count error"
+                tmp_check_dic['error']="count error\r\n"
         else:
             for i in range(len(format)):
                 tmp_check_dic[str(format[i])] = data[i]
-            tmp_check_dic['error']="count error"
+            tmp_check_dic['error']="count error\r\n"
     else:
         pp.pprint("__________Check_format11_______________")
         for i in range(len(format)):
              tmp_check_dic[str(format[i])] = data[i]
 
     pp.pprint(tmp_check_dic)
+    if tmp_check_dic.get("YYYY") != None :
+        tmp_check_dic["YY"] = str(tmp_check_dic.get("YYYY"))[-2:]
+        tmp_check_dic.pop("YYYY")
     if tmp_check_dic.get("YYMMDD") != None :
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMMDD"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMMDD"))[2:4]
@@ -129,16 +134,26 @@ def check_format(format,data,format_user):
     new_TmpFormat = TempFormat.objects.create(user=format_user,tmpStr=xx)
     new_TmpFormat.save()  
        
-       
+    
     if tmp_check_dic.get("DD") != None and tmp_check_dic.get("DD") != "":
-        if  int(tmp_check_dic['DD']) == 0 or int(tmp_check_dic['DD']) > 31:
-            tmp_check_dic['error']+= tmp_check_dic['DD'] + ":is not valid Day value\r\n"
-        if tmp_check_dic.get('MM') != None:
-            if int(tmp_check_dic['MM']) == 2 and  int(tmp_check_dic['DD'])>28:
+        if tmp_check_dic['DD'].isdigit() == True:
+            if  int(tmp_check_dic['DD']) == 0 or int(tmp_check_dic['DD']) > 31:
                 tmp_check_dic['error']+= tmp_check_dic['DD'] + ":is not valid Day value\r\n"
+            if tmp_check_dic.get('MM') != None:
+                if tmp_check_dic['MM'].isdigit() == True:
+                    if int(tmp_check_dic['MM']) == 2 and  int(tmp_check_dic['DD'])>28:
+                        tmp_check_dic['error']+= tmp_check_dic['DD'] + ":is not valid Day value\r\n"
+        else:
+            tmp_check_dic['error']+=tmp_check_dic['DD'] + ":is not number\r\n"
     if tmp_check_dic.get("MM") != None and tmp_check_dic.get("MM") != "":
-        if int(tmp_check_dic['MM']) ==0 or int(tmp_check_dic['MM']) >12:
-            tmp_check_dic['error']+= tmp_check_dic['MM'] + ":is not valid Month value\r\n"
+        if tmp_check_dic['MM'].isdigit() == True:
+            if int(tmp_check_dic['MM']) ==0 or int(tmp_check_dic['MM']) >12:
+                tmp_check_dic['error']+= tmp_check_dic['MM'] + ":is not valid Month value\r\n"
+        else:
+            tmp_check_dic['error']+=tmp_check_dic['MM'] + ":is not number\r\n"
+    if tmp_check_dic.get("YY") != None and tmp_check_dic.get("YY") != "":
+        if tmp_check_dic['YY'].isdigit() == False:
+             tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not number\r\n"
         
     pp.pprint("__________Check_format12_______________")
     pp.pprint(tmp_check_dic)
@@ -147,35 +162,24 @@ def convert_format(data):
     pp = pprint.PrettyPrinter(indent = 4)
     pp.pprint("Test(convert_format)-------input data----------")
     pp.pprint(data)
-    if len(data) <5:  # Check to empty string
-        return ""
+    #if len(data) <5:  # Check to empty string
+    #    return ""
     
     pb_format_array = re.split('[^a-zA-Z0-9()+-]', data)
+   
     pp.pprint("Test(convert_format)-------split data----------")
     pp.pprint(pb_format_array)
     
-    """
-    if len(pb_format_array[1])>2:
-        if len(pb_format_array[1])<5:
-            tmp_str= [pb_format_array[1][:2],pb_format_array[1][2:4]]
-            pb_format_array.pop(1)
-            pb_format_array.insert(1,tmp_str[0])
-            pb_format_array.insert(2,tmp_str[1])
-        else:
-            tmp_str= [pb_format_array[1][:2],pb_format_array[1][2:4],pb_format_array[1][4:6]]
-            pb_format_array.pop(1)
-            pb_format_array.insert(1,tmp_str[0])
-            pb_format_array.insert(2,tmp_str[1])
-            pb_format_array.insert(3,tmp_str[2])
-    else:
-        if len(pb_format_array[3])>2:
-            tmp_str=[pb_format_array[2][:2],pb_format_array[2][2:4]]
-            pb_format_array.pop(2)
-            pb_format_array.insert(2,tmp_str[0])
-            pb_format_array.insert(3,tmp_str[1])
-            pb_format_array.insert(4,tmp_str[2])
-    """
-    x = "#".join(pb_format_array)
+    x = ""
+    cnt = 0
+    for kk in pb_format_array:
+        if kk != '':
+            cnt+=1
+            if cnt == 1:
+                x=kk
+            else :
+                x+="#"+kk
+    #x = "#".join(pb_format_array)
     pp.pprint("Test(convert_format)-------out data----------")
     pp.pprint(x)
        
@@ -287,10 +291,7 @@ def gate_link(request,pk):
         'link_format':link_format_tmp
     }
     if request.method == 'POST':
-        
         tmp_realData = request.POST.get('real_data')
-        
-        
         if tmp_realData != None:
             check = request.POST.getlist('check')
             pp.pprint("_______real_data__________")
@@ -306,57 +307,76 @@ def gate_link(request,pk):
                # tmp_x=i.replace("[","")
                # tmp_x=tmp_x.replace("]","")
                # tmp_x=tmp_x.replace("'","")
-                tmp_y =i.split('#')
-                x = tmp_y.index("")
-                tmp_y.pop(x)
+                pp.pprint("_______real__REAL___data__________")
+                pp.pprint(tmp_realData)
+                temp_inserted_data_str = i.split("##")[0]
+                temp_inserted_data_list = temp_inserted_data_str.split("*#*")
+                temp_inserted_data_str =" ".join(temp_inserted_data_list)
+                #____check inlcude space in inserted data format_____#
+                      
+
+                tmp_y = i.split("##")[1].split('#')
+                pp.pprint(temp_inserted_data_str)
                 pp.pprint(tmp_y)
-                cnt1+=1
-                cnt = 0
+                tmp_xx = 0
                 for ii in tmp_y:
-                    default_array[tmp_arry[cnt]]=ii.strip()
-                    cnt += 1
-                new_gate=Gate.objects.create(
-                    phone = default_array['phone'],
-                    DD=default_array['DD'],
-                    MM = default_array['MM'],
-                    YY = default_array['YY'],
-                    string1 = default_array['string1'],
-                    string2 = default_array['string2'],
-                    string3 = default_array['string3'],
-                    string4 = default_array['string4'],
-                    string5 = default_array['string5'],
-                    string6 = default_array['string6'],
-                    string7 = default_array['string7'],
-                    string8 = default_array['string8'],
-                    string9 = default_array['string9'],
-                    string10 = default_array['string10'],
-                    gate_link_name = name,
-                    batch_id =tmp_batch_id,
-                    inserted_text = i,
-                )
-                new_gate.save()
-                
-                if Gate.objects.filter(gate_link_name='#').exists(): 
-                    Gate.objects.filter(gate_link_name='#').delete()
+                    
+                    if ii == "":
+                        tmp_y.pop(tmp_xx)
+                    tmp_xx +=1
+                pp.pprint(tmp_y)
+                if len(tmp_y) == len(tmp_arry):
+                    pp.pprint("_____________________NO ERROR______________")
+                    cnt1+=1
+                    cnt = 0
+                    for ii in tmp_y:
+                        default_array[tmp_arry[cnt]]=ii.strip()
+                        cnt += 1
+                    new_gate=Gate.objects.create(
+                        phone = default_array['phone'],
+                        DD=default_array['DD'],
+                        MM = default_array['MM'],
+                        YY = default_array['YY'],
+                        string1 = default_array['string1'],
+                        string2 = default_array['string2'],
+                        string3 = default_array['string3'],
+                        string4 = default_array['string4'],
+                        string5 = default_array['string5'],
+                        string6 = default_array['string6'],
+                        string7 = default_array['string7'],
+                        string8 = default_array['string8'],
+                        string9 = default_array['string9'],
+                        string10 = default_array['string10'],
+                        gate_link_name = name,
+                        batch_id =tmp_batch_id,
+                        inserted_text = temp_inserted_data_str,
+                    )
+                    new_gate.save()
+                    
+                    if Gate.objects.filter(gate_link_name='#').exists(): 
+                        Gate.objects.filter(gate_link_name='#').delete()
             pp.pprint("---------Create Batch Test------------")
-            if Batch.objects.filter(status = "Running").exists():
-                new_Batch =Batch.objects.create(
-                        total = cnt1,
-                        batch_id = tmp_batch_id,
-                        link_name = name,
-                        status = "Stop"
-                )
+            if cnt1 != 0:
+                if Batch.objects.filter(status = "Running").exists():
+                    new_Batch =Batch.objects.create(
+                            total = cnt1,
+                            batch_id = tmp_batch_id,
+                            link_name = name,
+                            status = "Stop"
+                    )
+                else:
+                    new_Batch =Batch.objects.create(
+                            total = cnt1,
+                            batch_id = tmp_batch_id,
+                            link_name = name,
+                    )
+                new_Batch.save()
+                context['segment'] = "gate_link_result"
+                context['Gate'] = Gate.objects.all()
+                context['Batch']= Batch.objects.all()
+                context['Total_Batch']=Batch.objects.all().count()
             else:
-                new_Batch =Batch.objects.create(
-                        total = cnt1,
-                        batch_id = tmp_batch_id,
-                        link_name = name,
-                )
-            new_Batch.save()
-            context['segment'] = "gate_link_result"
-            context['Gate'] = Gate.objects.all()
-            context['Batch']= Batch.objects.all()
-            context['Total_Batch']=Batch.objects.all().count()
+                context['segment'] = "gate_link_result_error"
             pp.pprint(context)
             pp.pprint("___END___")
       
@@ -425,7 +445,7 @@ def onlineSupport(request):
     context = {
        'gateLink':GateLink,
        'balance':user.balance,
-        'user_name':request.user,
+       'user_name':request.user,
     }
     html_template = loader.get_template('home/onlineSupport.html')
     return HttpResponse(html_template.render(context, request))
@@ -452,38 +472,45 @@ def send_gatelink_insertdata(request):
     return HttpResponse("Message sent successfull")
 def get_link_info(request):
     pp = pprint.PrettyPrinter(indent = 4)
-    gate = Gate.objects.filter(batch_id =request.POST['message'])
-
-    cnt_queue = 0
-    cnt_process = 0
-    cnt_fali =0
-    cnt_success = 0
-    
-    for i in gate:
-        if i.status == 0:
-            cnt_queue +=1
-        elif i.status == 1:
-             cnt_process +=1
-        elif i.status == 2:
-            cnt_fali+=1
-        elif i.status == 3:  
-            cnt_success+=1
-    obj_batch =Batch.objects.get(batch_id = request.POST['message'])        
-    obj_batch.fail =cnt_fali
-    obj_batch.succeed =cnt_success
-    obj_batch.done = cnt_fali + cnt_success
-    if cnt_queue == 0 and cnt_process == 0:
-        if (obj_batch.status !="Finished"):
-            obj_batch.finish_time = datetime.now().strftime('%H:%M:%S')
-        obj_batch.status = "Finished"
+    context ={}
+    if request.POST.get('message') != None:
+        gate = Gate.objects.filter(batch_id =request.POST['message'])
+       
+        cnt_queue = 0
+        cnt_process = 0
+        cnt_fali =0
+        cnt_success = 0
         
-    obj_batch.save()
-    batch=Batch.objects.filter(batch_id = request.POST['message'])
-    context = {
-        "gate":list(gate.values()),
-        "batch":list(batch.values()),
-    }
+        for i in gate:
+            if i.status == 0:
+                cnt_queue +=1
+            elif i.status == 1:
+                cnt_process +=1
+            elif i.status == 2:
+                cnt_fali+=1
+            elif i.status == 3:  
+                cnt_success+=1
+        obj_batch =Batch.objects.get(batch_id = request.POST['message'])        
+        obj_batch.fail =cnt_fali
+        obj_batch.succeed =cnt_success
+        obj_batch.done = cnt_fali + cnt_success
+        if cnt_queue == 0 and cnt_process == 0:
+            if (obj_batch.status !="Finished"):
+                obj_batch.finish_time = datetime.now().strftime('%H:%M:%S')
+            obj_batch.status = "Finished"
+            
+        obj_batch.save()
+        batch=Batch.objects.filter(batch_id = request.POST['message'])
+        context = {
+            "gate":list(gate.values()),
+            "batch":list(batch.values()),
+        }
+       
+        context['status'] = 'OK'
+    else:
+        context['status']='NO'
    #pp.pprint(context)
+   
     return JsonResponse(context)
 def get_area_all(request):
     """

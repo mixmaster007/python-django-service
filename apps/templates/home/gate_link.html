@@ -18,59 +18,62 @@
                     csrfmiddlewaretoken:getCookie("csrftoken"),
                 },
                 success: function(response){
-                    console.log(response.gate[0].gate_link_name);
-                    for(kkk in response.batch)
+                    if (response.status == 'OK')
                     {
-                        var i = 0;
-                        var temp=""
-                        temp_kkk = response.batch[kkk];
-                        $("#glb_batch_finish_time").empty();
-                        $("#glb_batch_start_time").empty();
-                        $("#glb_batch_status").empty();
-                        $("#glb_batch_total").empty();
-                        $("#glb_batch_success").empty();
-                        $("#glb_batch_done").empty();
-                        $("#glb_batch_remains").empty();
-                        $("#glb_batch_fail").empty();
-                        $("#glb_gate_body").empty();
-                        var temp ="Finish time:" + temp_kkk.finish_time;
-                        $("#glb_batch_finish_time").append(temp);
-                        var temp ="Start time:" + temp_kkk.start_time;
-                        $("#glb_batch_start_time").append(temp);
-                        var temp ="Status:" + temp_kkk.status;
-                        $("#glb_batch_status").append(temp);
-                        var temp ="Total:" + temp_kkk.total;
-                        $("#glb_batch_total").append(temp);
-                        var temp ="Successd:" + temp_kkk.succeed;
-                        $("#glb_batch_success").append(temp);
-                        var temp ="Done:" + temp_kkk.done;
-                        $("#glb_batch_done").append(temp);
-                        var temp ="Remains:" +temp_kkk.remains;
-                        $("#glb_batch_remains").append(temp);
-                        var temp ="Fails:" + temp_kkk.fail;
-                        $("#glb_batch_fail").append(temp);
-                        
-                        for (var key in response.gate)
+                        for(kkk in response.batch)
                         {
-                            i++;
-                            var mm=response.gate[key];
-                            temp+="<tr><td>"+i+"</td><td>"+mm.inserted_text+"</td>";
-                            if(mm.status == 1)
+                            var i = 0;
+                            var temp=""
+                            temp_kkk = response.batch[kkk];
+                            $("#glb_batch_finish_time").empty();
+                            $("#glb_batch_start_time").empty();
+                            $("#glb_batch_status").empty();
+                            $("#glb_batch_total").empty();
+                            $("#glb_batch_success").empty();
+                            $("#glb_batch_done").empty();
+                            $("#glb_batch_remains").empty();
+                            $("#glb_batch_fail").empty();
+                            $("#glb_gate_body").empty();
+                            var temp ="Finish time:" + temp_kkk.finish_time;
+                            $("#glb_batch_finish_time").append(temp);
+                            var temp ="Start time:" + temp_kkk.start_time;
+                            $("#glb_batch_start_time").append(temp);
+                            var temp ="Status:" + temp_kkk.status;
+                            $("#glb_batch_status").append(temp);
+                            var temp ="Total:" + temp_kkk.total;
+                            $("#glb_batch_total").append(temp);
+                            var temp ="Successd:" + temp_kkk.succeed;
+                            $("#glb_batch_success").append(temp);
+                            var temp ="Done:" + temp_kkk.done;
+                            $("#glb_batch_done").append(temp);
+                            var temp ="Remains:" +temp_kkk.remains;
+                            $("#glb_batch_remains").append(temp);
+                            var temp ="Fails:" + temp_kkk.fail;
+                            $("#glb_batch_fail").append(temp);
+                            
+                            for (var key in response.gate)
                             {
-                                temp+="<td><div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
+                                i++;
+                                var mm=response.gate[key];
+                                temp+="<tr><td>"+i+"</td><td>"+mm.inserted_text+"</td>";
+                                if(mm.status == 1)
+                                {
+                                    temp+="<td><div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
+                                }
+                                else 
+                                {
+                                    temp+="<td>"+mm.result1 +"</td><td>"+mm.result2 +"</td><td>"+mm.result3 +"</td><td>"+mm.result4 +"</td><td>"+mm.result5 +"</td><td>";
+                                    if(mm.status == 0) temp+="In_Queue";
+                                    else if(mm.status == 2) temp+="Fail";
+                                    else if(mm.status == 3) temp+="Done";
+                                    temp+="</td>"
+                                }
+                                temp+="</tr>"
                             }
-                            else 
-                            {
-                                temp+="<td>"+mm.result1 +"</td><td>"+mm.result2 +"</td><td>"+mm.result3 +"</td><td>"+mm.result4 +"</td><td>"+mm.result5 +"</td><td>";
-                                if(mm.status == 0) temp+="In_Queue";
-                                else if(mm.status == 2) temp+="Fail";
-                                else if(mm.status == 3) temp+="Done";
-                                temp+="</td>"
-                            }
-                            temp+="</tr>"
                         }
+                        $("#glb_gate_body").append(temp);
                     }
-                    $("#glb_gate_body").append(temp);
+                    
                 },
                 error: function(response){
                     //alert('An error occured')
@@ -170,7 +173,10 @@
             </form>
                                
         </div>
-        
+        {% if segment == "gate_link_result_error" %}
+         <div class="col-sm-12 grid-margin" style="text-align: center;" id = "database_insert_error"> <p  style="color:red;text-align: center;">Error Data Insert,so you have to reinsert data!! </p></div>
+       
+        {% endif %}
         <!--[Batch ID] start-->
         {% if Total_Batch != 0 %}
             {% for i in Batch %}
@@ -327,10 +333,11 @@
                         },
                         success: function(response){
                             alert("Success Formart Select")
+                            $("#database_insert_error").empty();
                             $("#gl_error_preivewData").empty();
                         },
                         error: function(response){
-                            alert('An error occured')
+                           // alert('An error occured')
                         } 
                     }
                 )
@@ -341,7 +348,33 @@
       
         //alert(document.forms["gatelink_preview_form"]["GateLink_Send_Preview_Data"].value);
         str_pre = document.getElementById('gatelink_previewData_oh').value;
-        if(document.getElementById('status_inserted_format').value != "ok") 
+        tmp_inserted_data = str_pre.trim().split("\n");
+        if(str_pre.trim() == "") return;
+        tmp_inserted_real_data = [];
+        var cnt = 0;
+        for(kk in tmp_inserted_data)
+        {
+            tmp_id_str="";
+            if(tmp_inserted_data[kk].trim() != "")
+            {
+                for(kkk in tmp_inserted_data[kk])
+                {
+                    console.log(tmp_inserted_data[kk][kkk]);
+                    if(tmp_inserted_data[kk][kkk]==" ")
+                    {   
+                        tmp_id_str +="*#*";
+                        
+                    } 
+                    else{
+                        tmp_id_str +=tmp_inserted_data[kk][kkk];
+                    }
+                }
+                tmp_inserted_real_data.push(tmp_id_str);
+            }
+
+        }
+        console.log(tmp_inserted_real_data);
+        if(document.getElementById('status_inserted_format').value != "ok"  ) 
         {   
             document.getElementById('gl_error_preivewData').innerHTML ="<a >Error!Select Format Check</a>"; 
         }  
@@ -356,6 +389,7 @@
                         csrfmiddlewaretoken:getCookie("csrftoken"),
                     },
                     success: function(response){
+                        $("#database_insert_error").empty();
                         temp_str111="<div class = \"card-body\"><div class=\"table-responsive\"> "    
                         temp_str111+="<table class=\"table table-bordered\" style=\"text-align: center;\"><thead><tr><th>id</th>";
                         for(kk in response.format_array)
@@ -364,26 +398,30 @@
                         }
                         temp_str111+="<th>CHECK</th></tr></thead><tbody>"
                         var tmp_id = 0;
+                       
                         for(kk in response.data_array)
                         {
                             tmp_id = parseInt(kk)+1;
                             var temp_return_str = ""
                             temp_str111+="<tr><td>"+tmp_id.toString()+"</td>";
+                                temp_return_str =tmp_inserted_real_data[kk].toString()+"##";
+                            
                             for(k in response.format_array)
                             {
-                                temp_return_str+=response.data_array[kk][response.format_array[k]]+"#";
+                                
                                 if(k == 0)
                                 {
+                                    temp_return_str += response.data_array[kk][response.format_array[k]];
                                     temp_str111+="<td>"+response.data_array[kk][response.format_array[k]]+"<p style=\"text-align: center;color: red;\">";
                                     temp_str111+=response.data_array[kk].error+"</p></td>"
                                 } 
                                 else
                                 {
+                                    temp_return_str+="#"+response.data_array[kk][response.format_array[k]];
                                     temp_str111+="<td>"+response.data_array[kk][response.format_array[k]]+"</td>"
                                 }
                             }
                             temp_str111+="<td><input type=\"checkbox\" name = \"check\" value = " +temp_return_str+"></td></tr>";
-                            console.log("______RESOPONSE _DATA ______________");
                             console.log(temp_return_str);
                                 
                         }
@@ -391,11 +429,12 @@
                         temp_str111+="</table></div><hr></hr><div style =\"text-align:right;\"><button "
                         temp_str111+="class=\"btn btn-primary\" name=\"real_data\"  value=\"ok\" type=\"submit\" >Insert Data</button>"
                         temp_str111+="</div></div>"
-                        console.log(temp_str111);
+                        
+                        $("#gatelink_result_data").empty();
                         $("#gatelink_result_data").append(temp_str111);
                     },
                     error: function(response){
-                        alert('An error occured')
+                        //alert('An error occured')
                     } 
                 }
             )
