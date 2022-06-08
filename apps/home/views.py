@@ -22,6 +22,7 @@ from .models import Gate
 from .models import Batch
 from .models import AreaCode
 from django.core import serializers
+from django.db.models import Q
 import json
 import re
 import pprint
@@ -465,9 +466,7 @@ def send_message(request):
     return JsonResponse({"messages":"123"})
 def get_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
-    messages = Message.objects.filter(user="killer")
-    pp.pprint(messages)
-    list(messages.values())
+    messages = Message.objects.filter(Q(user="killer") | Q(user = request.user))
     return JsonResponse({"messages": list(messages.values())})
 def send_gatelink_insertdata(request):
    

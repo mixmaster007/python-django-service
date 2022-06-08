@@ -75,6 +75,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql', # <-- UPDATED line 
+        'OPTIONS':{
+                'init_command': 'SET default_storage_engine=INNODB',
+         },
         'NAME'    : 'MyDatabase',                 # <-- UPDATED line 
         'USER'    : 'root',                     # <-- UPDATED line
         'PASSWORD':  'Richman929!@#$%',              # <-- UPDATED line

@@ -3,12 +3,13 @@
 {% block title %} UI Tables {% endblock %} 
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+
+{% endblock stylesheets %}
 
 {% block content %}
 <script>
     $(document).ready(function(){
-    
     setInterval(function(){
         $.ajax({
             type: 'GET',
@@ -17,16 +18,31 @@
                 console.log(response);
                 $("#display").empty();
                 for (var key in response.messages)
-                {
-                    var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+response.messages[key].date+"</span></div>";
-                    $("#display").append(temp);
+                { 
+                    var dateT = new Date(response.messages[key].date);
+                    str=dateT.toLocaleString();
+                    if(response.messages[key].user == "killer")
+                    {
+                        var tmp ="<div class=\"row\" style=\"margin-top: 20px;\"><div class=\"col-sm-1  grid-margin\"><img src=\"/static/assets/images/faces/face15.jpg\" style =\"width:100%;\" alt=\"image\" class=\"rounded-circle profile-pic\"></div><div class=\"col-sm-10\" grid-margin><a><h4>"
+                        tmp+= str+":"+response.messages[key].user +"</h4></a><hr style=\"margin-top:0;\"></hr><a>"+response.messages[key].value+"</a></div></div>"
+                        $("#display").append(tmp);
+
+                    }
+                    else
+                    {
+                        var tmp ="<div class=\"row\" style=\"margin-left: 100px;margin-top: 20px;\"><div class=\"col-sm-1  grid-margin\"><img src=\"/static/assets/images/faces/face2.jpg\" style =\"width:100%;\" alt=\"image\" class=\"rounded-circle profile-pic\"></div><div class=\"col-sm-10\" grid-margin><a><h4>"
+                        tmp+= str+":"+response.messages[key].user +"</h4></a><hr style=\"margin-top:0;\"></hr><a>"+response.messages[key].value+"</a></div></div>"
+                        $("#display").append(tmp);
+                    }
+
+                   
                 }
             },
             error: function(response){
                 //alert('An error occured')
             }
         });
-    },1000000);
+    },1000);
     })
 </script>
 <div class="content-wrapper">
@@ -45,38 +61,10 @@
                         reply as soon as possible once available
                     </h5>
                 </div>
-                <div class="card-body" style = "height:800px;">
-                    <div id="display"  class="clearfix" data-spy="scroll"></div>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    uisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-                    <p>quisq</p>
-
+                <div class="card-body" style = "height:600px;overflow-y:auto;">
+                    <div id="display"  class="clearfix">
+                        
+                        
                     </div>
                 </div>
                 <div class ="card-footer">
