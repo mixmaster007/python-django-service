@@ -63,6 +63,7 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <input type ="hidden" name = "fnd_result" id = "fnd_result" value ="{{fnd_result}}">
                           {% for i in find_result %}
                           <tr>
                             <td> {{forloop.counter}} </td>
@@ -77,22 +78,8 @@
                     </div>
                   </div>
                 </div>
-                <div class = "card-footer">
-                    <div class = "row" style = "text-align:center;">
-                        <div class = "col-sm-4" style ="text-align:left;">
-                            <a class="btn btn-primary" onclick="copyToClipboard('copy_area_p1')">Copy All Results</a>
-                        </div>
-                        <div class = "col-sm-4" style ="text-align:center;">
-                            <a class="btn btn-primary" onclick="copyToClipboard('copy_area_p2')">Copy Found Only</a>
-                            
-                        </div>
-                        <div class = "col-sm-4" style ="text-align:right;">
-                          <a class="btn btn-primary" onclick="copyToClipboard('copy_area_p3')">Copy Not Found Only</a>
-                        </div>
-                        
-                       
-                    </div>
-                                                
+                <div class = "card-footer" style="text-align:center;">
+                  <a class="btn btn-primary" onclick="copyToClipboard('copy_area_p2')">Copy Found Only</a>
                 </div>
               </div>
             {% endif %}
@@ -157,7 +144,7 @@
           
         var $temp = $("<input>");
         $("body").append($temp);
-        $temp.val("1234567890").select();
+        $temp.val($('#fnd_result').val()).select();
         document.execCommand("copy");
        
         $temp.remove();

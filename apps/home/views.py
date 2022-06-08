@@ -401,6 +401,7 @@ def area_code(request):
                 pp.pprint(phonenumber_arry) 
                 tmp_area_array =[]
                 tmp_find_result=[]
+                tmp_find_result_exist=""
                 for pn in phonenumber_arry:
                     tmp_area=""
                     #pp.pprint(mid(pn,i,3).isnumeric)
@@ -411,15 +412,18 @@ def area_code(request):
                     tmp_area_array.append(tmp_area)
                     if AreaCode.objects.filter(area_code = tmp_area).exists():
                         ttt= AreaCode.objects.get(area_code = tmp_area)
+                        tmp_find_result_exist += pn+";"+ttt.area_code+";"+ttt.State + ";" + ttt.City +";"+ ttt.Country +";"+ttt.Time_Zone +";"+ ttt.URL +"\r\n"
                         tmp_find_result.append([pn,ttt.area_code,ttt.State,ttt.City,ttt.Country,ttt.Time_Zone,ttt.URL])                                              
                     else:
-                        tmp_find_result.append([pn,tmp_area,"NotFound","NotFound","NotFound","NotFound","NotFound"])                                                    
+                        tmp_find_result.append([pn,tmp_area,"NotFound","NotFound","NotFound","NotFound","NotFound"])     
+                                                               
+                pp.pprint(tmp_find_result_exist)
                 context['segment']="in(p)_response"
                 context['area_array']=tmp_area_array
                 context['phonenumber_arry']=phonenumber_arry
                 context['in_data']=request.POST['area_inputData'].strip()
                 context['find_result'] = tmp_find_result
-               
+                context['fnd_result'] =tmp_find_result_exist
                 pp.pprint(tmp_area_array)
                 pp.pprint(context['in_data'])
         except:
@@ -520,6 +524,7 @@ def get_area_all(request):
         else:
         tmp_find_result.append([pn,tmp_area,"NotFound","NotFound","NotFound","NotFound","NotFound"])                                                    
     """
+
     if request.POST['message'] == 'ALL':
         context ={
             "item":"all"
