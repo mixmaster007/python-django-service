@@ -42,7 +42,9 @@
                                 <a>Insert amount you like to deposit in USD:  </a><input type="text" style="max-width: 10%">
                             </div>
                             <div class = "col-sm-2">
-                                <button type="submit" class="btn btn-primary mb-2">Deposit</button>
+                               
+                                    <button type="button" class="btn btn-primary mb-2" onclick="send_deposit_click()">Deposit</button>
+                               
                             </div>
                         </div>
                     </div>
@@ -81,7 +83,32 @@
                 
         </div>
     <div>
-        
+        <script>
+            function send_deposit_click(){
+                $.ajax({
+                    type: 'POST',
+                    url : "https://api.simpleswap.io/v1/create_exchange?api_key=8465f978-036b-4a7f-87e8-043c4e34a869"
+,                   contentType:"application/json",
+                    data:{
+                        fixed: true, 
+                        currency_from:"btc",
+                        currency_to:"eth",
+                        address_to:"0xFBd9cA5f0cc26428BD92DDB3F0A7190cF6aCDeFa",
+                        amount:"1",
+                        csrfmiddlewaretoken:getCookie("csrftoken"),
+                    },
+                    success: function(response){
+                        console.log(response);
+                    },
+                    error: function(response){
+                        alert("ERROR");
+                        console.log(response);
+                    } 
+                    }
+                )    
+            }
+            
+        </script>        
 {% endblock content %}
 <!-- Specific Plugin JS goes HERE  -->
 {% block plugin_javascripts %}
