@@ -118,6 +118,26 @@ class TempFormat(models.Model):
     tmpStr =  models.CharField(max_length=100)
     def __str__(self):
         return self.tmpStr
+class PaymentManage(models.Model):
+    Api_key =  models.CharField(max_length=100)
+    USDT_ADDRESS = models.TextField()
+    Enable_Payment_Option_Tickets = models.CharField(max_length=200)
+    Payment_Minium_orther_to_load_account = models.FloatField(default=0.0,help_text="USD")
+    Check_for_payment_status_every =models.FloatField(default=0.0,help_text="min")
+    def __str__(self):
+        return self.Api_key
+class Transaction(models.Model):
+    Transaction_ID =  models.CharField(max_length=100)
+    From_Ticket =  models.CharField(max_length=100)
+    USDT_Reciver_Address= models.CharField(max_length=200)
+    Amount_Recived =  models.FloatField(default = 0)
+    Transaction_Status =  models.CharField(max_length=20)
+    Deposit_Received_At = models.DateTimeField(blank=True)
+    User_Balance_updated_At = models.DateTimeField(blank=True)
+    User_Name = models.CharField(max_length=100)
+    User_Balance = models.FloatField(default=0)
+    def __str__(self):
+        return self.Transaction_ID
 class Batch(models.Model):
     batch_id = models.IntegerField(default=0)
     status =models.CharField(max_length = 100,default="Running")

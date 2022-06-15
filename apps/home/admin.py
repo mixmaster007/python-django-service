@@ -16,6 +16,8 @@ from .models import Gate
 from .models import Batch
 from .models import TempFormat
 from .models import AreaCode
+from .models import Transaction
+from .models import PaymentManage
 # Register your models here
 #admin.site.register(News)
 admin.site.site_header = "DataFlair Django Tutorials"
@@ -39,9 +41,14 @@ class BatchAdmin(admin.ModelAdmin):
     list_display=('batch_id','status','total','start_time','finish_time','link_name')  
 class AreacodehAdmin(admin.ModelAdmin):
     list_display=('area_code','State','City','Country','Time_Zone','URL') 
+class AreacodehAdmin(admin.ModelAdmin):
+    list_display=('area_code','State','City','Country','Time_Zone','URL') 
+class TransactionAdmin(admin.ModelAdmin):
+    list_display=('Transaction_ID','From_Ticket','USDT_Reciver_Address','Amount_Recived','Transaction_Status','Deposit_Received_At','User_Balance_updated_At','User_Name','User_Balance') 
+class PaymentManageAdmin(admin.ModelAdmin):
+    list_display=('Api_key','USDT_ADDRESS','Enable_Payment_Option_Tickets','Payment_Minium_orther_to_load_account','Check_for_payment_status_every') 
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
-
 admin.site.register(News, NewsAdmin)
 admin.site.register(Gate,GateAdmin)
 admin.site.register(Gate1Manage)
@@ -50,9 +57,11 @@ admin.site.register(Gate2Manage)
 admin.site.register(Format,FomartAdmin)
 admin.site.register(Gate_Link,GateLinkAdmin)
 admin.site.register(Message,MessageAdmin)
-admin.site.register(TempFormat)
+#admin.site.register(TempFormat)
 admin.site.register(Batch,BatchAdmin)
 admin.site.register(AreaCode,AreacodehAdmin)
+admin.site.register(PaymentManage,PaymentManageAdmin)
+admin.site.register(Transaction,TransactionAdmin)
 
 
 

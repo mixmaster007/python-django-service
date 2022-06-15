@@ -79,9 +79,10 @@
                     //alert('An error occured')
                 }     
             });
-        },1000);
+        },100000);
     })
 </script>
+
 <div class="content-wrapper">
     <div class="page-header">
         
@@ -223,9 +224,46 @@
                                             </tbody>
                                             </table>
                                         </div>
+                                        <div style="margin-top:10px">
+                                            <form>
+                                                <a style="margin-right: 2%;color: red;">Selected row copy data</a>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">Data as Inserted
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">SQL Field 1                                            </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">SQL Field 2 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">SQL Field 3 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">SQL Field 4 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">Status 
+                                                </label>
+                                              </form>
+                                        </div>
+                                        <div class="row" style="text-align:center;">
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_all_result()" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_succeed_only()" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_done_only()" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_fail_only()" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                 </div>
+                                
                             </div> 
                         </div>
                     {%else%}
@@ -300,10 +338,47 @@
                                             </tbody>
                                             </table>
                                         </div>
+                                        <div style="margin-top:10px">
+                                            <form>
+                                                <a style="margin-right: 2%;color: red;">Selected row copy data</a>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">Data as Inserted
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">SQL Field 1                                            </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" value="">SQL Field 2 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">SQL Field 3 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">SQL Field 4 
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" value="">Status 
+                                                </label>
+                                              </form>
+                                        </div>
+                                        <div class="row" style="text-align:center;">
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_all_result()" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_succeed_only()" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_done_only()" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
+                                            </div>
+                                            <div class = "col-sm-3">
+                                                <a onclick="copy_fail_only()" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                 </div>
                             </div> 
+                            
                         </div>
                     {% endif %}
                 {% endif %}
@@ -345,7 +420,7 @@
                 
     }
     function GateLink_Send_Preview_Data() {
-      
+        var getSelectedValue = document.querySelector( 'input[name="radio"]:checked');  
         //alert(document.forms["gatelink_preview_form"]["GateLink_Send_Preview_Data"].value);
         str_pre = document.getElementById('gatelink_previewData_oh').value;
         tmp_inserted_data = str_pre.trim().split("\n");
@@ -353,7 +428,7 @@
         tmp_inserted_real_data = [];
         var cnt = 0;
         for(kk in tmp_inserted_data)
-        {
+        { 
             tmp_id_str="";
             if(tmp_inserted_data[kk].trim() != "")
             {
@@ -385,6 +460,7 @@
                     type: 'POST',
                     url : "/GateLink_Send_Preview_Data",
                     data:{
+                        seleted_data:getSelectedValue.value,
                         gatelink_previewData_oo:str_pre,
                         csrfmiddlewaretoken:getCookie("csrftoken"),
                     },
@@ -401,6 +477,8 @@
                        
                         for(kk in response.data_array)
                         {
+                            if(response.data_array[kk].error == "count error\r\n") continue;
+                               
                             tmp_id = parseInt(kk)+1;
                             var temp_return_str = ""
                             temp_str111+="<tr><td>"+tmp_id.toString()+"</td>";
@@ -431,7 +509,8 @@
                         temp_str111+="</div></div>"
                         
                         $("#gatelink_result_data").empty();
-                        $("#gatelink_result_data").append(temp_str111);
+                        if(tmp_id != 0 )
+                            $("#gatelink_result_data").append(temp_str111);
                     },
                     error: function(response){
                         //alert('An error occured')

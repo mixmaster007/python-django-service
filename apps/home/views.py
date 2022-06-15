@@ -3,7 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
-from email import contentmanager, message
+from . import cnio_api
+
+import time
 from django.shortcuts import redirect
 from posixpath import split
 from django import template
@@ -21,8 +23,12 @@ from .models import TempFormat
 from .models import Gate
 from .models import Batch
 from .models import AreaCode
+from .models import PaymentManage
+from .models import Transaction
 from django.core import serializers
 from django.db.models import Q
+import http.client
+
 import json
 import re
 import pprint
@@ -552,6 +558,12 @@ def GateLink_Send_Preview_Data(request):
     pp = pprint.PrettyPrinter(indent = 4)
     pp.pprint("___________GateLink_Send_Preview_Data_____________")
     tmp_previewData =request.POST.get("gatelink_previewData_oo")
+    tmp_seleted_data=request.POST.get("seleted_data")
+    result = convert_format(tmp_seleted_data)
+    if TempFormat.objects.filter(user=request.user).exists(): 
+       TempFormat.objects.filter(user=request.user).delete()
+    new_TmpFormat = TempFormat.objects.create(user=request.user,tmpStr=result)
+    new_TmpFormat.save()   
     pp.pprint(tmp_previewData)
     if tmp_previewData != None:
         data_arry_line = tmp_previewData.split("\n")
@@ -573,3 +585,44 @@ def GateLink_Send_Preview_Data(request):
         
         jsonStr = json.dumps(list(tmp_data_array))
     return JsonResponse({'data_array':tmp_data_array,'format_array':tmp_format_array},safe=False)
+def df_selected_ticker(request):
+    cnio = cnio_api.cnio()
+    pm = PaymentManage.objects.all()
+    apiKey = ""
+    m_amount = request.POST['amount']
+    m_ticker = request.POST['ticker']
+    for PayMan in pm:
+        apiKey = PayMan.Api_key
+    
+    cnio.api_key(apiKey)
+    res=cnio.est_exchange_rate(str(m_amount),"trx",m_ticker)
+    new_res = res.decode('utf-8')
+    d = json.loads(new_res)
+
+    pp = pprint.PrettyPrinter(indent = 4)
+    pp.pprint(type(d))
+    pp.pprint(d["estimatedAmount"])
+  
+    return JsonResponse(d)
+def df_deposit_click(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+    cnio = cnio_api.cnio()
+    pm = PaymentManage.objects.all()
+    m_address=""
+    apiKey = ""
+    for PayMan in pm:
+        apiKey = PayMan.Api_key
+        m_address =  PayMan.USDT_ADDRESS
+    m_address_array = m_address.split("\r\n")
+    m_amount = request.POST['amount']
+    m_ticker = request.POST['ticker']
+    pp.pprint(m_address_array[1])
+    pp.pprint(m_amount)
+    pp.pprint(m_ticker)
+   
+    cnio.api_key(apiKey)
+    result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[1])
+    new_res = result.decode('utf-8')
+  #  pp.pprint(new_res)
+    d = json.loads(new_res)
+    return JsonResponse(d)

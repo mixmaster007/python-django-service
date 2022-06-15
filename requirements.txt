@@ -13,3 +13,4 @@ whitenoise==5.3.0
 django-ckeditor
 mysqlclient
 django-simple-captcha
+requests

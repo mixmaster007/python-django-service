@@ -38,77 +38,321 @@
                 <div class="card">
                     <div class="card-body">
                         <div class = "row">
-                            <div class = "col-sm-10" style="font-size: 20px;">
-                                <a>Insert amount you like to deposit in USD:  </a><input type="text" style="max-width: 10%">
+                            <div class = "col-sm-7" style="font-size: 20px;">
+                                <a>Insert amount you like to deposit in USD:  </a><input type="text" id = "input_amount" style="max-width: 10%;margin-left: 10px;">
+                            </div>
+                            <div class = "col-sm-3" style="font-size: 20px;" id="df_exchange_amount">
+                               
                             </div>
                             <div class = "col-sm-2">
-                               
-                                    <button type="button" class="btn btn-primary mb-2" onclick="send_deposit_click()">Deposit</button>
-                               
+                                <button type="button" class="btn btn-primary mb-2" onclick="send_deposit_click()">Deposit</button>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer" style="text-align: right;">
-                        <a></a>
-                    </div>
+                   
                 </div>
             </div>
             <div class="col-sm-6 grid-margin" >
                 <div class="card">
-                    <div class="card-body" style="height:300px;">
+                    <div class="card-body" style="height:353px;">
                         <div class="form-group">
                             <label>Single select box using select 2</label>
-                            <select class="js-example-basic-single" style="width:100%">
-                                <option value="AL">BTC</option>
-                                <option value="WY">ETH</option>
-                                <option value="AM">USDT</option>
-                                <option value="CA">BNB</option>
-                                <option value="RU">Russia</option>
+                            <select onchange="select_ticker(this.value)" id = "sel_ticker" class="js-example-basic-single" style="width:100%">
+                                <option  value="btc" selected>BTC</option>
+                                <option  value="eth">ETH</option>
+                                <option  value="bnbbsc">BNB</option>
+                                <option  value="rub">Russia</option>
+                                <option  value="trx">TRX</option>
+                                <option  value="usdttrc20">USDT</option>
                             </select>
                         </div>
                     </div>
+                    
                 </div>
             </div>
+            
             <div class="col-sm-6 grid-margin" >
                 <div class="card">
                     <div class="card-header">
                         <h5>Payment Info</h5>
                     </div>
                     <div class="card-body" style="height: 300px;">
-                        <div id="morris-bar-stacked-chart" ></div>
+                        <dix class ="row">
+                            <div class = "col-sm-8" id = "df_address_info">
+                                
+                            </div>
+                            <div class = "col-sm-4" id="df_qrcode"  >
+                                
+                            </div>
+                        </dix>
+                        
                     </div>
                 </div>
             </div>
-            
+           
                 
         </div>
     <div>
-        <script>
-            function send_deposit_click(){
-                $.ajax({
-                    type: 'POST',
-                    url : "https://api.simpleswap.io/v1/create_exchange?api_key=8465f978-036b-4a7f-87e8-043c4e34a869"
-,                   contentType:"application/json",
-                    data:{
+<script>
+    var amount = 0;
+    var m_seletedTicker = "";
+    function select_ticker(m_ticker){
+        var input_amount= document.getElementById('input_amount').value;
+        m_seletedTicker = m_ticker;
+        if (input_amount == "")
+        {
+            alert("Please Insert amount");
+            return;
+        }
+        else
+        {
+            $.ajax({
+                type: 'POST',
+                url : "df_selected_ticker",
+                data:{
+                    ticker:m_ticker,
+                    amount:input_amount,
+                    csrfmiddlewaretoken:getCookie("csrftoken"),
+                },
+                success: function(response){
+                    amount = response.estimatedAmount
+                    tmp = "<a>You Get:"+response.estimatedAmount+"\t\t"+m_ticker +"</a>";
+                    $("#df_exchange_amount").empty();
+                    $("#df_exchange_amount").append(tmp);
+                    console.log(response.estimatedAmount);
+                },
+                error: function(response){
+                    alert('An error occured')
+                } 
+            })
+        }
+        
+      
+
+       /* const API_URL = 'https://changenow.io/api/v1/';
+        var input_amount= document.getElementById('input_amount').value;
+        if (input_amount == "")
+        {
+            alert("Please Insert amount");
+            return;
+        }
+        if (parseInt(input_amount) <= 6 ) 
+        {
+            alert("Invalid amount please insert amount greater than or equal 5 USD");
+            return;
+        }
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+            };
+        apiKey = '1607e820f9067836e633ec6e6b8791c5b771e5c78dbd7283ab2d73cced7d4fd9';
+        from = 'eth';
+        to = token;
+        tmp_amount = input_amount;
+        const url = `${API_URL}exchange-amount/${tmp_amount}/${String(from).toLowerCase()}_${String(to).toLowerCase()}?api_key=${apiKey}`;
+        console.log(url);
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result =>
+            {
+                amount = result.estimatedAmount;
+                tmp = "<a>You Get:"+result.estimatedAmount+"\t\t"+token +"</a>";
+                $("#df_exchange_amount").empty();
+                $("#df_exchange_amount").append(tmp);
+                        
+            })
+            .catch(error => console.log('error', error));*/
+    }
+    function send_deposit_click(){
+      
+        $("#df_address_info").empty();
+        $("#df_qrcode").empty();
+        if(selected_ticker = "")
+        {
+            alert("Please Select Ticker")
+        }
+        else{
+        
+            $.ajax({
+                type: 'POST',
+                url : "df_deposit_click",
+                data:{
+                    ticker:m_seletedTicker,
+                    amount:amount,
+                    csrfmiddlewaretoken:getCookie("csrftoken"),
+                },
+                success: function(response){
+                    tmp = "<p>Amount:</p><a>" +response.amount +"\t"+ response.toCurrency +"</a>";
+                    tmp +="<p>To this address:</p><a>"+response.payinAddress+"</a>";
+                    $("#df_address_info").append(tmp);
+
+                    qrc = new QRCode(document.getElementById("df_qrcode"), 
+                            {
+                                text: response.payinAddress,
+                                width: 150,
+                                height: 150,
+                                correctLevel : QRCode.CorrectLevel.H
+                            });
+                    
+                },
+                error: function(response){
+                    alert('An error occured')
+                } 
+            })
+        }   
+        
+       
+       
+       
+        /*const API_URL = 'https://changenow.io/api/v1/transactions/';
+        apiKey = '1607e820f9067836e633ec6e6b8791c5b771e5c78dbd7283ab2d73cced7d4fd9';
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+        "from": selected_ticker,
+        "to": "eth",
+        "address": "0xb5Af981A0a154D47f38A42089F408A883744F2ab",
+        "amount":amount,
+        "extraId": "",
+        "userId": "",
+        "contactEmail": "",
+        "refundAddress": "",
+        "refundExtraId": ""
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        $("#df_qrcode").empty();
+        $("#df_address_info").empty();
+        var url = `${API_URL}${apiKey}`
+        // console.log(url);
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => 
+        {
+            // result.amount +
+            //+ reslut.toCurrency
+            tmp = "<p>Amount:</p><a>" +result.amount +"\t"+ result.toCurrency +"</a>";
+            tmp +="<p>To this address:</p><a>"+result.payinAddress+"</a>";
+            $("#df_address_info").append(tmp);
+            qrc = new QRCode(document.getElementById("df_qrcode"), 
+            {
+                text: result.payinAddress,
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            setInterval(function(){ 
+                var requestOptions = {
+                    method: 'GET',
+                    redirect: 'follow'
+                };
+                var url = "https://api.changenow.io/v1/transactions/"+result.id+"/"+apiKey;
+                fetch(url, requestOptions)
+                    .then(response => response.text())
+                    .then(result => console.log(result))
+                    .catch(error => console.log('error', error));
+            },2000);
+            console.log(result)
+        })
+        .catch(error => console.log("sss"));
+        /*const API_URL = 'https://changenow.io/api/v1/';
+        var selected_ticker= document.getElementById('sel_ticker').value;
+        var input_amount= document.getElementById('input_amount').value;
+        alert(selected_ticker);
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+            };
+        apiKey = '1607e820f9067836e633ec6e6b8791c5b771e5c78dbd7283ab2d73cced7d4fd9';
+        from = 'usdt';
+        to = selected_ticker;
+        amount = input_amount;
+        const url = `${API_URL}exchange-amount/${amount}/${String(from).toLowerCase()}_${String(to).toLowerCase()}?api_key=${apiKey}`;
+        console.log(url);
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result =>
+            {
+                
+                console.log(result.estimatedAmount)
+            })
+            .catch(error => console.log('error', error));*/
+        /* const callback = (response) => {console.log(response)};
+        cnApiWrapper('ESTIMATED', {
+            apiKey:"1607e820f9067836e633ec6e6b8791c5b771e5c78dbd7283ab2d73cced7d4fd9",
+            fixed:true,
+            from:"eth",
+            to:selected_ticker,
+            amount:6,
+            callback});*/
+
+            /*var requestOptions = {method: 'GET',redirect: 'follow'};
+
+            fetch("https://api.changenow.io/v1/exchange-amount/6/usdt_btc?api_key=1607e820f9067836e633ec6e6b8791c5b771e5c78dbd7283ab2d73cced7d4fd9", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));*/
+        //console.log(response);
+        /*async function postData(url = '', data = {}) {
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+        }
+        const data = {
                         fixed: true, 
                         currency_from:"btc",
                         currency_to:"eth",
                         address_to:"0xFBd9cA5f0cc26428BD92DDB3F0A7190cF6aCDeFa",
-                        amount:"1",
-                        csrfmiddlewaretoken:getCookie("csrftoken"),
-                    },
-                    success: function(response){
-                        console.log(response);
-                    },
-                    error: function(response){
-                        alert("ERROR");
-                        console.log(response);
-                    } 
+                        amount:"1"
                     }
-                )    
+        postData('https://api.simpleswap.io/v1/create_exchange?api_key=8465f978-036b-4a7f-87e8-043c4e34a869', data)
+        .then(data => {
+            console.log(data); // JSON data parsed by `data.json()` call
+        });*/
+                    
+        /*$.ajax({
+            type: 'POST',
+            url : "https://api.simpleswap.io/v1/create_exchange?api_key=8465f978-036b-4a7f-87e8-043c4e34a869",                   contentType:"application/json",
+            dataType:"json",
+            data:{
+                
+                    fixed:true, 
+                    currency_from:"btc",
+                    currency_to:"eth",
+                    address_to:"18YfxRwecrtLkRSJGEQhBWTfkjtRyJeLRG",
+                    amount:1,
+                    csrfmiddlewaretoken:getCookie("csrftoken"),
+                                        
+            },
+            success: function(response){
+                console.log(response);
+            },
+            error: function(response){
+                alert("ERROR");
+                console.log(response);
+            } 
             }
-            
-        </script>        
+        )   */ 
+    }
+    
+</script>        
 {% endblock content %}
 <!-- Specific Plugin JS goes HERE  -->
 {% block plugin_javascripts %}
