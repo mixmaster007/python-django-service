@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
 from multiprocessing.dummy import JoinableQueue
-from subprocess import CREATE_NEW_CONSOLE
+# from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
 
 import time
