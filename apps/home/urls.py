@@ -30,8 +30,10 @@ urlpatterns = [
     path('get_link_info', views.get_link_info, name='get_link_info'),
     path('get_area_all', views.get_area_all, name='get_area_all'),#Get area data for Copy  button in area page
     path('df_selected_ticker', views.df_selected_ticker, name='df_selected_ticker'),
-    path('df_deposit_click', views.df_deposit_click, name='df_deposit_click')
-    
+    path('df_deposit_click', views.df_deposit_click, name='df_deposit_click'),
+    path('gl_copy_result',views.gl_copy_result,name = 'gl_copy_result'),
+    path('history_get_info',views.history_get_info,name = 'history_get_info'),
+ 
     #rl(r'^gate_about/$', views.gate_about, name='gate_about'),
     #path ('gate_link/<int:pk>' ,views.gate_link,{'id':pk},name='gate_link'),
     

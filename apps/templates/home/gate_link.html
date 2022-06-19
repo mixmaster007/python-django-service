@@ -191,7 +191,7 @@
                                         <div class ="col" id="glb_batch_id">Batch ID:{{i.batch_id}}</div>
                                         <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
                                         <div class ="col" style="text-align: center;" id="glb_batch_start_time" >Start time:{{i.start_time}}</div>
-                                        <div class ="col" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.start_time}}</div>
+                                        <div class ="col" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.finish_time}}</div>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -228,36 +228,39 @@
                                             <form>
                                                 <a style="margin-right: 2%;color: red;">Selected row copy data</a>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">Data as Inserted
+                                                  <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="DI">Data as Inserted
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">SQL Field 1                                            </label>
+                                                  <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF1">SQL Field 1                                            </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">SQL Field 2 
+                                                  <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF2">SQL Field 2 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">SQL Field 3 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF3">SQL Field 3 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">SQL Field 4 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF4">SQL Field 4 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">Status 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF5">SQL Field 5
+                                                </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="ST">Status 
                                                 </label>
                                               </form>
                                         </div>
                                         <div class="row" style="text-align:center;">
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_all_result()" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',0)" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_succeed_only()" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',1)" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_done_only()" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',2)" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_fail_only()" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',3)" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
                                             </div>
                                         </div>
                                     </div>
@@ -338,40 +341,44 @@
                                             </tbody>
                                             </table>
                                         </div>
+                                       <!--COPY CHECK-->
                                         <div style="margin-top:10px">
                                             <form>
                                                 <a style="margin-right: 2%;color: red;">Selected row copy data</a>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">Data as Inserted
+                                                  <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="DI">Data as Inserted
+                                                </label>
+                                                <label class="checkbox-inline"  style="margin-right:1%;">
+                                                  <input type="checkbox"  name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF1">SQL Field 1                                            </label>
+                                                <label class="checkbox-inline" style="margin-right:1%;">
+                                                  <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF2">SQL Field 2 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">SQL Field 1                                            </label>
-                                                <label class="checkbox-inline" style="margin-right:1%;">
-                                                  <input type="checkbox" value="">SQL Field 2 
+                                                    <input type="checkbox"  name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF3">SQL Field 3 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">SQL Field 3 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF4">SQL Field 4 
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">SQL Field 4 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="SF5">SQL Field 5
                                                 </label>
                                                 <label class="checkbox-inline" style="margin-right:1%;">
-                                                    <input type="checkbox" value="">Status 
+                                                    <input type="checkbox" name = "gl_cpy_checkbox_{{i.batch_id}}" value="ST">Status 
                                                 </label>
                                               </form>
                                         </div>
                                         <div class="row" style="text-align:center;">
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_all_result()" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',0)" name="copy_all_result" class="btn btn-primary">Copy All Result</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_succeed_only()" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',1)" name="copy_succeed_only" class="btn btn-primary">Copy Succeed Only</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_done_only()" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',2)" name="copy_done_only" class="btn btn-primary">Copy Done Only</a>
                                             </div>
                                             <div class = "col-sm-3">
-                                                <a onclick="copy_fail_only()" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
+                                                <a onclick="copy_result('{{i.batch_id}}',3)" name="copy_fail_only" class="btn btn-primary">Copy Fail Only</a>
                                             </div>
                                         </div>
                                     </div>
@@ -389,6 +396,74 @@
 
 </div>
 <script>
+    function copy_result(m_batchID,type)//type:0-all,1-Success only ,2-Done only ,3-Fail only 
+    {
+        var m_checkedStr = "";
+        tmpStr = "gl_cpy_checkbox_"+m_batchID;
+        m_resulStr="";
+        var markedCheckbox = document.getElementsByName(tmpStr);  
+        console.log(markedCheckbox);
+        var cnt = 0;
+        for (var checkbox of markedCheckbox) {  
+            if (checkbox.checked)  
+            {
+                cnt ++;
+                if(checkbox.value == "DI")
+                    m_resulStr +="Data as Inserted;";
+                else if(checkbox.value == "SF1")
+                    m_resulStr +="SQL Field 1;";
+                else if(checkbox.value == "SF2")
+                    m_resulStr +="SQL Field 2;";
+                else if(checkbox.value == "SF3")
+                    m_resulStr +="SQL Field 3;";   
+                else if(checkbox.value == "SF4")
+                    m_resulStr+="SQL Field 4;";
+                else if(checkbox.value == "SF5")
+                    m_resulStr +="SQL Field 5;";
+                else if(checkbox.value == "ST")
+                    m_resulStr +="status;";
+                if(cnt == 1)
+                    m_checkedStr += checkbox.value;
+                else  m_checkedStr +="#"+ checkbox.value;
+            }
+        }  
+        console.log(m_resulStr);
+        if(m_checkedStr == "")
+        {
+            alert("Please select row");
+        } 
+        else
+        {
+            
+            $.ajax
+            (
+                {
+                    type: 'POST',
+                    url : "/gl_copy_result",
+                    data:{
+                        seleted_data:m_checkedStr,
+                        btType:type,
+                        batchID:m_batchID,
+                        csrfmiddlewaretoken:getCookie("csrftoken"),
+                    },
+                    success: function(response){
+                        var $temp = $("<input>");
+                        var sss = m_resulStr + "\r\n"+ response.result;
+                        $("body").append($temp);
+                        $temp.val(sss).select();
+                        document.execCommand("copy");
+                        $temp.remove();
+                        console.log(response.result)
+                           
+                    },
+                    error: function(response){
+                        // alert('An error occured')
+                    } 
+                }
+            )
+        }
+        
+    }
     function GateLink_Send_Insertd_Data() {
         var getSelectedValue = document.querySelector( 'input[name="radio"]:checked');   
             if(getSelectedValue == null) 

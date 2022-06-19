@@ -5,6 +5,11 @@
 <!-- Specific Plugin CSS goes HERE -->
 {% block plugin_stylesheets %}{% endblock plugin_stylesheets %}
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
@@ -20,15 +25,15 @@
             <div class="col-sm-12  grid-margin">
                 <div class = "card">
                     <ul class="nav nav-pills mb-3" style="justify-content: space-evenly;
-                    align-items: baseline;margin-top: 15px;" id="pills-tab" role="tablist">
+                        align-items: baseline;margin-top: 15px;" role="tablist">
                         <li class="nav-item">
-                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Gate1</a>
+                                <a type = "button" onclick="history_click('G1')" name = "history_click" class="nav-link " data-toggle="pill"  role="tab" aria-controls="pills-home" aria-selected="false">Gate1</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Gate2</a>
+                                <a type = "button" onclick="history_click('G2')" name = "history_click" class="nav-link active"  data-toggle="pill"  role="tab" aria-controls="pills-profile" aria-selected="true">Gate2</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Deposit</a>
+                                <a type = "button" onclick="history_click('deposit')" name = "history_click" class="nav-link"  data-toggle="pill"  role="tab" aria-controls="pills-contact" aria-selected="false">Deposit</a>
                             </li>
                             <li class = "nav-item">
                                 <div class="dropdown">
@@ -36,7 +41,6 @@
                                         <i class="mdi mdi-clock"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton3">
-                                        
                                         <a class="dropdown-item" href="#">All Days</a>
                                         <a class="dropdown-item" href="#">Form</a>
                                         <a class="dropdown-item" href="#">to</a>
@@ -52,11 +56,11 @@
                                         <div class="form-group">
                                             <div class="form-check">
                                               <label class="form-check-label">
-                                                <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="" checked> Group By Btach </label>
+                                                <input type="radio" class="form-check-input" name="hi_groupOption"  value="op1" checked> Group By Btach </label>
                                             </div>
                                             <div class="form-check">
                                               <label class="form-check-label">
-                                                <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="option2"> Do Not Group</label>
+                                                <input type="radio" class="form-check-input" name="hi_groupOption" value="op2"> Do Not Group</label>
                                             </div>
                                             
                                         </div>
@@ -65,26 +69,159 @@
                             </li>
                         </li>
                     </ul>
-                    <div class="tab-content" style = "height:1000px;" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                            <p class="mb-0">Consequat occaecat ullamco amet non eiusmod nostrud dolore irure incididunt est duis anim sunt officia. Fugiat velit proident aliquip nisi incididunt nostrud exercitation proident est nisi. Irure magna elit commodo anim ex veniam culpa eiusmod id nostrud sit cupidatat in veniam ad. Eiusmod consequat eu adipisicing minim anim aliquip cupidatat culpa excepteur quis. Occaecat sit eu exercitation irure Lorem incididunt nostrud.
-                            </p>
-                        </div>
-                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                            <p class="mb-0">Ad pariatur nostrud pariatur exercitation ipsum ipsum culpa mollit commodo mollit ex. Aute sunt incididunt amet commodo est sint nisi deserunt pariatur do. Aliquip ex eiusmod voluptate exercitation cillum id incididunt elit sunt. Qui minim sit magna Lorem id et dolore velit Lorem amet exercitation duis deserunt. Anim id labore elit adipisicing ut in id occaecat pariatur ut ullamco ea tempor duis.
-                            </p>
-                        </div>
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                            <p class="mb-0">Est quis nulla laborum officia ad nisi ex nostrud culpa Lorem excepteur aliquip dolor aliqua irure ex. Nulla ut duis ipsum nisi elit fugiat commodo sunt reprehenderit laborum veniam eu veniam. Eiusmod minim exercitation fugiat irure ex labore incididunt do fugiat commodo aliquip sit id deserunt reprehenderit aliquip nostrud. Amet ex cupidatat excepteur aute veniam incididunt mollit cupidatat esse irure officia elit do ipsum ullamco Lorem. Ullamco ut ad minim do mollit labore ipsum laboris ipsum commodo sunt tempor enim incididunt. Commodo quis sunt dolore aliquip aute tempor irure magna enim minim reprehenderit. Ullamco consectetur culpa veniam sint cillum aliqua incididunt velit ullamco sunt ullamco quis quis commodo voluptate. Mollit nulla nostrud adipisicing aliqua cupidatat aliqua pariatur mollit voluptate voluptate consequat non.</p>
-                        </div>
+                    <div class="tab-content" style = "height:1000px;" id="hi_Content">
+                      <!-- <div class="col-sm-12 grid-margin">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class = "row">
+                                        <div class ="col">Batch ID:{{forloop.counter}}</div>
+                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
+                                        <div class ="col" style="text-align: center;">Start time:{{i.start_time}}</div>
+                                        <div class ="col" style="text-align: right;">Finish time:{{i.start_time}}</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class = "row">
+                                        <div class ="col">Status:{{i.status}}</div>
+                                        <div class ="col">Total:{{i.total}}</div>
+                                        <div class ="col">Successd:{{i.succeed}}</div>
+                                        <div class ="col">Done:{{i.done}}</div>
+                                        <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
+                                        <div class ="col">Remains:{{i.remains}}</div>
+                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
+                                    </div>
+                                    <div class="collapse" id="col_gate_link_{{forloop.counter}}">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Data as Inserted</th>
+                                                    <th> SQL Field 1</th>
+                                                    <th> SQL Field 2</th>
+                                                    <th> SQL Field 3</th>
+                                                    <th> SQL Field 4</th>
+                                                    <th> SQL Field 5</th>
+                                                    <th> Status </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="text-align: center;">
+                                                {% for III in Gate %}
+                                                    {% if III.batch_id == i.batch_id %}
+                                                        <tr>
+                                                            <td> {{forloop.counter}} </td>
+                                                            <td> {{III.inserted_text}} </td>
+                                                            {% if III.status == 1 %}
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> <div class="spinner-border text-muted"></div> </td>
+                                                            <td> Processing</td>
+                                                            {% else %}
+                                                            <td> {{III.result1}} </td>
+                                                            <td> {{III.result2}} </td>
+                                                            <td> {{III.result3}} </td>
+                                                            <td> {{III.result4}} </td>
+                                                            <td> {{III.result5}} </td>
+                                                            <td>
+                                                                {% if III.status == 0 %} 
+                                                                    In_Queue
+                                                                {% elif III.status == 2 %}
+                                                                    Fail
+                                                                {% elif III.status == 3 %}
+                                                                    Done
+                                                                {% endif %}
+                                                            </td>
+                                                            {% endif %}
+                                                        </tr>
+                                                        
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div> 
+                        </div>--> 
                     </div>    
-                    
-                    
                 </div>
             </div>
-            
         </div>
     </div>
+<script>
+    function history_click(m_type)//type:0-all,1-Success only ,2-Done only ,3-Fail only 
+    {
+        var m_GroupOption = document.querySelector( 'input[name="hi_groupOption"]:checked').value;
+        console.log(m_GroupOption);
+        alert(m_GroupOption);
+        alert(m_type);
+        $.ajax
+        ({
+            type: 'POST',
+            url : "/history_get_info",
+            data:{
+                type:m_type,
+                groupOption:m_GroupOption;
+                csrfmiddlewaretoken:getCookie("csrftoken"),
+            },
+            success: function(response){
+                $("#hi_Content").empty();
+                var tmp = "<div class=\"col-sm-12 grid-margin\">";
+                var cnt = 0;
+                for(key in response.batch_array)
+                {
+                    cnt ++;
+
+                    tmp +="<div class=\"card\"> <div class=\"card-header\"><div class = \"row\"><div class =\"col\">Batch ID:";
+                    tmp += cnt+"</div><div class =\"col\" style=\"text-align: center;\"><a href=\"#\">Retry the Fails ones again click here</a></div> <div class =\"col\" style=\"text-align: center;\">Start time:";
+                    tmp += response.batch_array[key]['start_time']+"</div><div class =\"col\" style=\"text-align: right;\">Finish time:";
+                    tmp += response.batch_array[key]['finish_time']+"</div></div></div><div class=\"card-body\"><div class = \"row\"><div class =\"col\">Status:";
+                    tmp += response.batch_array[key]['status']+"</div><div class =\"col\">Total:"+ response.batch_array[key]['total'];
+                    tmp +="</div> <div class =\"col\">Successd:"+ response.batch_array[key]['succeed'] + "</div><div class =\"col\">Done:"+response.batch_array[key]['done'] ;
+                    tmp +="</div><div class =\"col\" id =\"glb_batch_fail\">Fails:"+response.batch_array[key]['fail']+"</div><div class =\"col\">Remains:"+ response.batch_array[key]['remains'];
+                    tmp += "</div><div class = \"col\" data-toggle = \"collapse\" href = \"#col_gate_link_" + key+ "\" aria-expanded=\"false\" ><a>Expand Frame</a></div></div><div class=\"collapse\" id=\"col_gate_link_"+key;
+                    tmp +="\"> <div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>ID</th><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th>"
+                    tmp +="<th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead><tbody style=\"text-align: center;\">";
+                    for(kk in response.gate_array)
+                    {
+                        if(response.gate_array[kk]['bi'] == response.batch_array[key]['batch_id'])
+                        {
+                            tmp+="<tr><td>"+kk +"</td> <td>"+response.gate_array[kk]['di']+"</td>";
+                            if( response.gate_array[kk]['st'] == 1)
+                            {
+                                tmp+="<td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td>"
+                                tmp+=" <td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>"
+                            }
+                            else
+                            {
+                                tmp+="<td>"+response.gate_array[kk]['sf1']+"</td><td>"+response.gate_array[kk]['sf2']+"</td><td>"+response.gate_array[kk]['sf3']+"</td><td>"+response.gate_array[kk]['sf4']+"</td><td>"+response.gate_array[kk]['sf5']+"</td> <td>";
+                                if(response.gate_array[kk]['st'] == 0) tmp+="In_Queue";
+                                else if(response.gate_array[kk]['st'] == 2) tmp+="Fail";
+                                else if(response.gate_array[kk]['st'] == 3) tmp+="Done";
+                                tmp+="</td>"
+                            }
+                            tmp+="</tr>"
+                        }
+                        
+                    }
+                    tmp+="</tbody></table></div></div></div></div>";
+                }
+                $("#hi_Content").append(tmp);
+
+                console.log(response);
+            },
+            error: function(response){
+                // alert('An error occured')
+            } 
+        })
+    }
+</script>
+   
 {% endblock content %}
 
 <!-- Specific Plugin JS goes HERE  -->

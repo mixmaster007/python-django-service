@@ -49,7 +49,7 @@
               <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 2 %}">Gate2 About</a></li>
               {% for IItem in gateLink %}
                 {% if IItem.assin_link_to_gateway == "G2" %}
-                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  IItem.id %}">{{Item.Link_Name}}</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  IItem.id %}">{{IItem.Link_Name}}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
@@ -82,7 +82,9 @@
               <i class="mdi mdi-chart-bar"></i>
             </span>
             <span class="menu-title">onlineSupport</span>
+            <span> <img src="/static/assets/my_assets/images/icons8-offline-48.png" style="width:50%;margin-left: 30%;"></span> 
           </a>
+            
         </li>
         <!--Online Support end-->
     </ul>

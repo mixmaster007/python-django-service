@@ -3,6 +3,8 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
+from multiprocessing.dummy import JoinableQueue
+from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
 
 import time
@@ -198,6 +200,7 @@ def convert_format(data):
 def index(request):
     num_news = News.objects.all().count()
     news = News.objects.order_by('-publish_date').all()
+    #admin_status 
         #Comment.objects.order_by('-datetime')
     GateLink = Gate_Link.objects.all() 
     pp = pprint.PrettyPrinter(indent = 4)
@@ -534,14 +537,6 @@ def get_area_all(request):
         context ={
             "item":"all"
         }
-    elif request.POST['message'] == 'FND':
-        context ={
-            "item":"FND"
-        }
-    else:
-        context = {
-            "item":"NFD"
-        }
     return JsonResponse(context)
 def Gl_Send_InsertData(request):
     pp = pprint.PrettyPrinter(indent = 4)
@@ -626,3 +621,92 @@ def df_deposit_click(request):
   #  pp.pprint(new_res)
     d = json.loads(new_res)
     return JsonResponse(d)
+def gl_copy_result(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+    m_batchID = request.POST.get('batchID')
+    m_btType = request.POST.get('btType')
+    m_checkArray = str(request.POST.get('seleted_data')).split("#")
+    m_resultStr = ""
+    m_gate = []
+    pp.pprint(m_btType)
+    if m_btType == '0' :
+        m_gate = Gate.objects.filter(batch_id = m_batchID)
+    elif m_btType == '1' or m_btType == '2':
+        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) and Q(status = 3))
+    elif m_btType == '3':
+        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) and Q(status = 2))
+    for k in m_gate:
+        for kk in m_checkArray:
+            if kk =="DI":
+                m_resultStr+=k.inserted_text+";"
+            elif kk == "SF1":
+                m_resultStr+=k.result1+";"
+            elif kk == "SF2":
+                m_resultStr+=k.result2+";"
+            elif kk == "SF3":
+                m_resultStr+=k.result3+";"
+            elif kk == "SF4":
+                m_resultStr+=k.result2+";"
+            elif kk == "SF5":
+                m_resultStr+=k.result2+";"
+            elif kk == "ST":
+                if k.status == 0:
+                    m_resultStr+="In Queue"+";"
+                elif k.status == 1:
+                    m_resultStr+="Processing"+";"
+                elif k.status == 2:
+                    m_resultStr+="Fail"+";"
+                elif k.status == 3:
+                    m_resultStr+="Success"+";"
+        m_resultStr+="\r\n"
+    pp.pprint(m_checkArray)
+     
+    return JsonResponse({'result':m_resultStr})
+def history_get_info(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+    m_type = request.POST.get('type')
+    if m_type == 'deposit':
+        m_trans_array = Transaction.objects.all()
+        pp.pprint(m_trans_array)
+    else:
+        m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = m_type)
+        pp.pprint(m_gateLink)
+        batch_array=[]
+        gate_array = []
+        for mgAr in m_gateLink:
+            m_btc = Batch.objects.filter(link_name =  mgAr.Link_Name)
+            m_gate = Gate.objects.filter(gate_link_name = mgAr.Link_Name)
+            for btc in m_btc:
+                m_dicBtcItem = {
+                    'batch_id':btc.batch_id,
+                    'status':btc.status,
+                    'total':btc.total,
+                    'succeed':btc.succeed,
+                    'done':btc.done,
+                    'start_time':btc.start_time,
+                    'finish_time':btc.finish_time,
+                    'fail':btc.fail,
+                    'remains':btc.remains,
+                    'link_name':btc.link_name,
+
+                }
+                batch_array.append(m_dicBtcItem)
+            for gat in m_gate:
+                m_dicGateItem = {
+                    'di':gat.inserted_text,
+                    'sf1':gat.result1,
+                    'sf2':gat.result2,
+                    'sf3':gat.result3,
+                    'sf4':gat.result4,
+                    'sf5':gat.result5,
+                    'st':gat.status,
+                    'bi':gat.batch_id
+                }
+                gate_array.append(m_dicGateItem)
+        context={
+            'batch_array':batch_array,
+            'gate_array':gate_array
+        }
+        #pp.pprint(batch_array)
+        
+    return JsonResponse(context,safe = False)
