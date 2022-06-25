@@ -96,7 +96,9 @@ class Gate_Link(models.Model):
         choices=assin_link_status,
         default=StOne,
     )
+    
     Link_Fomart = models.ManyToManyField(Format,help_text="Select a Format for this Link")
+    Link_Selected_Item = models.CharField(max_length = 100,default="")
     def __str__(self):
         return self.Link_Name
     def get_absolute_url(self):
@@ -109,8 +111,9 @@ class balance(models.Model):
 
 class Message(models.Model):
     value = models.CharField(max_length=100)
-    date = models.DateTimeField(default=datetime.now().strftime(("%Y-%m-%d %H:%M:%S")), blank=True)
+    date = models.DateTimeField(default=datetime.now(), blank=True)
     user = models.CharField(max_length=100)
+    user_to = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
     def __str__(self):
         return self.value
 class TempFormat(models.Model):
@@ -127,14 +130,14 @@ class PaymentManage(models.Model):
     def __str__(self):
         return self.Api_key
 class Transaction(models.Model):
-    Transaction_ID =  models.CharField(max_length=100)
-    From_Ticket =  models.CharField(max_length=100)
-    USDT_Reciver_Address= models.CharField(max_length=200)
+    Transaction_ID =  models.CharField(max_length=100,default="")
+    From_Ticket =  models.CharField(max_length=100,default="")
+    USDT_Reciver_Address= models.CharField(max_length=200,default="")
     Amount_Recived =  models.FloatField(default = 0)
-    Transaction_Status =  models.CharField(max_length=20)
-    Deposit_Received_At = models.DateTimeField(blank=True)
-    User_Balance_updated_At = models.DateTimeField(blank=True)
-    User_Name = models.CharField(max_length=100)
+    Transaction_Status =  models.CharField(max_length=20,default="")
+    Deposit_Received_At = models.DateTimeField(blank=True,default=datetime.now())
+    User_Balance_updated_At = models.DateTimeField(blank=True,default=datetime.now())
+    User_Name = models.CharField(max_length=100,default="")
     User_Balance = models.FloatField(default=0)
     def __str__(self):
         return self.Transaction_ID

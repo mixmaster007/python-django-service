@@ -76,11 +76,11 @@ DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql', # <-- UPDATED line 
         'OPTIONS':{
-                'init_command': 'SET default_storage_engine=INNODB',
-         },
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
         'NAME'    : 'MyDatabase',                 # <-- UPDATED line 
         'USER'    : 'root',                     # <-- UPDATED line
-        'PASSWORD':  'Richman929!@#$%',              # <-- UPDATED line
+        'PASSWORD': 'Richman929!@#$%',              # <-- UPDATED line
         'HOST'    : 'localhost',                # <-- UPDATED line
         'PORT'    : '3306',
     }

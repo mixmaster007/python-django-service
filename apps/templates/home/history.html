@@ -14,11 +14,20 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script>
+    $(document).ready(function(){
+        tmp_sel_item = document.getElementById('hi_select_item').value;
+        console.log(tmp_sel_item);
+        history_click(tmp_sel_item);
+    })
+</script>
     <div class="content-wrapper">
         <!--Header-->
         <div class="page-header">
             <h5 class="page-title"> History </h5>
+            <input type ="hidden" name ="hi_select_item" id = "hi_select_item" value="{{sel_item}}">
         </div>   
+        
         <!-- [ Main Content ] start -->
         <div class="row">
             <!--[D F info] start-->
@@ -26,15 +35,23 @@
                 <div class = "card">
                     <ul class="nav nav-pills mb-3" style="justify-content: space-evenly;
                         align-items: baseline;margin-top: 15px;" role="tablist">
+                        {% for kk in btn_array %}
+                        {% if kk == sel_item %}
+                            <li class="nav-item">
+                                <a type = "button" onclick="history_click('{{kk}}')" name = "history_click" class="nav-link active" data-toggle="pill"  role="tab" aria-controls="pills-home" aria-selected="true">{{kk}}</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a type = "button" onclick="history_click('{{kk}}')" name = "history_click" class="nav-link " data-toggle="pill"  role="tab" aria-controls="pills-home" aria-selected="true">{{kk}}</a>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        <!--<li class="nav-item">
+                            <a type = "button" onclick="history_click('G2')" name = "history_click" class="nav-link active"  data-toggle="pill"  role="tab" aria-controls="pills-profile" aria-selected="false">Gate2</a>
+                        </li>
                         <li class="nav-item">
-                                <a type = "button" onclick="history_click('G1')" name = "history_click" class="nav-link " data-toggle="pill"  role="tab" aria-controls="pills-home" aria-selected="false">Gate1</a>
-                            </li>
-                            <li class="nav-item">
-                                <a type = "button" onclick="history_click('G2')" name = "history_click" class="nav-link active"  data-toggle="pill"  role="tab" aria-controls="pills-profile" aria-selected="true">Gate2</a>
-                            </li>
-                            <li class="nav-item">
-                                <a type = "button" onclick="history_click('deposit')" name = "history_click" class="nav-link"  data-toggle="pill"  role="tab" aria-controls="pills-contact" aria-selected="false">Deposit</a>
-                            </li>
+                            <a type = "button" onclick="history_click('deposit')" name = "history_click" class="nav-link"  data-toggle="pill"  role="tab" aria-controls="pills-contact" aria-selected="false">Deposit</a>
+                        </li>-->
                             <li class = "nav-item">
                                 <div class="dropdown">
                                     <button type="button" class="btn btn-outline-info dropdown-toggle" id="dropdownMenuIconButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,84 +87,7 @@
                         </li>
                     </ul>
                     <div class="tab-content" style = "height:1000px;" id="hi_Content">
-                      <!-- <div class="col-sm-12 grid-margin">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class = "row">
-                                        <div class ="col">Batch ID:{{forloop.counter}}</div>
-                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
-                                        <div class ="col" style="text-align: center;">Start time:{{i.start_time}}</div>
-                                        <div class ="col" style="text-align: right;">Finish time:{{i.start_time}}</div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class = "row">
-                                        <div class ="col">Status:{{i.status}}</div>
-                                        <div class ="col">Total:{{i.total}}</div>
-                                        <div class ="col">Successd:{{i.succeed}}</div>
-                                        <div class ="col">Done:{{i.done}}</div>
-                                        <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
-                                        <div class ="col">Remains:{{i.remains}}</div>
-                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
-                                    </div>
-                                    <div class="collapse" id="col_gate_link_{{forloop.counter}}">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Data as Inserted</th>
-                                                    <th> SQL Field 1</th>
-                                                    <th> SQL Field 2</th>
-                                                    <th> SQL Field 3</th>
-                                                    <th> SQL Field 4</th>
-                                                    <th> SQL Field 5</th>
-                                                    <th> Status </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody style="text-align: center;">
-                                                {% for III in Gate %}
-                                                    {% if III.batch_id == i.batch_id %}
-                                                        <tr>
-                                                            <td> {{forloop.counter}} </td>
-                                                            <td> {{III.inserted_text}} </td>
-                                                            {% if III.status == 1 %}
-                                                            <td> <div class="spinner-border text-muted"></div> </td>
-                                                            <td> <div class="spinner-border text-muted"></div> </td>
-                                                            <td> <div class="spinner-border text-muted"></div> </td>
-                                                            <td> <div class="spinner-border text-muted"></div> </td>
-                                                            <td> <div class="spinner-border text-muted"></div> </td>
-                                                            <td> Processing</td>
-                                                            {% else %}
-                                                            <td> {{III.result1}} </td>
-                                                            <td> {{III.result2}} </td>
-                                                            <td> {{III.result3}} </td>
-                                                            <td> {{III.result4}} </td>
-                                                            <td> {{III.result5}} </td>
-                                                            <td>
-                                                                {% if III.status == 0 %} 
-                                                                    In_Queue
-                                                                {% elif III.status == 2 %}
-                                                                    Fail
-                                                                {% elif III.status == 3 %}
-                                                                    Done
-                                                                {% endif %}
-                                                            </td>
-                                                            {% endif %}
-                                                        </tr>
-                                                        
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                        
-                                        
-                                    </div>
-                                    
-                                </div>
-                            </div> 
-                        </div>--> 
+                      
                     </div>    
                 </div>
             </div>
@@ -166,51 +106,69 @@
             url : "/history_get_info",
             data:{
                 type:m_type,
-                groupOption:m_GroupOption;
+                groupOption:m_GroupOption,
                 csrfmiddlewaretoken:getCookie("csrftoken"),
             },
             success: function(response){
                 $("#hi_Content").empty();
-                var tmp = "<div class=\"col-sm-12 grid-margin\">";
-                var cnt = 0;
-                for(key in response.batch_array)
+                var tmp ="";
+                if(JSON.stringify(response).includes("trans_array"))
                 {
-                    cnt ++;
-
-                    tmp +="<div class=\"card\"> <div class=\"card-header\"><div class = \"row\"><div class =\"col\">Batch ID:";
-                    tmp += cnt+"</div><div class =\"col\" style=\"text-align: center;\"><a href=\"#\">Retry the Fails ones again click here</a></div> <div class =\"col\" style=\"text-align: center;\">Start time:";
-                    tmp += response.batch_array[key]['start_time']+"</div><div class =\"col\" style=\"text-align: right;\">Finish time:";
-                    tmp += response.batch_array[key]['finish_time']+"</div></div></div><div class=\"card-body\"><div class = \"row\"><div class =\"col\">Status:";
-                    tmp += response.batch_array[key]['status']+"</div><div class =\"col\">Total:"+ response.batch_array[key]['total'];
-                    tmp +="</div> <div class =\"col\">Successd:"+ response.batch_array[key]['succeed'] + "</div><div class =\"col\">Done:"+response.batch_array[key]['done'] ;
-                    tmp +="</div><div class =\"col\" id =\"glb_batch_fail\">Fails:"+response.batch_array[key]['fail']+"</div><div class =\"col\">Remains:"+ response.batch_array[key]['remains'];
-                    tmp += "</div><div class = \"col\" data-toggle = \"collapse\" href = \"#col_gate_link_" + key+ "\" aria-expanded=\"false\" ><a>Expand Frame</a></div></div><div class=\"collapse\" id=\"col_gate_link_"+key;
-                    tmp +="\"> <div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>ID</th><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th>"
-                    tmp +="<th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead><tbody style=\"text-align: center;\">";
-                    for(kk in response.gate_array)
+                    tmp ="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>Payment ID</th><th>Payment Method</th><th>Receiver Address</th>";
+                    tmp +="<th>Received Amount</th><th>Transaction Status</th><th>Deposit Amount</th><th>Date</th></tr></thead><tbody style=\"text-align: center;\">";
+                    for(key in response.trans_array)
                     {
-                        if(response.gate_array[kk]['bi'] == response.batch_array[key]['batch_id'])
-                        {
-                            tmp+="<tr><td>"+kk +"</td> <td>"+response.gate_array[kk]['di']+"</td>";
-                            if( response.gate_array[kk]['st'] == 1)
-                            {
-                                tmp+="<td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td>"
-                                tmp+=" <td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>"
-                            }
-                            else
-                            {
-                                tmp+="<td>"+response.gate_array[kk]['sf1']+"</td><td>"+response.gate_array[kk]['sf2']+"</td><td>"+response.gate_array[kk]['sf3']+"</td><td>"+response.gate_array[kk]['sf4']+"</td><td>"+response.gate_array[kk]['sf5']+"</td> <td>";
-                                if(response.gate_array[kk]['st'] == 0) tmp+="In_Queue";
-                                else if(response.gate_array[kk]['st'] == 2) tmp+="Fail";
-                                else if(response.gate_array[kk]['st'] == 3) tmp+="Done";
-                                tmp+="</td>"
-                            }
-                            tmp+="</tr>"
-                        }
-                        
+                        tmp+="<tr><td>"+response.trans_array[key]['Transaction_ID']+"</td> <td>"+response.trans_array[key]['From_Ticket']+"</td><td>";                  
+                        tmp+=response.trans_array[key]['USDT_Reciver_Address']+"</td> <td>"+response.trans_array[key]['Amount_Recived']+"</td><td>";
+                        tmp+=response.trans_array[key]['Transaction_Status']+"</td> <td>"+response.trans_array[key]['User_Balance']+"</td><td>";
+                        tmp+=response.trans_array[key]['User_Balance_updated_At']+"</td></tr>";
                     }
-                    tmp+="</tbody></table></div></div></div></div>";
+                    tmp+="</tbody></table></div></div></div>"
                 }
+                else
+                {
+                    tmp = "<div class=\"col-sm-12 grid-margin\">";
+                    var cnt = 0;
+                    for(key in response.batch_array)
+                    {
+                        cnt ++;
+
+                        tmp +="<div class=\"card\"> <div class=\"card-header\"><div class = \"row\"><div class =\"col\">Batch ID:";
+                        tmp += cnt+"</div><div class =\"col\" style=\"text-align: center;\"><a href=\"#\">Retry the Fails ones again click here</a></div> <div class =\"col\" style=\"text-align: center;\">Start time:";
+                        tmp += response.batch_array[key]['start_time']+"</div><div class =\"col\" style=\"text-align: right;\">Finish time:";
+                        tmp += response.batch_array[key]['finish_time']+"</div></div></div><div class=\"card-body\"><div class = \"row\"><div class =\"col\">Status:";
+                        tmp += response.batch_array[key]['status']+"</div><div class =\"col\">Total:"+ response.batch_array[key]['total'];
+                        tmp +="</div> <div class =\"col\">Successd:"+ response.batch_array[key]['succeed'] + "</div><div class =\"col\">Done:"+response.batch_array[key]['done'] ;
+                        tmp +="</div><div class =\"col\" id =\"glb_batch_fail\">Fails:"+response.batch_array[key]['fail']+"</div><div class =\"col\">Remains:"+ response.batch_array[key]['remains'];
+                        tmp += "</div><div class = \"col\" data-toggle = \"collapse\" href = \"#col_gate_link_" + key+ "\" aria-expanded=\"false\" ><a>Expand Frame</a></div></div><div class=\"collapse\" id=\"col_gate_link_"+key;
+                        tmp +="\"> <div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>ID</th><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th>"
+                        tmp +="<th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead><tbody style=\"text-align: center;\">";
+                        for(kk in response.gate_array)
+                        {
+                            if(response.gate_array[kk]['bi'] == response.batch_array[key]['batch_id'])
+                            {
+                                tmp+="<tr><td>"+kk +"</td> <td>"+response.gate_array[kk]['di']+"</td>";
+                                if( response.gate_array[kk]['st'] == 1)
+                                {
+                                    tmp+="<td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td>"
+                                    tmp+=" <td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>"
+                                }
+                                else
+                                {
+                                    tmp+="<td>"+response.gate_array[kk]['sf1']+"</td><td>"+response.gate_array[kk]['sf2']+"</td><td>"+response.gate_array[kk]['sf3']+"</td><td>"+response.gate_array[kk]['sf4']+"</td><td>"+response.gate_array[kk]['sf5']+"</td> <td>";
+                                    if(response.gate_array[kk]['st'] == 0) tmp+="In_Queue";
+                                    else if(response.gate_array[kk]['st'] == 2) tmp+="Fail";
+                                    else if(response.gate_array[kk]['st'] == 3) tmp+="Done";
+                                    tmp+="</td>"
+                                }
+                                tmp+="</tr>"
+                            }
+                            
+                        }
+                        tmp+="</tbody></table></div></div></div></div>";
+                    }
+                }
+                
                 $("#hi_Content").append(tmp);
 
                 console.log(response);

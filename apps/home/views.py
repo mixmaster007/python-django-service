@@ -6,11 +6,12 @@ from datetime import datetime
 from multiprocessing.dummy import JoinableQueue
 from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
-
+import logging
+import threading
 import time
+import requests
 from django.shortcuts import redirect
 from posixpath import split
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from django.template import loader
@@ -29,8 +30,6 @@ from .models import PaymentManage
 from .models import Transaction
 from django.core import serializers
 from django.db.models import Q
-import http.client
-
 import json
 import re
 import pprint
@@ -222,12 +221,41 @@ def index(request):
    
 @login_required(login_url="/login/")
 def depositFunds(request):
+    pp = pprint.PrettyPrinter(indent = 4)
     GateLink = Gate_Link.objects.all()
+    cnio = cnio_api.cnio()
+    pm = PaymentManage.objects.all()
+    apiKey = ""
+    m_strTicker=""
+    for m_item in pm:
+        m_strTicker = m_item.Enable_Payment_Option_Tickets
+        apiKey = m_item.Api_key
+        min_amount= m_item.Payment_Minium_orther_to_load_account
+    m_arrayTicker = m_strTicker.split(',')
+    pp.pprint(m_arrayTicker)
+    cnio.api_key(apiKey)
+    res=cnio.currencies(True)
+    new_res = res.decode('utf-8')
+    d = json.loads(new_res)
+    tmp_arrayTicker = []
+    for m_tItem in d:
+        for tmp_inTicker in m_arrayTicker:
+            if tmp_inTicker == m_tItem['ticker']:
+                tmp_dicTiker ={
+                    'ticker':m_tItem['ticker'],
+                    'img':m_tItem['image'],
+                    'name':m_tItem['name'],
+                }
+                tmp_arrayTicker.append(tmp_dicTiker)
+
+    pp.pprint(tmp_arrayTicker)
     user = balance.objects.get(user=request.user)
     context={
         'segmment':'depositFunds',
         'gateLink':GateLink,
         'balance':user.balance,
+        'tickers':tmp_arrayTicker,
+        'min_amount':min_amount
     }
     html_template = loader.get_template('home/depositFunds.html')
     return HttpResponse(html_template.render(context, request))
@@ -246,7 +274,7 @@ def gate_about(request,pk):
     gate = Gate.objects.all()
     batch = Batch.objects.all()
     pp.pprint(GateLink)
-    if pk == 1:
+    if pk == 10:
         ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G1')
     else:
         ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G2') 
@@ -276,14 +304,16 @@ pb_format_array=[""]
 @login_required(login_url="/login/")
 def gate_link(request,pk):
     pp = pprint.PrettyPrinter(indent = 4)
+    
     GateLink = Gate_Link.objects.all()
     tmp_gate = Gate.objects.all()
     name = GateLink.get(id = pk).Link_Name
     cost =  GateLink.get(id = pk).Link_price
     logo = GateLink.get(id = pk).Link_Logo_large
+    seleted_item = GateLink.get(id = pk).Link_Selected_Item
     link_format_tmp  =  GateLink.get(id = pk).Link_Fomart.all()
-    tmp_batch = Batch.objects.all()
-    
+    tmp_batch = Batch.objects.order_by('-finish_time').all()
+   
     #for index in range(len(link_format_tmp)):
     #    link_format={"id":index,"key":link_format_tmp[index]}
     #    pp.pprint(index)
@@ -298,7 +328,9 @@ def gate_link(request,pk):
         'Total_Batch':tmp_batch.count(),
         'logo':logo,
         'balance':user.balance,
-        'link_format':link_format_tmp
+        'link_format':link_format_tmp,
+        'seleted_item':seleted_item
+
     }
     if request.method == 'POST':
         tmp_realData = request.POST.get('real_data')
@@ -390,7 +422,7 @@ def gate_link(request,pk):
             pp.pprint(context)
             pp.pprint("___END___")
       
-    
+    pp.pprint(context["seleted_item"]);
     html_template = loader.get_template('home/gate_link.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -442,12 +474,23 @@ def area_code(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
-def history(request):
+def history(request,pk):
+    pp = pprint.PrettyPrinter(indent = 4)
     user = balance.objects.get(user=request.user)
-    GateLink = Gate_Link.objects.all()    
+    GateLink = Gate_Link.objects.all()  
+    tmp_array = {'Gate1','Gate2','Deposit'}  
+    if(pk == 100):
+        tmp_item = 'Gate1'
+    elif(pk == 200):
+        tmp_item = 'Gate2'
+    elif(pk == 300):
+        tmp_item = 'Deposit'
+    pp.pprint(tmp_item)
     context = {
        'gateLink':GateLink,
        'balance':user.balance,
+       'btn_array':tmp_array,
+       'sel_item':tmp_item,
     }
     html_template = loader.get_template('home/history.html')
     return HttpResponse(html_template.render(context, request))
@@ -475,7 +518,7 @@ def send_message(request):
     return JsonResponse({"messages":"123"})
 def get_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
-    messages = Message.objects.filter(Q(user="root") | Q(user = request.user))
+    messages = Message.objects.filter(Q(user="request.user") | Q(user_to = request.user))
     return JsonResponse({"messages": list(messages.values())})
 def send_gatelink_insertdata(request):
    
@@ -542,6 +585,8 @@ def Gl_Send_InsertData(request):
     pp = pprint.PrettyPrinter(indent = 4)
            
     selected_format = request.POST.get("seleted_data")
+    link_name = request.POST.get("name")
+    Gate_Link.objects.filter(Link_Name = link_name).update(Link_Selected_Item=selected_format)
     pp.pprint(selected_format)
     result = convert_format(selected_format)
     if TempFormat.objects.filter(user=request.user).exists(): 
@@ -590,14 +635,12 @@ def df_selected_ticker(request):
         apiKey = PayMan.Api_key
     
     cnio.api_key(apiKey)
-    res=cnio.est_exchange_rate(str(m_amount),"trx",m_ticker)
+    res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
     new_res = res.decode('utf-8')
     d = json.loads(new_res)
 
     pp = pprint.PrettyPrinter(indent = 4)
-    pp.pprint(type(d))
-    pp.pprint(d["estimatedAmount"])
-  
+ 
     return JsonResponse(d)
 def df_deposit_click(request):
     pp = pprint.PrettyPrinter(indent = 4)
@@ -605,21 +648,27 @@ def df_deposit_click(request):
     pm = PaymentManage.objects.all()
     m_address=""
     apiKey = ""
+    m_time = 0.0
     for PayMan in pm:
         apiKey = PayMan.Api_key
         m_address =  PayMan.USDT_ADDRESS
+        m_time = PayMan.Check_for_payment_status_every * 60
     m_address_array = m_address.split("\r\n")
     m_amount = request.POST['amount']
     m_ticker = request.POST['ticker']
-    pp.pprint(m_address_array[1])
-    pp.pprint(m_amount)
-    pp.pprint(m_ticker)
-   
     cnio.api_key(apiKey)
-    result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[1])
+    result = cnio.create_transaction(m_amount,m_ticker,"usdttrc20",m_address_array[0])
     new_res = result.decode('utf-8')
-  #  pp.pprint(new_res)
     d = json.loads(new_res)
+    pp.pprint(d)
+    if d.get('error') != None:
+        pp.pprint("occur error!!")
+    else:
+        info = {"stop": False}
+        user_balance=balance.objects.get(user=request.user).balance
+
+        thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
+        thread.start()
     return JsonResponse(d)
 def gl_copy_result(request):
     pp = pprint.PrettyPrinter(indent = 4)
@@ -665,16 +714,38 @@ def gl_copy_result(request):
 def history_get_info(request):
     pp = pprint.PrettyPrinter(indent = 4)
     m_type = request.POST.get('type')
-    if m_type == 'deposit':
-        m_trans_array = Transaction.objects.all()
-        pp.pprint(m_trans_array)
+    if m_type == 'Gate1':
+        tmp_str = 'G1'
+    elif m_type == 'Gate2':
+        tmp_str = 'G2'
+    if m_type == 'Deposit':
+        m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
+        m_tArray=[]
+        for mta in m_trans_array:
+            tmp_trans_array = {
+                'Transaction_ID':mta.Transaction_ID,
+                'From_Ticket':mta.From_Ticket,
+                'USDT_Reciver_Address':mta.USDT_Reciver_Address,
+                'Amount_Recived':mta.Amount_Recived,
+                'Transaction_Status':mta.Transaction_Status,
+                'Deposit_Received_At':mta.Deposit_Received_At,
+                'User_Balance_updated_At':mta.User_Balance_updated_At,
+                'User_Name':mta.User_Name,
+                'User_Balance':mta.User_Balance
+            }
+            m_tArray.append(tmp_trans_array)
+
+        pp.pprint(m_tArray)
+        context={
+            'trans_array':m_tArray
+        }
     else:
-        m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = m_type)
+        m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = tmp_str)
         pp.pprint(m_gateLink)
         batch_array=[]
         gate_array = []
         for mgAr in m_gateLink:
-            m_btc = Batch.objects.filter(link_name =  mgAr.Link_Name)
+            m_btc  =  Batch.objects.filter(link_name =  mgAr.Link_Name)
             m_gate = Gate.objects.filter(gate_link_name = mgAr.Link_Name)
             for btc in m_btc:
                 m_dicBtcItem = {
@@ -688,7 +759,6 @@ def history_get_info(request):
                     'fail':btc.fail,
                     'remains':btc.remains,
                     'link_name':btc.link_name,
-
                 }
                 batch_array.append(m_dicBtcItem)
             for gat in m_gate:
@@ -710,3 +780,32 @@ def history_get_info(request):
         #pp.pprint(batch_array)
         
     return JsonResponse(context,safe = False)
+def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
+    pp = pprint.PrettyPrinter(indent = 4)
+    trans_obj = Transaction.objects.create(User_Name=str(user),Transaction_ID=t_id,User_Balance=user_balance)
+    trans_obj.save()
+    cnio = cnio_api.cnio()
+    cnio.api_key(apiKey)
+    while not arg["stop"]:
+        pp.pprint("worker thread checking status")
+        try:
+            result = cnio.get_transaction_status(t_id)
+            new_res = result.decode('utf-8')
+            json_res = json.loads(new_res)
+            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
+            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payoutAddress"],Transaction_Status=json_res["status"])
+            if(json_res['status'] == "finished"):
+                tmp_bb = balance.objects.filter(user=user)
+                for kk in tmp_bb:
+                   m_balance = float(kk.balance) + float(json_res['expectedReceiveAmount'])
+                balance.objects.filter(user=user).update(balance = m_balance)
+                Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(User_Balance=m_balance)
+                return 'end'
+        except requests.exceptions.ConnectTimeout:
+            pp.pprint("Error ConnectTimeout")
+        pp.pprint(json_res)
+        time.sleep(m_time)
+
+#class Transaction(models.Model):
+ #   Deposit_Received_At = models.DateTimeField(blank=True)
+  #  User_Balance_updated_At = models.DateTimeField(blank=True)

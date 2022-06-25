@@ -18,7 +18,7 @@
                     csrfmiddlewaretoken:getCookie("csrftoken"),
                 },
                 success: function(response){
-                    if (response.status == 'OK')
+                   if (response.status == 'OK')
                     {
                         for(kkk in response.batch)
                         {
@@ -74,12 +74,13 @@
                         $("#glb_gate_body").append(temp);
                     }
                     
+
                 },
                 error: function(response){
                     //alert('An error occured')
                 }     
             });
-        },100000);
+        },1000);
     })
 </script>
 
@@ -89,11 +90,12 @@
         <div class = "col-sm-12">
             <div class ="row">
             <div class = "col-sm-4">   
-                <img class="img-xs rounded-circle" src={{ logo.url }} alt="">         
+                <img class="img-xs rounded-circle" src={{logo.url}} alt="">         
             </div>
             <div class = "col-sm-4">
                 <h5 class="page-title" >
                     {{Name}}
+                    <input type ="hidden" name ="now_page_name" id = "now_page_name" value="{{Name}}">
                 </h5>
             </div>
             <div class = "col-sm-4" style="text-align: right;">
@@ -112,12 +114,15 @@
                 </div>
                 <div class="card-body">
                     <form >
-                        
                         {% for II in link_format %}
                             <div class="custom-control custom-radio" id="testppp">
-                                
+                                {% if seleted_item == II.Admin_Setting %}
+                                <input type="radio" id="{{II}}" name="radio" value = "{{II}}" class="custom-control-input" checked>
+                                <label class="custom-control-label" for="{{II}}"> {{II.Members_View_Format}}</label>
+                                {% else %}                  
                                 <input type="radio" id="{{II}}" name="radio" value = "{{II}}" class="custom-control-input" >
                                 <label class="custom-control-label" for="{{II}}"> {{II.Members_View_Format}}</label>
+                                {% endif %}
                             </div>
                             <hr>
                         {% endfor %}
@@ -178,6 +183,9 @@
          <div class="col-sm-12 grid-margin" style="text-align: center;" id = "database_insert_error"> <p  style="color:red;text-align: center;">Error Data Insert,so you have to reinsert data!! </p></div>
        
         {% endif %}
+       
+       
+
         <!--[Batch ID] start-->
         {% if Total_Batch != 0 %}
             {% for i in Batch %}
@@ -186,13 +194,20 @@
                         <div class="col-sm-12 grid-margin">
                             <div class="card">
                                 <div class="card-header">
+                                    <form method="post">
+                                        {% csrf_token %}
                                     <div class = "row">
+                                       
                                         <input type ="hidden" id ="msg_running_batch_id" value ="{{i.batch_id}}">
-                                        <div class ="col" id="glb_batch_id">Batch ID:{{i.batch_id}}</div>
-                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
-                                        <div class ="col" style="text-align: center;" id="glb_batch_start_time" >Start time:{{i.start_time}}</div>
-                                        <div class ="col" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.finish_time}}</div>
+                                        <div class ="col-sm-1" id="glb_batch_id">Batch ID:{{forloop.counter}}</div>
+                                       
+                                        <div class ="col-sm-5" style="text-align: center;"><a type = "submit" name= "status_info" style="color: red;cursor: pointer;">STOP the process of this batch click here</a></div>
+                            
+                                        <div class ="col-sm-3" style="text-align: center;" id="glb_batch_start_time" >Start time:{{i.start_time}}</div>
+                                        <div class ="col-sm-3" style="text-align: right;" id="glb_batch_finish_time">Finish time:{{i.finish_time}}</div>
+                                       
                                     </div>
+                                    </form>
                                 </div>
                                 <div class="card-body">
                                     <div class = "row">
@@ -202,7 +217,7 @@
                                         <div class ="col" id = "glb_batch_done">Done:{{i.done}}</div>
                                         <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
                                         <div class ="col" id = "glb_batch_remains">Remains:{{i.remains}}</div>
-                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
+                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a style="cursor: pointer;">Expand Frame</a></div>
                                     </div>
                                     <div class="collapse" id="col_gate_link_{{forloop.counter}}">
                                         <div class="table-responsive">
@@ -273,12 +288,19 @@
                         <div class="col-sm-12 grid-margin">
                             <div class="card">
                                 <div class="card-header">
+                                    <form method="post">
+                                        {% csrf_token %}
                                     <div class = "row">
-                                        <div class ="col">Batch ID:{{forloop.counter}}</div>
-                                        <div class ="col" style="text-align: center;"><a href="#">Retry the Fails ones again click here</a></div>
-                                        <div class ="col" style="text-align: center;">Start time:{{i.start_time}}</div>
-                                        <div class ="col" style="text-align: right;">Finish time:{{i.start_time}}</div>
+                                      
+                                        <div class ="col-sm-1">Batch ID:{{forloop.counter}}</div>
+                                      
+                                        <div class ="col-sm-5" style="text-align: center;"><button type = "submit" name= "status_info" style="color: red;cursor: pointer;">Retry the Fails ones again click here</a></div>
+                                      
+                                        <div class ="col-sm-3" style="text-align: center;">Start time:{{i.start_time}}</div>
+                                        <div class ="col-sm-3" style="text-align: right;">Finish time:{{i.finish_time}}</div>
+                                      
                                     </div>
+                                </form>
                                 </div>
                                 <div class="card-body">
                                     <div class = "row">
@@ -288,7 +310,7 @@
                                         <div class ="col">Done:{{i.done}}</div>
                                         <div class ="col" id = "glb_batch_fail">Fails:{{i.fail}}</div>
                                         <div class ="col">Remains:{{i.remains}}</div>
-                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a>Expand Frame</a></div>
+                                        <div class ="col" data-toggle="collapse" href="#col_gate_link_{{forloop.counter}}" aria-expanded="false" ><a style="cursor: pointer;">Expand Frame</a></div>
                                     </div>
                                     <div class="collapse" id="col_gate_link_{{forloop.counter}}">
                                         <div class="table-responsive">
@@ -331,6 +353,8 @@
                                                                     Fail
                                                                 {% elif III.status == 3 %}
                                                                     Done
+                                                                {% elif III.status == 4 %}
+                                                                    Stopped
                                                                 {% endif %}
                                                             </td>
                                                             {% endif %}
@@ -391,6 +415,7 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        
         <!--[Batch ID] end-->    
     </div>
 
@@ -472,11 +497,14 @@
             }  
             else
             {
-                document.getElementById('status_inserted_format').value = "ok"
+                document.getElementById('status_inserted_format').value = "ok";
+                var tmp_name = document.getElementById('now_page_name').value;
+                alert(tmp_name);
                 $.ajax({
                         type: 'POST',
                         url : "/Gl_Send_InsertData",
                         data:{
+                            name:tmp_name,
                             seleted_data:getSelectedValue.value,
                             message:"FND",
                             csrfmiddlewaretoken:getCookie("csrftoken"),
@@ -493,6 +521,9 @@
                 )
             }    
                 
+    }
+    function status_click(type){
+        alert(type);
     }
     function GateLink_Send_Preview_Data() {
         var getSelectedValue = document.querySelector( 'input[name="radio"]:checked');  
@@ -595,5 +626,6 @@
         }    
                 
     }
+    
 </script>
 {% endblock content %}

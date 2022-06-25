@@ -27,7 +27,7 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav  sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 1 %}">Gate About</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 10 %}">Gate About</a></li>
                   {% for Item in gateLink %}
                     {% if Item.assin_link_to_gateway == "G1" %}
                       <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  Item.id %}">{{Item.Link_Name}}</a></li>
@@ -46,7 +46,7 @@
           </a>
           <div class="collapse" id="ui-basic1">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 2 %}">Gate2 About</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 20 %}">Gate2 About</a></li>
               {% for IItem in gateLink %}
                 {% if IItem.assin_link_to_gateway == "G2" %}
                   <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  IItem.id %}">{{IItem.Link_Name}}</a></li>
@@ -67,7 +67,7 @@
         <!--Area Codes Item End-->
         <!--History Start-->
         <li class="nav-item menu-items">
-          <a class="nav-link" href="{% url 'history' %}">
+          <a class="nav-link" href="{% url 'history' 100 %}">
             <span class="menu-icon">
               <i class="mdi mdi-table-large"></i>
             </span>
