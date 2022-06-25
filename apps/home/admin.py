@@ -34,7 +34,7 @@ class GateLinkAdmin(admin.ModelAdmin):
     Link_Logo_tiny_preview.short_description = 'Link_Logo_tiny_preview'
     Link_Logo_tiny_preview.allow_tags = True
 class MessageAdmin(admin.ModelAdmin):
-     list_display=('user','value','date')
+     list_display=('user','user_to','value','date')
 class GateAdmin(admin.ModelAdmin):
     list_display=('phone','YY','MM','DD','batch_id','status','gate_link_name')   
 class BatchAdmin(admin.ModelAdmin):
