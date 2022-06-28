@@ -85,36 +85,48 @@ def check_format(format,data,format_user):
         tmp_format=tmp_format.replace("YYYY", "YY")
         tmp_check_dic.pop("YYYY")
     if tmp_check_dic.get("YYMMDD") != None :
+        if len(tmp_check_dic.get("YYMMDD")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMMDD"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMMDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYMMDD"))[4:6]
         tmp_format=tmp_format.replace("YYMMDD", "YY#MM#DD")
         tmp_check_dic.pop("YYMMDD")
     if tmp_check_dic.get("YYDDMM") != None :
+        if len(tmp_check_dic.get("YYDDMM")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDDMM"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDDMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYDDMM"))[4:6]
         tmp_format=tmp_format.replace("YYDDMM", "YY#DD#MM")
         tmp_check_dic.pop("YYDDMM")
     if tmp_check_dic.get("MMDDYY") != None :
+        if len(tmp_check_dic.get("MMDDYY")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDDYY"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDDYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMDDYY"))[4:6]
         tmp_format=tmp_format.replace("MMDDYY", "MM#DD#YY")
         tmp_check_dic.pop("MMDDYY")
     if tmp_check_dic.get("MMYYDD") != None :
+        if len(tmp_check_dic.get("MMYYDD")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYYDD"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYYDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMYYDD"))[4:6]
         tmp_format=tmp_format.replace("MMYYDD", "MM#YY#DD")
         tmp_check_dic.pop("MMYYDD")
     if tmp_check_dic.get("DDYYMM") != None :
+        if len(tmp_check_dic.get("DDYYMM")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDYYMM"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDYYMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDYYMM"))[4:6]
         tmp_format=tmp_format.replace("DDYYMM", "DD#YY#MM")
         tmp_check_dic.pop("DDYYMM")
     if tmp_check_dic.get("DDMMYY") != None :
+        if len(tmp_check_dic.get("DDMMYY")) != 6:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
@@ -703,7 +715,7 @@ def df_deposit_click(request):
             cnt+=1
     if cnt == 0:
         cnio.api_key(apiKey)
-        result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[address_number])
+        result = cnio.create_transaction(m_amount,m_ticker,"usdttrc20",m_address_array[address_number])
         new_res = result.decode('utf-8')
         d = json.loads(new_res)
         pp.pprint(d)
@@ -901,6 +913,8 @@ def addBatch(gateLinkName,value,user):
                     batch_id = tmp_batch_id,
                     link_name = gateLinkName,
                     user = str(user),
+                    start_time = datetime.now(),
+                    finish_time =datetime.now(),
                     status="Running"
             )
         new_Batch.save()

@@ -3,7 +3,8 @@
 {% block title %} UI Tables {% endblock %} 
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+{% endblock stylesheets %}
 
 {% block content %}
 <script>
@@ -345,7 +346,7 @@
         console.log(m_tmpCheck);
         $("#gatelink_result_data").empty("");
         tmp = "<div class=\"spinner-border text-muted\"></div>"
-        $("#gatelink_result_data").append(tmp);
+        $("#gatelink_result_data1").append(tmp);
         $.ajax
         ({
             type: 'POST',
@@ -581,7 +582,7 @@
             </div>
           
         </div>
-
+        
         {% if segment == "gate_link_result_error" %}
          <div class="col-sm-12 grid-margin" style="text-align: center;" id = "database_insert_error"> <p  style="color:red;text-align: center;">Error Data Insert,so you have to reinsert data!! </p></div>
        
