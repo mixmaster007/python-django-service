@@ -82,7 +82,13 @@
               <i class="mdi mdi-chart-bar"></i>
             </span>
             <span class="menu-title">onlineSupport</span>
-            <span> <img src="/static/assets/my_assets/images/icons8-offline-48.png" style="width:50%;margin-left: 30%;"></span> 
+            <span> 
+              {% if Admin_Status == 1 %}
+                <img src="/static/assets/my_assets/images/icons8-online-48.png" style="width:50%;margin-left: 30%;">
+              {% else %}
+                <img src="/static/assets/my_assets/images/icons8-offline-48.png" style="width:50%;margin-left: 30%;"> 
+              {% endif %}
+            </span> 
           </a>
             
         </li>

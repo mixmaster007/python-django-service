@@ -2,11 +2,18 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+from asyncio.windows_events import NULL
+from math import fabs
+from subprocess import CREATE_NEW_CONSOLE
+from django. contrib. auth. models import User
 from datetime import datetime
 from multiprocessing.dummy import JoinableQueue
 from telnetlib import STATUS
+
+from django.forms import NullBooleanField
 # from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
+import random
 import logging
 import threading
 import time
@@ -29,7 +36,7 @@ from .models import Batch
 from .models import AreaCode
 from .models import PaymentManage
 from .models import Transaction
-from django.core import serializers
+from .models import site_manage
 from django.db.models import Q
 import json
 import re
@@ -211,12 +218,19 @@ def convert_format(data):
    
 @login_required(login_url="/login/")
 def index(request):
+    pp = pprint.PrettyPrinter(indent = 4)
     num_news = News.objects.all().count()
     news = News.objects.order_by('-publish_date').all()
+    sm=site_manage.objects.all()
+    pp.pprint(sm[0].Site_Status)
+    if sm[0].Site_Status == "on":
+        m_as = 1
+    else:
+        m_as = 0
     #admin_status 
         #Comment.objects.order_by('-datetime')
     GateLink = Gate_Link.objects.all() 
-    pp = pprint.PrettyPrinter(indent = 4)
+
     if balance.objects.filter(user=request.user).exists(): 
         pp.pprint("Not Balance!!,so")
         user = balance.objects.get(user=request.user)
@@ -228,8 +242,10 @@ def index(request):
         'num_news':num_news,
         'news':news,
         'gateLink':GateLink,
-        'balance':user.balance
+        'balance':user.balance,
+        'Admin_Status':m_as
     }
+    pp.pprint(context)
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
    
@@ -406,7 +422,7 @@ def history(request,m_str):
     pp = pprint.PrettyPrinter(indent = 4)
     user = balance.objects.get(user=request.user)
     GateLink = Gate_Link.objects.all()  
-    tmp_array = {'Gate1','Gate2'}  
+    tmp_array = {'Gate2','Gate1'}  
     if(m_str == 'hgo'):
         tmp_item = 'Gate1'
     elif(m_str == 'hgt'):
@@ -425,10 +441,16 @@ def history(request,m_str):
 def onlineSupport(request):
     user = balance.objects.get(user=request.user)
     GateLink = Gate_Link.objects.all()    
+    sm=site_manage.objects.all()
+    if sm[0].Site_Status == "on":
+        m_as = 1
+    else:
+        m_as = 0
     context = {
        'gateLink':GateLink,
        'balance':user.balance,
        'user_name':request.user,
+       'Admin_Status':m_as
     }
     html_template = loader.get_template('home/onlineSupport.html')
     return HttpResponse(html_template.render(context, request))
@@ -438,14 +460,37 @@ def send_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
     message = request.POST['message']
     user_name = request.POST['user']
-    pp.pprint(message)
-    new_message = Message.objects.create(value = message,user = user_name)
+    adminUser=User. objects. filter(is_superuser=True)
+    tmp_admin = NULL
+    for  kk in adminUser:
+        tmp_admin  = kk
+    pp.pprint(adminUser)
+    new_message = Message.objects.create(value = message,From_User = str(request.user),To_User=tmp_admin,date=datetime.now())
     new_message.save()
     return JsonResponse({"messages":"123"})
 def get_message(request):
     pp = pprint.PrettyPrinter(indent = 4)
-    messages = Message.objects.filter(Q(user="request.user") | Q(user_to = request.user))
-    return JsonResponse({"messages": list(messages.values())})
+   
+    messages = Message.objects.filter(Q(From_User=str(request.user)) | Q(To_User = request.user)).all()
+   
+    message_array = []
+    for msg in messages:
+        pp.pprint(msg)
+        m_type = 0
+        tmp_user = str(request.user)
+        if msg.To_User == request.user:
+            m_type = 1
+            tmp_user = str(msg.From_User)
+        m_tmpMSG = {
+                'user':tmp_user,
+                'type':m_type,
+                'msg':msg.value,
+                'date':msg.date
+            }
+        message_array.append(m_tmpMSG)
+        pp.pprint(message_array)
+    
+    return JsonResponse({"messages":message_array},safe=False)
 def send_gatelink_insertdata(request):
    
     insertdata = request.POST['gatelink_insertdata']
@@ -639,6 +684,7 @@ def df_deposit_click(request):
     pp.pprint("-----------------start Deposit Click-------------")
     cnio = cnio_api.cnio()
     pm = PaymentManage.objects.all()
+    
     m_address=""
     apiKey = ""
     m_time = 0.0
@@ -646,7 +692,12 @@ def df_deposit_click(request):
         apiKey = PayMan.Api_key
         m_address =  PayMan.USDT_ADDRESS
         m_time = PayMan.Check_for_payment_status_every * 60
+    pp.pprint("____________________ADDRESS______________________")
     m_address_array = m_address.split("\r\n")
+    pp.pprint(len(m_address_array))
+    pp.pprint(m_address_array)
+    address_number = random.randint(0,len(m_address_array)-1)
+    pp.pprint(address_number)
     m_amount = request.POST['amount']
     m_ticker = request.POST['ticker']
     tmp_trans = Transaction.objects.filter(From_Ticket=m_ticker).all()
@@ -656,7 +707,7 @@ def df_deposit_click(request):
             cnt+=1
     if cnt == 0:
         cnio.api_key(apiKey)
-        result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[0])
+        result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[address_number])
         new_res = result.decode('utf-8')
         d = json.loads(new_res)
         pp.pprint(d)
@@ -884,7 +935,7 @@ def gateLink_get_batch_data(request):
     elif m_type == '4':
         addBatch(gateLink_name,m_batch_id,request.user)
         pp.pprint(m_batch_id)
-    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user))).all()
+    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user))).order_by("-start_time").all()
     m_runBath_array = ""
     for btc in m_btc:
         m_gate = Gate.objects.filter(Q(link_name=str(gateLink_name)) and Q(batch_id= btc.batch_id)).all()

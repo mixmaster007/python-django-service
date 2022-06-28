@@ -18,10 +18,12 @@ from .models import TempFormat
 from .models import AreaCode
 from .models import Transaction
 from .models import PaymentManage
+from .models import site_manage
 # Register your models here
 #admin.site.register(News)
 admin.site.site_header = "DataFlair Django Tutorials"
-
+class SiteManageAdmin(admin.ModelAdmin):
+    list_display = ('Site_Status','Uner_Mantatince_Messge')
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title','content','publish_date')
 class FomartAdmin(admin.ModelAdmin):
@@ -34,7 +36,7 @@ class GateLinkAdmin(admin.ModelAdmin):
     Link_Logo_tiny_preview.short_description = 'Link_Logo_tiny_preview'
     Link_Logo_tiny_preview.allow_tags = True
 class MessageAdmin(admin.ModelAdmin):
-     list_display=('user','user_to','value','date')
+     list_display=('From_User','To_User','value','date')
 class GateAdmin(admin.ModelAdmin):
     list_display=('phone','YY','MM','DD','batch_id','status','gate_link_name')   
 class BatchAdmin(admin.ModelAdmin):
@@ -49,6 +51,7 @@ class PaymentManageAdmin(admin.ModelAdmin):
     list_display=('Api_key','USDT_ADDRESS','Enable_Payment_Option_Tickets','Payment_Minium_orther_to_load_account','Check_for_payment_status_every') 
 #class Gate1Admin(admin.ModelAdmin):
   #  form = Gate1Form
+admin.site.register(site_manage, SiteManageAdmin)
 admin.site.register(News, NewsAdmin)
 admin.site.register(Gate,GateAdmin)
 admin.site.register(Gate1Manage)

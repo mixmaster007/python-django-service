@@ -11,6 +11,22 @@ from django.urls import reverse
 from ckeditor.fields import RichTextField 
 from django.utils.html import mark_safe
 from datetime import datetime
+
+class site_manage(models.Model):
+    st_online = "on"
+    st_offline  = "off"
+    assin_site_status = [
+        (st_online, 'Online'),
+        (st_offline, 'Uner Mantatince'),
+    ]
+    Site_Status = models.CharField(
+        max_length=3,
+        choices=assin_site_status,
+        default=st_online,
+    )
+    Uner_Mantatince_Messge = models.CharField(max_length = 100,help_text = "Enter field Udermanitain Message")
+    def __str__(self):
+        return self.Site_Status
 class News(models.Model):
    
     title = models.CharField(max_length=200)
@@ -110,12 +126,12 @@ class balance(models.Model):
         return str(self.user)
 
 class Message(models.Model):
-    value = models.CharField(max_length=100)
+    From_User = models.CharField(max_length=100,default='admin')
+    To_User = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
+    value =  models.TextField()
     date = models.DateTimeField(default=datetime.now(), blank=True)
-    user = models.CharField(max_length=100)
-    user_to = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
     def __str__(self):
-        return self.value
+        return self.From_User
 class TempFormat(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
     tmpStr =  models.CharField(max_length=100)

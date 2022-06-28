@@ -21,14 +21,14 @@
                 { 
                     var dateT = new Date(response.messages[key].date);
                     str=dateT.toLocaleString();
-                    if(response.messages[key].user == "root")
+                    if(response.messages[key].type == "1")
                     {
                         var tmp ="<div class=\"row\" style=\"margin-top: 20px;\"><div class=\"col-sm-1  grid-margin\"><img src=\"/static/assets/images/faces/face15.jpg\" style =\"width:100%;\" alt=\"image\" class=\"rounded-circle profile-pic\"></div><div class=\"col-sm-10\" grid-margin><a><h4>"
                         tmp+= str+":"+response.messages[key].user +"</h4></a><hr style=\"margin-top:0;\"></hr>"
                        
-                        for(i in response.messages[key].value.split('\n'))
+                        for(i in response.messages[key].msg.split('\n'))
                         {
-                         tmp+="<p>"+response.messages[key].value.split('\n')[i]+"</p>"
+                         tmp+="<p>"+response.messages[key].msg.split('\n')[i]+"</p>"
                         }
                         tmp+="</div></div>"
                         $("#display").append(tmp);
@@ -38,9 +38,9 @@
                     {
                         var tmp ="<div class=\"row\" style=\"margin-left: 100px;margin-top: 20px;\"><div class=\"col-sm-1  grid-margin\"><img src=\"/static/assets/images/faces/face2.jpg\" style =\"width:100%;\" alt=\"image\" class=\"rounded-circle profile-pic\"></div><div class=\"col-sm-10\" grid-margin><a><h4>"
                         tmp+= str+":"+response.messages[key].user +"</h4></a><hr style=\"margin-top:0;\"></hr><a>"
-                        for(i in response.messages[key].value.split('\n'))
+                        for(i in response.messages[key].msg.split('\n'))
                         {
-                         tmp+="<p>"+response.messages[key].value.split('\n')[i]+"</p>"
+                         tmp+="<p>"+response.messages[key].msg.split('\n')[i]+"</p>"
                         }
                         tmp+="</div></div>"
                         $("#display").append(tmp);

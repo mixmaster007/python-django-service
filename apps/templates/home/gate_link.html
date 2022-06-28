@@ -372,15 +372,17 @@
                     tmp="";
                     
                     m_runningBatch_array=[];
+                    cnt= 0;
                     for(key in response.batch_array)
-                    {
-                       
+                    {   
+                        cnt++;
+                        m_cnt = response.batch_array.length - cnt +1;
                         if(response.batch_array[key]['status'] == "Running")
                         {
                             
                             m_runningBatch_array.push(response.batch_array[key]['batch_id']);
                             tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id"+response.batch_array[key]['batch_id']+"\"  value =";
-                            tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ response.batch_array[key]['batch_id']+"</div>";
+                            tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ m_cnt+"</div>";
                             tmp+="<div class =\"col-sm-4\" style=\"text-align: center;\"><a onclick =\"gateLink_get_batch_data(1,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"status_info\" style=\"color: red;cursor: pointer;\">STOP the process of this batch click here</a></div>"
                             tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+response.batch_array[key]['start_time']+"</div>";
                             tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\" id=\"glb_batch_finish_time"+response.batch_array[key]['batch_id']+"\">Finish time:--:--:--</div>";
@@ -414,7 +416,7 @@
                         else 
                         {
                             tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id\"  value =";
-                            tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ response.batch_array[key]['batch_id']+"</div>";
+                            tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ m_cnt+"</div>";
                             tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">";
                             if(response.batch_array[key]['status'] == "Stopped")
                                 tmp+="<a onclick =\"gateLink_get_batch_data(2,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: red;cursor: pointer;\">Resume the stopped Click here</a></div>"
