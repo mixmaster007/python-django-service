@@ -4,17 +4,12 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from math import fabs
-from subprocess import CREATE_NEW_CONSOLE
+
 from django. contrib. auth. models import User
 from datetime import datetime
-from multiprocessing.dummy import JoinableQueue
-from telnetlib import STATUS
-
-from django.forms import NullBooleanField
 # from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
 import random
-import logging
 import threading
 import time
 import requests
