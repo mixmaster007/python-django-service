@@ -14,6 +14,52 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script>
+    m_status ="";
+    $(document).ready(function(){
+    setInterval(function(){
+        $.ajax({
+            type: 'POST',
+            url : "df_get_history",
+            data:{
+                csrfmiddlewaretoken:getCookie("csrftoken"),
+            },
+            success: function(response){
+                console.log(response);
+                tmp_stu = "";
+                for(key in response.trans_array)
+                {
+                   tmp_stu+=response.trans_array[key]['Transaction_Status']
+                }
+                
+                if(m_status != tmp_stu)
+                {
+                    m_status =tmp_stu;
+                    $("#df_history").empty();
+                    tmp ="<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>Payment ID</th><th>Payment Method</th><th>Receiver Address</th>";
+                    tmp +="<th>Received Amount</th><th>Transaction Status</th></tr></thead><tbody style=\"text-align: center;\">";
+                    for(key in response.trans_array)
+                    {
+                        tmp+="<tr><td>"+response.trans_array[key]['Transaction_ID']+"</td> <td>"+response.trans_array[key]['From_Ticket']+"</td><td>";                  
+                        tmp+=response.trans_array[key]['USDT_Reciver_Address']+"</td> <td>"+response.trans_array[key]['Amount_Recived']+"</td><td>";
+                        tmp+=response.trans_array[key]['Transaction_Status']+"</td></tr>";
+                    }
+                    tmp+="</tbody></table></div>"
+                    $("#df_history").append(tmp);
+                }
+                
+                
+                //"</td> <td>"+response.trans_array[key]['User_Balance']+"</td><td>";tmp+=response.trans_array[key]['User_Balance_updated_At']+
+            },
+            error: function(response){
+                //alert('An error occured')
+            }
+
+
+        });
+    },1000);
+    })
+</script>
     <div class="content-wrapper">
         <div class="page-header">
             <h5 class="page-title"> Deposit Funds </h5>
@@ -28,7 +74,7 @@
                         <p class="card-text">Some example text some example text. Some example text some example text. Some example text some example text. Some example text some example text.</p>
                     </div>
                     <div class="card-footer" style="text-align: right;">
-                        <a>For Depoist Histroy  </a><a href="{% url 'history' 300 %}" >  Click Here</a>
+                     <!--  <a>For Depoist Histroy  </a><a href="{% url 'history' 300 %}" >  Click Here</a> --> 
                     </div>
 
                 </div>
@@ -38,36 +84,36 @@
                 <div class="card">
                     <div class="card-body">
                         <div class = "row">
-                            <div class = "col-sm-7" style="font-size: 20px;">
-                                <a>Insert amount you like to deposit in USD:  </a><input type="text" id = "input_amount" onblur="select_ticker('{{min_amount}}')" style="max-width: 10%;margin-left: 10px;">
+                            <div class = "col-sm-2" style ="font-size: 20px;text-align: right;padding-right: 0px;">
+                                <a>Select Crypto:</a>
                             </div>
-                            <div class = "col-sm-3" style="font-size: 20px;" id="df_exchange_amount">
-                               
+                            <div class = "col-sm-4">
+                                <div class="form-group">
+                                    <!--<label>Single select box using select 2</label>--> 
+                                     <select id = "sel_ticker" class="js-example-basic-single" style="width:100%">
+                                         {% for kk in tickers %}
+                                         <option  value="{{kk.ticker}}" selected><image src = "{{kk.img}}"></image>{{kk.name}}</option>
+                                         {% endfor %}
+                                     </select>
+                                 </div>
+                            </div>
+                            <div class = "col-sm-3">
+                                <a>Amout:</a></a><input type="text" id = "input_amount" style="max-width: 50px;margin-left: 10px;">
+                            </div>
+                            <div class = "col-sm -1" id ="df_progress">
+
                             </div>
                             <div class = "col-sm-2">
                                 <button type="button" class="btn btn-primary mb-2" onclick="send_deposit_click()">Deposit</button>
                             </div>
                         </div>
+                        <div id = "df_error" style="text-align: center;color:red;">
+
+                        </div>
                     </div>
                    
                 </div>
             </div>
-            <div class="col-sm-6 grid-margin" >
-                <div class="card">
-                    <div class="card-body" style="height:353px;">
-                        <div class="form-group">
-                            <label>Single select box using select 2</label>
-                            <select onchange="select_ticker('{{min_amount}}')" id = "sel_ticker" class="js-example-basic-single" style="width:100%">
-                                {% for kk in tickers %}
-                                <option  value="{{kk.ticker}}" selected><image src = "{{kk.img}}"></image>{{kk.name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            
             <div class="col-sm-6 grid-margin" >
                 <div class="card">
                     <div class="card-header">
@@ -78,7 +124,7 @@
                             <div class = "col-sm-8" id = "df_address_info">
                                 
                             </div>
-                            <div class = "col-sm-4" id="df_qrcode"  >
+                            <div class = "col-sm-4" id="df_qrcode" style="background-color: white;height: 200px;padding-top: 20px;padding-left: 4%;"  >
                                 
                             </div>
                         </dix>
@@ -86,14 +132,19 @@
                     </div>
                 </div>
             </div>
-           
+            <div class="col-sm-6 grid-margin" >
+                <div class="card">
+                    <div class="card-body" id="df_history" style="height:353px;">
+                        
+                    </div>
+                    
+                </div>
+            </div>
                 
         </div>
     <div>
 <script>
-    var amount = 0;
-    var m_seletedTicker = "";
-    function select_ticker(min_amount){
+    /* function select_ticker(min_amount){
         var input_amount= document.getElementById('input_amount').value;
         var e = document.getElementById("sel_ticker");
         m_seletedTicker = e.options[e.selectedIndex].value
@@ -110,7 +161,7 @@
             if(parseFloat(input_amount) < parseFloat(min_amount))
             {
                 str = "Amount must be greater than\t"+min_amount+",Please input large value";
-                alert(str);
+                console.log(str);
                 return;
             }
             $("#df_exchange_amount").empty();
@@ -138,17 +189,27 @@
         }
         
      
-    }
+    }*/
     function send_deposit_click(){
-       // amount= document.getElementById('input_amount').value;
-        $("#df_address_info").empty();
-        $("#df_qrcode").empty();
+        document.getElementById('df_error').innerHTML = "";
+        amount= document.getElementById('input_amount').value;
+        var e = document.getElementById("sel_ticker");
+        m_seletedTicker = e.options[e.selectedIndex].value
+       
+        if(amount == "")
+        {
+            document.getElementById('df_error').innerHTML = "Error Amount,Please insert amount";
+            return;
+        }
         if(selected_ticker = "")
         {
-            alert("Please Select Ticker")
+            document.getElementById('df_error').innerHTML = "Please Select Crypto";
+            return;
         }
         else{
-        
+            $("#df_progress").empty();
+            tmp = "<div class=\"spinner-border text-muted\"></div>"
+            $("#df_progress").append(tmp);
             $.ajax({
                 type: 'POST',
                 url : "df_deposit_click",
@@ -158,32 +219,29 @@
                     csrfmiddlewaretoken:getCookie("csrftoken"),
                 },
                 success: function(response){
+                   
+                    $("#df_progress").empty();
                     console.log(response);
                     if(JSON.stringify(response).includes("error"))
                     {
-                        tmp = "<p>Amount:</p><a>" +amount +"\t"+ m_seletedTicker +"</a>";
-                        tmp +="<p>Error:\t"+response.error+"</p><p>";
-                        tmp +="Message:\t" + response.message +"</p>";
-                        $("#df_address_info").append(tmp);
+                        tmp ="<a>"+response.error+":</a>\t<a>"+ response.message +"</a>";
+                        $("#df_error").append(tmp);
                         
                     }
                     else
                     {
-                        tmp = "<p>Amount:</p><a>" +amount +"\t"+ m_seletedTicker +"</a>";
-                        tmp +="<p>To this address:</p><a>"+response.payinAddress+"</a>";
+                        $("#df_address_info").empty();
+                        $("#df_qrcode").empty();
+                        tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ "USDT" +"</a>"+"<p></p>";
+                        tmp +="<a>To this address:</a><br><a>"+response.payinAddress+"</a>";
                         $("#df_address_info").append(tmp);
                         qrc = new QRCode(document.getElementById("df_qrcode"), 
                             {
-                                text: response.payinAddress,
+                                text:response.payinAddress,
                                 width: 150,
                                 height: 150,
-                                correctLevel : QRCode.CorrectLevel.H
                             });
                     }
-                  
-
-                  
-                    
                 },
                 error: function(response){
                     alert('An error occured')

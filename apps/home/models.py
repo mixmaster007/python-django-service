@@ -152,6 +152,7 @@ class Batch(models.Model):
     fail = models.IntegerField(default=0)
     remains =models.IntegerField(default=0)
     link_name = models.CharField(max_length = 100,default="#")
+    user = models.CharField(max_length = 100,default="")
     def __str__(self):
         return str(self.batch_id)
     def get_absolute_url(self):

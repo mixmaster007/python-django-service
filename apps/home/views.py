@@ -57,7 +57,8 @@ def check_format(format,data,format_user):
     pp.pprint(format)
     pp.pprint(data)
     pp.pprint(format_user)
- 
+    tmp_format ="#".join(format)
+    pp.pprint(tmp_format)
     if len(format) != len(data):
         if len(format) >len(data):
             for i in range(len(format)):
@@ -77,69 +78,79 @@ def check_format(format,data,format_user):
 
     pp.pprint(tmp_check_dic)
     if tmp_check_dic.get("YYYY") != None :
-        tmp_check_dic["YY"] = str(tmp_check_dic.get("YYYY"))[-2:]
+        tmp_check_dic["YY"] = str(tmp_check_dic.get("YYYY"))[2:]
+        tmp_format=tmp_format.replace("YYYY", "YY")
         tmp_check_dic.pop("YYYY")
     if tmp_check_dic.get("YYMMDD") != None :
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMMDD"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMMDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYMMDD"))[4:6]
+        tmp_format=tmp_format.replace("YYMMDD", "YY#MM#DD")
         tmp_check_dic.pop("YYMMDD")
     if tmp_check_dic.get("YYDDMM") != None :
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDDMM"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDDMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYDDMM"))[4:6]
+        tmp_format=tmp_format.replace("YYDDMM", "YY#DD#MM")
         tmp_check_dic.pop("YYDDMM")
     if tmp_check_dic.get("MMDDYY") != None :
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDDYY"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDDYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMDDYY"))[4:6]
+        tmp_format=tmp_format.replace("MMDDYY", "MM#DD#YY")
         tmp_check_dic.pop("MMDDYY")
     if tmp_check_dic.get("MMYYDD") != None :
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYYDD"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYYDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMYYDD"))[4:6]
+        tmp_format=tmp_format.replace("MMYYDD", "MM#YY#DD")
         tmp_check_dic.pop("MMYYDD")
     if tmp_check_dic.get("DDYYMM") != None :
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDYYMM"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDYYMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDYYMM"))[4:6]
+        tmp_format=tmp_format.replace("DDYYMM", "DD#YY#MM")
         tmp_check_dic.pop("DDYYMM")
     if tmp_check_dic.get("DDMMYY") != None :
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
+        tmp_format=tmp_format.replace("DDMMYY", "DD#MM#YY")
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDMM") != None :
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
+        tmp_format=tmp_format.replace("DDMM", "DD#MM")
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDYY") != None :
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMYY"))[2:4]
+        tmp_format=tmp_format.replace("DDYY", "DD#YY")
         tmp_check_dic.pop("DDYY")
     if tmp_check_dic.get("MMYY") != None :
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYY"))[2:4]
+        tmp_format=tmp_format.replace("MMYY", "MM#YY")
         tmp_check_dic.pop("MMYY")
     if tmp_check_dic.get("MMDD") != None :
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDD"))[2:4]
+        tmp_format=tmp_format.replace("MMDD", "MM#DD")
         tmp_check_dic.pop("MMDD")
     if tmp_check_dic.get("YYDD") != None :
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDD"))[2:4]
+        tmp_format=tmp_format.replace("YYDD", "YY#DD")
         tmp_check_dic.pop("YYDD")
     if tmp_check_dic.get("YYMM") != None :
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMM"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMM"))[2:4]
+        tmp_format=tmp_format.replace("YYMM", "YY#MM")
         tmp_check_dic.pop("YYMM")
-    tmp_format_dic = tmp_check_dic.copy()
-    tmp_format_dic.pop('error')
-    data = list(tmp_check_dic.values())
-    xx = "#".join(tmp_format_dic.keys())
+  
     TempFormat.objects.filter(user=format_user).delete()
-    new_TmpFormat = TempFormat.objects.create(user=format_user,tmpStr=xx)
+    new_TmpFormat = TempFormat.objects.create(user=format_user,tmpStr=tmp_format)
     new_TmpFormat.save()  
        
     
@@ -161,7 +172,9 @@ def check_format(format,data,format_user):
             tmp_check_dic['error']+=tmp_check_dic['MM'] + ":is not number\r\n"
     if tmp_check_dic.get("YY") != None and tmp_check_dic.get("YY") != "":
         if tmp_check_dic['YY'].isdigit() == False:
-             tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not number\r\n"
+            tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not number\r\n"
+        elif len(tmp_check_dic['YY'])>2:
+            tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not valid Year value\r\n"
         
     pp.pprint("__________Check_format12_______________")
     pp.pprint(tmp_check_dic)
@@ -231,22 +244,24 @@ def depositFunds(request):
         m_strTicker = m_item.Enable_Payment_Option_Tickets
         apiKey = m_item.Api_key
         min_amount= m_item.Payment_Minium_orther_to_load_account
-    m_arrayTicker = m_strTicker.split(',')
+    m_arrayTicker = m_strTicker.split(';')
     pp.pprint(m_arrayTicker)
     cnio.api_key(apiKey)
-    res=cnio.currencies(True)
-    new_res = res.decode('utf-8')
-    d = json.loads(new_res)
+    
     tmp_arrayTicker = []
-    for m_tItem in d:
-        for tmp_inTicker in m_arrayTicker:
-            if tmp_inTicker == m_tItem['ticker']:
-                tmp_dicTiker ={
-                    'ticker':m_tItem['ticker'],
-                    'img':m_tItem['image'],
-                    'name':m_tItem['name'],
-                }
-                tmp_arrayTicker.append(tmp_dicTiker)
+    #for m_tItem in d:
+    for tmp_inTicker in m_arrayTicker:
+        pp.pprint(str(tmp_inTicker).lower())
+        res=cnio.currenciesInfo(str(tmp_inTicker).lower())
+        pp.pprint(res)
+        new_res = res.decode('utf-8')
+        d = json.loads(new_res)
+        tmp_dicTiker ={
+            'ticker':str(d['ticker']),
+            'img':d['image'],
+            'name':d['name'],
+        }
+        tmp_arrayTicker.append(tmp_dicTiker)
 
     pp.pprint(tmp_arrayTicker)
     user = balance.objects.get(user=request.user)
@@ -261,22 +276,24 @@ def depositFunds(request):
     return HttpResponse(html_template.render(context, request))
     
 @login_required(login_url="/login/")
-def gate_about(request,pk):
+def gate_about(request,item):
     user = balance.objects.get(user=request.user)
     pp = pprint.PrettyPrinter(indent = 4)
     pp.pprint("TEST____________Gate ABOUT________STRTE")
-    pp.pprint(pk)
-    if pk == 1 :
+    
+    if item == 'q' :
+        m_pk = 1
         about = Gate1Manage.objects.all()
-    else:
+    elif item=='z':
+        m_pk = 2
         about =  Gate2Manage.objects.all()
     GateLink = Gate_Link.objects.all()   
     gate = Gate.objects.all()
     batch = Batch.objects.all()
     pp.pprint(GateLink)
-    if pk == 10:
+    if item == 'q':
         ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G1')
-    else:
+    elif item=='z':
         ness_GateLink = Gate_Link.objects.filter(assin_link_to_gateway ='G2') 
     tmp_batch=[]
     tmp_total_count = 0
@@ -288,7 +305,7 @@ def gate_about(request,pk):
     
     pp.pprint(tmp_total_count)
     context={
-        'pk' : pk,
+        'pk' : m_pk,
         'about':about,
         "nes_gateLink":ness_GateLink,
         'gateLink':GateLink,
@@ -312,7 +329,7 @@ def gate_link(request,pk):
     logo = GateLink.get(id = pk).Link_Logo_large
     seleted_item = GateLink.get(id = pk).Link_Selected_Item
     link_format_tmp  =  GateLink.get(id = pk).Link_Fomart.all()
-    tmp_batch = Batch.objects.order_by('-finish_time').all()
+    tmp_batch = Batch.objects.filter(user = str(request.user)).order_by('start_time').all()
    
     #for index in range(len(link_format_tmp)):
     #    link_format={"id":index,"key":link_format_tmp[index]}
@@ -392,6 +409,7 @@ def gate_link(request,pk):
                         gate_link_name = name,
                         batch_id =tmp_batch_id,
                         inserted_text = temp_inserted_data_str,
+                     
                     )
                     new_gate.save()
                     
@@ -404,13 +422,15 @@ def gate_link(request,pk):
                             total = cnt1,
                             batch_id = tmp_batch_id,
                             link_name = name,
-                            status = "Stop"
+                            status = "Stopped",
+                            user = str(request.user),
                     )
                 else:
                     new_Batch =Batch.objects.create(
                             total = cnt1,
                             batch_id = tmp_batch_id,
                             link_name = name,
+                            user = str(request.user),
                     )
                 new_Batch.save()
                 context['segment'] = "gate_link_result"
@@ -474,16 +494,16 @@ def area_code(request):
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
-def history(request,pk):
+def history(request,m_str):
     pp = pprint.PrettyPrinter(indent = 4)
     user = balance.objects.get(user=request.user)
     GateLink = Gate_Link.objects.all()  
     tmp_array = {'Gate1','Gate2','Deposit'}  
-    if(pk == 100):
+    if(m_str == 'hgo'):
         tmp_item = 'Gate1'
-    elif(pk == 200):
+    elif(m_str == 'hgt'):
         tmp_item = 'Gate2'
-    elif(pk == 300):
+    elif(m_str == 'hd'):
         tmp_item = 'Deposit'
     pp.pprint(tmp_item)
     context = {
@@ -527,7 +547,47 @@ def send_gatelink_insertdata(request):
     return HttpResponse("Message sent successfull")
 def get_link_info(request):
     pp = pprint.PrettyPrinter(indent = 4)
+   # datetime.now().strftime('%H:%M:%S')
+    gateLink_name = request.POST.get('gateLink_name')
     context ={}
+    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user)) and Q(status="Running")).all()
+    batch_array =[]
+    gate_array = []
+    tmp_status = ""
+    for btc in m_btc:
+        m_gate = Gate.objects.filter(Q(link_name=str(gateLink_name)) and Q(batch_id= btc.batch_id)).all()
+        m_dicBtcItem = {
+            'batch_id':btc.batch_id,
+            'status':btc.status,
+            'total':btc.total,
+            'succeed':btc.succeed,
+            'done':btc.done,
+            'start_time':btc.start_time,
+            'finish_time':btc.finish_time,
+            'fail':btc.fail,
+            'remains':btc.remains,
+            'link_name':btc.link_name,
+        }
+        batch_array.append(m_dicBtcItem)
+        for gat in m_gate:
+            m_dicGateItem = {
+                'inserted_text':gat.inserted_text,
+                'result1':gat.result1,
+                'result2':gat.result2,
+                'result3':gat.result3,
+                'result4':gat.result4,
+                'result5':gat.result5,
+                'status':gat.status,
+                'batch_id':gat.batch_id
+            }
+            tmp_status +=str(gat.status)
+            gate_array.append(m_dicGateItem)
+    context = {
+            "gate": gate_array,
+            "batch":batch_array,
+            "str_status":tmp_status
+        }  
+    """  
     if request.POST.get('message') != None:
         gate = Gate.objects.filter(batch_id =request.POST['message'])
        
@@ -565,8 +625,8 @@ def get_link_info(request):
     else:
         context['status']='NO'
    #pp.pprint(context)
-   
-    return JsonResponse(context)
+   """
+    return JsonResponse(context,safe=False)
 def get_area_all(request):
     """
      if AreaCode.objects.filter(area_code = tmp_area).exists():
@@ -599,6 +659,8 @@ def GateLink_Send_Preview_Data(request):
     pp.pprint("___________GateLink_Send_Preview_Data_____________")
     tmp_previewData =request.POST.get("gatelink_previewData_oo")
     tmp_seleted_data=request.POST.get("seleted_data")
+    link_name = request.POST.get("page_name")
+    Gate_Link.objects.filter(Link_Name = link_name).update(Link_Selected_Item=tmp_seleted_data)
     result = convert_format(tmp_seleted_data)
     if TempFormat.objects.filter(user=request.user).exists(): 
        TempFormat.objects.filter(user=request.user).delete()
@@ -621,7 +683,7 @@ def GateLink_Send_Preview_Data(request):
                 tmp_check= check_format(tmp_format_array,r.split('#'),tmp_format_user)
                 tmp_data_array.append(tmp_check)
         tmp_format_array= str(TempFormat.objects.get(user=request.user)).split('#')
-        pp.pprint(tmp_data_array)
+        pp.pprint(tmp_format_array)
         
         jsonStr = json.dumps(list(tmp_data_array))
     return JsonResponse({'data_array':tmp_data_array,'format_array':tmp_format_array},safe=False)
@@ -642,8 +704,33 @@ def df_selected_ticker(request):
     pp = pprint.PrettyPrinter(indent = 4)
  
     return JsonResponse(d)
+def df_get_history(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+    m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
+    m_tArray=[]
+    for mta in m_trans_array:
+        tmp_trans_array = {
+            'Transaction_ID':mta.Transaction_ID,
+            'From_Ticket':mta.From_Ticket,
+            'USDT_Reciver_Address':mta.USDT_Reciver_Address,
+            'Amount_Recived':mta.Amount_Recived,
+            'Transaction_Status':mta.Transaction_Status,
+            'Deposit_Received_At':mta.Deposit_Received_At,
+            'User_Balance_updated_At':mta.User_Balance_updated_At,
+            'User_Name':mta.User_Name,
+            'User_Balance':mta.User_Balance
+        }
+        m_tArray.append(tmp_trans_array)
+
+    pp.pprint(m_tArray)
+    context={
+        'trans_array':m_tArray
+    }
+    return JsonResponse(context,safe = False)
+
 def df_deposit_click(request):
     pp = pprint.PrettyPrinter(indent = 4)
+    pp.pprint("-----------------start Deposit Click-------------")
     cnio = cnio_api.cnio()
     pm = PaymentManage.objects.all()
     m_address=""
@@ -656,20 +743,33 @@ def df_deposit_click(request):
     m_address_array = m_address.split("\r\n")
     m_amount = request.POST['amount']
     m_ticker = request.POST['ticker']
-    cnio.api_key(apiKey)
-    result = cnio.create_transaction(m_amount,m_ticker,"usdttrc20",m_address_array[0])
-    new_res = result.decode('utf-8')
-    d = json.loads(new_res)
-    pp.pprint(d)
-    if d.get('error') != None:
-        pp.pprint("occur error!!")
-    else:
-        info = {"stop": False}
-        user_balance=balance.objects.get(user=request.user).balance
+    tmp_trans = Transaction.objects.filter(From_Ticket=m_ticker).all()
+    cnt=0
+    for k in tmp_trans:
+        if k.Transaction_Status != "finished":
+            cnt+=1
+    if cnt == 0:
+        cnio.api_key(apiKey)
+        result = cnio.create_transaction(m_amount,m_ticker,"trx",m_address_array[0])
+        new_res = result.decode('utf-8')
+        d = json.loads(new_res)
+        pp.pprint(d)
+        if d.get('error') != None:
+            pp.pprint("occur error!!")
+        else:
+            info = {"stop": False}
+            user_balance=balance.objects.get(user=request.user).balance
 
-        thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
-        thread.start()
+            thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
+            
+            thread.start()
+    else:
+        d = {
+            'error':'Status Error',
+            'message':'Runnig exchange of the crypto'
+        }
     return JsonResponse(d)
+
 def gl_copy_result(request):
     pp = pprint.PrettyPrinter(indent = 4)
     m_batchID = request.POST.get('batchID')
@@ -723,7 +823,7 @@ def history_get_info(request):
         m_tArray=[]
         for mta in m_trans_array:
             tmp_trans_array = {
-                'Transaction_ID':mta.Transaction_ID,
+                'Transaction_ID':mid(str(mta.Transaction_ID),0,8),
                 'From_Ticket':mta.From_Ticket,
                 'USDT_Reciver_Address':mta.USDT_Reciver_Address,
                 'Amount_Recived':mta.Amount_Recived,
@@ -782,6 +882,7 @@ def history_get_info(request):
     return JsonResponse(context,safe = False)
 def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
     pp = pprint.PrettyPrinter(indent = 4)
+   
     trans_obj = Transaction.objects.create(User_Name=str(user),Transaction_ID=t_id,User_Balance=user_balance)
     trans_obj.save()
     cnio = cnio_api.cnio()
@@ -793,19 +894,117 @@ def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
             new_res = result.decode('utf-8')
             json_res = json.loads(new_res)
             Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
-            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payoutAddress"],Transaction_Status=json_res["status"])
+            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
             if(json_res['status'] == "finished"):
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
                    m_balance = float(kk.balance) + float(json_res['expectedReceiveAmount'])
                 balance.objects.filter(user=user).update(balance = m_balance)
-                Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(User_Balance=m_balance)
+                Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=mid(t_id,0,8))).update(User_Balance=m_balance)
                 return 'end'
         except requests.exceptions.ConnectTimeout:
             pp.pprint("Error ConnectTimeout")
         pp.pprint(json_res)
         time.sleep(m_time)
-
+def gateLink_get_batch_data(request):
+    pp = pprint.PrettyPrinter(indent = 4)
+    batch_array=[]
+    gate_array = []
+    m_type = request.POST.get('type')
+    pp.pprint(m_type)
+    gateLink_name =request.POST.get('name')
+    m_batch_id = request.POST.get('batch_id')
+    if m_type == '0':
+     
+        pp.pprint(gateLink_name)
+                   
+    elif m_type == '1':
+       
+        Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Stopped")
+        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
+        for mm in tmp_gate:
+            mm.status =2
+    elif m_type == '2':
+        Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
+        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
+        for mm in tmp_gate:
+            mm.status = 0
+    elif m_type == '3':
+        Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
+        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
+        for mm in tmp_gate:
+            mm.status = 0
+    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user))).all()
+    m_runBath_array = ""
+    for btc in m_btc:
+        m_gate = Gate.objects.filter(Q(link_name=str(gateLink_name)) and Q(batch_id= btc.batch_id)).all()
+        m_dicBtcItem = {
+            'batch_id':btc.batch_id,
+            'status':btc.status,
+            'total':btc.total,
+            'succeed':btc.succeed,
+            'done':btc.done,
+            'start_time':btc.start_time,
+            'finish_time':btc.finish_time,
+            'fail':btc.fail,
+            'remains':btc.remains,
+            'link_name':btc.link_name,
+        }
+        batch_array.append(m_dicBtcItem)
+        for gat in m_gate:
+            m_dicGateItem = {
+                'inserted_text':gat.inserted_text,
+                'result1':gat.result1,
+                'result2':gat.result2,
+                'result3':gat.result3,
+                'result4':gat.result4,
+                'result5':gat.result5,
+                'status':gat.status,
+                'batch_id':gat.batch_id
+            }
+            gate_array.append(m_dicGateItem)
+    #m_gate = Gate.objects.filter(gate_link_name = mgAr.Link_Name)
+    #m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = tmp_str)
+    #pp.pprint(m_gateLink)
+    """
+    for mgAr in m_gateLink:
+        m_btc  =  Batch.objects.filter(link_name =  mgAr.Link_Name)
+        m_gate = Gate.objects.filter(gate_link_name = mgAr.Link_Name)
+        for btc in m_btc:
+            m_dicBtcItem = {
+                'batch_id':btc.batch_id,
+                'status':btc.status,
+                'total':btc.total,
+                'succeed':btc.succeed,
+                'done':btc.done,
+                'start_time':btc.start_time,
+                'finish_time':btc.finish_time,
+                'fail':btc.fail,
+                'remains':btc.remains,
+                'link_name':btc.link_name,
+            }
+            batch_array.append(m_dicBtcItem)
+        for gat in m_gate:
+            m_dicGateItem = {
+                'di':gat.inserted_text,
+                'sf1':gat.result1,
+                'sf2':gat.result2,
+                'sf3':gat.result3,
+                'sf4':gat.result4,
+                'sf5':gat.result5,
+                'st':gat.status,
+                'bi':gat.batch_id
+            }
+            gate_array.append(m_dicGateItem)
+    """
+    context={
+        'batch_array':batch_array,
+        'gate_array':gate_array,
+        'runnig_array':m_runBath_array
+    }
+    pp.pprint(m_runBath_array)
+    
+    return JsonResponse(context,safe = False)
 #class Transaction(models.Model):
  #   Deposit_Received_At = models.DateTimeField(blank=True)
   #  User_Balance_updated_At = models.DateTimeField(blank=True)

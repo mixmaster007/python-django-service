@@ -26,6 +26,12 @@ class cnio():
         endpoint = "currencies"
         endpoint = str(self.api + endpoint + query)
         return requests.get(url=endpoint).content
+    def currenciesInfo(self, tick):
+        # this method returns the list of supported currencies
+        # use optional param "active" to get only currently active currencies. This should be provided as a bool value
+        endpoint = str("currencies/"+str(tick))
+        endpoint = str(self.api + endpoint)
+        return requests.get(url=endpoint).content
 
     def min_amount(self, send, receive):
         # this method returns the minimum amount required to make an exchange.

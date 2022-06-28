@@ -27,7 +27,7 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav  sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 10 %}">Gate About</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 'q' %}">Gate About</a></li>
                   {% for Item in gateLink %}
                     {% if Item.assin_link_to_gateway == "G1" %}
                       <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  Item.id %}">{{Item.Link_Name}}</a></li>
@@ -37,16 +37,16 @@
             </div>
         </li>
         <li class="nav-item menu-items">
-          <a class="nav-link" data-toggle="collapse" href="#ui-basic1"  >
+          <a class="nav-link" data-toggle="collapse" href="#ui-basicm"  >
             <span class="menu-icon">
               <i class="mdi mdi-laptop"></i>
             </span>
             <span class="menu-title">Gate2</span>
             <i class="menu-arrow"></i>
           </a>
-          <div class="collapse" id="ui-basic1">
+          <div class="collapse" id="ui-basicm">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 20 %}">Gate2 About</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{% url 'gate_about' 'z' %}">Gate2 About</a></li>
               {% for IItem in gateLink %}
                 {% if IItem.assin_link_to_gateway == "G2" %}
                   <li class="nav-item"> <a class="nav-link" href="{% url 'gate_link'  IItem.id %}">{{IItem.Link_Name}}</a></li>
@@ -67,7 +67,7 @@
         <!--Area Codes Item End-->
         <!--History Start-->
         <li class="nav-item menu-items">
-          <a class="nav-link" href="{% url 'history' 100 %}">
+          <a class="nav-link" href="{% url 'history' 'hgo' %}">
             <span class="menu-icon">
               <i class="mdi mdi-table-large"></i>
             </span>
