@@ -24,7 +24,7 @@ class site_manage(models.Model):
         choices=assin_site_status,
         default=st_online,
     )
-    Uner_Mantatince_Messge = models.CharField(max_length = 100,help_text = "Enter field Udermanitain Message")
+    Uner_Mantatince_Messge = models.CharField(max_length = 100,help_text = "Enter field Udermanitain Message",default="")
     def __str__(self):
         return self.Site_Status
 class News(models.Model):
