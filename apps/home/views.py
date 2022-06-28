@@ -494,14 +494,15 @@ def send_gatelink_insertdata(request):
 def get_link_info(request):
     pp = pprint.PrettyPrinter(indent = 4)
    # datetime.now().strftime('%H:%M:%S')
-    gateLink_name = request.POST.get('gateLink_name')
+    gateLink_name = request.POST.get('gateLink_Name')
+   
     context ={}
-    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user)) and Q(status="Running")).all()
+    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) & Q(user=str(request.user)) & Q(status="Running")).all()
     batch_array =[]
     gate_array = []
     tmp_status = ""
     for btc in m_btc:
-        m_gate = Gate.objects.filter(Q(link_name=str(gateLink_name)) and Q(batch_id= btc.batch_id)).all()
+        m_gate = Gate.objects.filter(Q(gate_link_name=str(gateLink_name)) & Q(batch_id= btc.batch_id)).all()
         m_dicBtcItem = {
             'batch_id':btc.batch_id,
             'status':btc.status,
@@ -733,9 +734,9 @@ def gl_copy_result(request):
     if m_btType == '0' :
         m_gate = Gate.objects.filter(batch_id = m_batchID)
     elif m_btType == '1' or m_btType == '2':
-        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) and Q(status = 3))
+        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) & Q(status = 3))
     elif m_btType == '3':
-        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) and Q(status = 2))
+        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) & Q(status = 2))
     for k in m_gate:
         for kk in m_checkArray:
             if kk =="DI":
@@ -774,9 +775,9 @@ def history_get_info(request):
     batch_array=[]
     gate_array =[]
     for mgAr in m_gateLink:
-        m_btc  =  Batch.objects.filter(Q(link_name=str(mgAr.Link_Name)) and Q(user=str(request.user))).all()
+        m_btc  =  Batch.objects.filter(Q(link_name=str(mgAr.Link_Name)) & Q(user=str(request.user))).all()
         for btc in m_btc:
-            m_gate = Gate.objects.filter(Q(link_name=str(mgAr.Link_Name)) and Q(batch_id= btc.batch_id)).all()
+            m_gate = Gate.objects.filter(Q(gate_link_name=str(mgAr.Link_Name)) & Q(batch_id= btc.batch_id)).all()
             m_dicBtcItem = {
                 'batch_id':btc.batch_id,
                 'status':btc.status,
@@ -822,14 +823,14 @@ def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
             result = cnio.get_transaction_status(t_id)
             new_res = result.decode('utf-8')
             json_res = json.loads(new_res)
-            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
-            Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
+            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
+            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
             if(json_res['status'] == "finished"):
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
                    m_balance = float(kk.balance) + float(json_res['expectedReceiveAmount'])
                 balance.objects.filter(user=user).update(balance = m_balance)
-                Transaction.objects.filter(Q(User_Name=str(user)) and Q(Transaction_ID=mid(t_id,0,8))).update(User_Balance=m_balance)
+                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=mid(t_id,0,8))).update(User_Balance=m_balance)
                 return 'end'
         except requests.exceptions.ConnectTimeout:
             pp.pprint("Error ConnectTimeout")
@@ -930,10 +931,10 @@ def gateLink_get_batch_data(request):
     elif m_type == '4':
         addBatch(gateLink_name,m_batch_id,request.user)
         pp.pprint(m_batch_id)
-    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user))).order_by("-start_time").all()
+    m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) & Q(user=str(request.user))).order_by("-start_time").all()
     m_runBath_array = ""
     for btc in m_btc:
-        m_gate = Gate.objects.filter(Q(link_name=str(gateLink_name)) and Q(batch_id= btc.batch_id)).all()
+        m_gate = Gate.objects.filter(Q(gate_link_name=str(gateLink_name)) & Q(batch_id= btc.batch_id)).all()
         m_dicBtcItem = {
             'batch_id':btc.batch_id,
             'status':btc.status,
