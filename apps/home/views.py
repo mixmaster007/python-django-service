@@ -4,6 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 from datetime import datetime
 from multiprocessing.dummy import JoinableQueue
+from telnetlib import STATUS
 # from subprocess import CREATE_NEW_CONSOLE
 from . import cnio_api
 import logging
@@ -349,99 +350,6 @@ def gate_link(request,pk):
         'seleted_item':seleted_item
 
     }
-    if request.method == 'POST':
-        tmp_realData = request.POST.get('real_data')
-        if tmp_realData != None:
-            check = request.POST.getlist('check')
-            pp.pprint("_______real_data__________")
-            pp.pprint(tmp_realData)
-            pp.pprint(check)
-            tmp_arry = str(TempFormat.objects.get(user=request.user)).split('#')
-            tmp_batch_id =tmp_batch.count()+1
-            default_array={'phone':'0','DD':'0','MM':'0','YY':'0','string1':'#','string2':'#',
-                'string3':'#','string4':'#','string5':'#','string6':'#','string7':'#','string8':'#',
-                'string9':'#','string10':'#','batch_id':'0' }
-            cnt1=0
-            for i in check:
-               # tmp_x=i.replace("[","")
-               # tmp_x=tmp_x.replace("]","")
-               # tmp_x=tmp_x.replace("'","")
-                pp.pprint("_______real__REAL___data__________")
-                pp.pprint(tmp_realData)
-                temp_inserted_data_str = i.split("##")[0]
-                temp_inserted_data_list = temp_inserted_data_str.split("*#*")
-                temp_inserted_data_str =" ".join(temp_inserted_data_list)
-                #____check inlcude space in inserted data format_____#
-                      
-
-                tmp_y = i.split("##")[1].split('#')
-                pp.pprint(temp_inserted_data_str)
-                pp.pprint(tmp_y)
-                tmp_xx = 0
-                for ii in tmp_y:
-                    
-                    if ii == "":
-                        tmp_y.pop(tmp_xx)
-                    tmp_xx +=1
-                pp.pprint(tmp_y)
-                if len(tmp_y) == len(tmp_arry):
-                    pp.pprint("_____________________NO ERROR______________")
-                    cnt1+=1
-                    cnt = 0
-                    for ii in tmp_y:
-                        default_array[tmp_arry[cnt]]=ii.strip()
-                        cnt += 1
-                    new_gate=Gate.objects.create(
-                        phone = default_array['phone'],
-                        DD=default_array['DD'],
-                        MM = default_array['MM'],
-                        YY = default_array['YY'],
-                        string1 = default_array['string1'],
-                        string2 = default_array['string2'],
-                        string3 = default_array['string3'],
-                        string4 = default_array['string4'],
-                        string5 = default_array['string5'],
-                        string6 = default_array['string6'],
-                        string7 = default_array['string7'],
-                        string8 = default_array['string8'],
-                        string9 = default_array['string9'],
-                        string10 = default_array['string10'],
-                        gate_link_name = name,
-                        batch_id =tmp_batch_id,
-                        inserted_text = temp_inserted_data_str,
-                     
-                    )
-                    new_gate.save()
-                    
-                    if Gate.objects.filter(gate_link_name='#').exists(): 
-                        Gate.objects.filter(gate_link_name='#').delete()
-            pp.pprint("---------Create Batch Test------------")
-            if cnt1 != 0:
-                if Batch.objects.filter(status = "Running").exists():
-                    new_Batch =Batch.objects.create(
-                            total = cnt1,
-                            batch_id = tmp_batch_id,
-                            link_name = name,
-                            status = "Stopped",
-                            user = str(request.user),
-                    )
-                else:
-                    new_Batch =Batch.objects.create(
-                            total = cnt1,
-                            batch_id = tmp_batch_id,
-                            link_name = name,
-                            user = str(request.user),
-                    )
-                new_Batch.save()
-                context['segment'] = "gate_link_result"
-                context['Gate'] = Gate.objects.all()
-                context['Batch']= Batch.objects.all()
-                context['Total_Batch']=Batch.objects.all().count()
-            else:
-                context['segment'] = "gate_link_result_error"
-            pp.pprint(context)
-            pp.pprint("___END___")
-      
     pp.pprint(context["seleted_item"]);
     html_template = loader.get_template('home/gate_link.html')
     return HttpResponse(html_template.render(context, request))
@@ -498,13 +406,11 @@ def history(request,m_str):
     pp = pprint.PrettyPrinter(indent = 4)
     user = balance.objects.get(user=request.user)
     GateLink = Gate_Link.objects.all()  
-    tmp_array = {'Gate1','Gate2','Deposit'}  
+    tmp_array = {'Gate1','Gate2'}  
     if(m_str == 'hgo'):
         tmp_item = 'Gate1'
     elif(m_str == 'hgt'):
         tmp_item = 'Gate2'
-    elif(m_str == 'hd'):
-        tmp_item = 'Deposit'
     pp.pprint(tmp_item)
     context = {
        'gateLink':GateLink,
@@ -818,68 +724,45 @@ def history_get_info(request):
         tmp_str = 'G1'
     elif m_type == 'Gate2':
         tmp_str = 'G2'
-    if m_type == 'Deposit':
-        m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
-        m_tArray=[]
-        for mta in m_trans_array:
-            tmp_trans_array = {
-                'Transaction_ID':mid(str(mta.Transaction_ID),0,8),
-                'From_Ticket':mta.From_Ticket,
-                'USDT_Reciver_Address':mta.USDT_Reciver_Address,
-                'Amount_Recived':mta.Amount_Recived,
-                'Transaction_Status':mta.Transaction_Status,
-                'Deposit_Received_At':mta.Deposit_Received_At,
-                'User_Balance_updated_At':mta.User_Balance_updated_At,
-                'User_Name':mta.User_Name,
-                'User_Balance':mta.User_Balance
+    m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = tmp_str)
+    batch_array=[]
+    gate_array =[]
+    for mgAr in m_gateLink:
+        m_btc  =  Batch.objects.filter(Q(link_name=str(mgAr.Link_Name)) and Q(user=str(request.user))).all()
+        for btc in m_btc:
+            m_gate = Gate.objects.filter(Q(link_name=str(mgAr.Link_Name)) and Q(batch_id= btc.batch_id)).all()
+            m_dicBtcItem = {
+                'batch_id':btc.batch_id,
+                'status':btc.status,
+                'total':btc.total,
+                'succeed':btc.succeed,
+                'done':btc.done,
+                'start_time':btc.start_time,
+                'finish_time':btc.finish_time,
+                'fail':btc.fail,
+                'remains':btc.remains,
+                'link_name':btc.link_name,
             }
-            m_tArray.append(tmp_trans_array)
-
-        pp.pprint(m_tArray)
-        context={
-            'trans_array':m_tArray
-        }
-    else:
-        m_gateLink = Gate_Link.objects.filter(assin_link_to_gateway = tmp_str)
-        pp.pprint(m_gateLink)
-        batch_array=[]
-        gate_array = []
-        for mgAr in m_gateLink:
-            m_btc  =  Batch.objects.filter(link_name =  mgAr.Link_Name)
-            m_gate = Gate.objects.filter(gate_link_name = mgAr.Link_Name)
-            for btc in m_btc:
-                m_dicBtcItem = {
-                    'batch_id':btc.batch_id,
-                    'status':btc.status,
-                    'total':btc.total,
-                    'succeed':btc.succeed,
-                    'done':btc.done,
-                    'start_time':btc.start_time,
-                    'finish_time':btc.finish_time,
-                    'fail':btc.fail,
-                    'remains':btc.remains,
-                    'link_name':btc.link_name,
-                }
-                batch_array.append(m_dicBtcItem)
+            batch_array.append(m_dicBtcItem)
             for gat in m_gate:
                 m_dicGateItem = {
-                    'di':gat.inserted_text,
-                    'sf1':gat.result1,
-                    'sf2':gat.result2,
-                    'sf3':gat.result3,
-                    'sf4':gat.result4,
-                    'sf5':gat.result5,
-                    'st':gat.status,
-                    'bi':gat.batch_id
+                    'inserted_text':gat.inserted_text,
+                    'result1':gat.result1,
+                    'result2':gat.result2,
+                    'result3':gat.result3,
+                    'result4':gat.result4,
+                    'result5':gat.result5,
+                    'status':gat.status,
+                    'batch_id':gat.batch_id
                 }
                 gate_array.append(m_dicGateItem)
-        context={
-            'batch_array':batch_array,
-            'gate_array':gate_array
-        }
-        #pp.pprint(batch_array)
-        
+    
+    context={
+        'batch_array':batch_array,
+        'gate_array':gate_array,
+    }
     return JsonResponse(context,safe = False)
+  
 def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
     pp = pprint.PrettyPrinter(indent = 4)
    
@@ -906,6 +789,74 @@ def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
             pp.pprint("Error ConnectTimeout")
         pp.pprint(json_res)
         time.sleep(m_time)
+def addBatch(gateLinkName,value,user):
+    pp = pprint.PrettyPrinter(indent = 4)
+    check = value.split("$$$")
+    pp.pprint("_______real_data__________")
+   
+    pp.pprint(check)
+    tmp_arry = str(TempFormat.objects.get(user=user)).split('#')
+    tmp_batch_id =int(check_BatchID())+1
+    default_array={'phone':'0','DD':'0','MM':'0','YY':'0','string1':'#','string2':'#',
+        'string3':'#','string4':'#','string5':'#','string6':'#','string7':'#','string8':'#',
+        'string9':'#','string10':'#','batch_id':'0' }
+    cnt1=0
+    for i in check:
+        temp_inserted_data_str = i.split("##")[0]
+        temp_inserted_data_list = temp_inserted_data_str.split("*#*")
+        temp_inserted_data_str =" ".join(temp_inserted_data_list)
+        #____check inlcude space in inserted data format_____#
+        tmp_y = i.split("##")[1].split('#')
+        pp.pprint(temp_inserted_data_str)
+        pp.pprint(tmp_y)
+        tmp_xx = 0
+        for ii in tmp_y:
+            
+            if ii == "":
+                tmp_y.pop(tmp_xx)
+            tmp_xx +=1
+        pp.pprint(tmp_y)
+        if len(tmp_y) == len(tmp_arry):
+            pp.pprint("_____________________NO ERROR______________")
+            cnt1+=1
+            cnt = 0
+            for ii in tmp_y:
+                default_array[tmp_arry[cnt]]=ii.strip()
+                cnt += 1
+            new_gate=Gate.objects.create(
+                phone = default_array['phone'],
+                DD=default_array['DD'],
+                MM = default_array['MM'],
+                YY = default_array['YY'],
+                string1 = default_array['string1'],
+                string2 = default_array['string2'],
+                string3 = default_array['string3'],
+                string4 = default_array['string4'],
+                string5 = default_array['string5'],
+                string6 = default_array['string6'],
+                string7 = default_array['string7'],
+                string8 = default_array['string8'],
+                string9 = default_array['string9'],
+                string10 = default_array['string10'],
+                gate_link_name = gateLinkName,
+                batch_id =tmp_batch_id,
+                inserted_text = temp_inserted_data_str,
+                
+            )
+            new_gate.save()
+            
+            if Gate.objects.filter(gate_link_name='#').exists(): 
+                Gate.objects.filter(gate_link_name='#').delete()
+    pp.pprint("---------Create Batch Test------------")
+    if cnt1 != 0:
+        new_Batch =Batch.objects.create(
+                    total = cnt1,
+                    batch_id = tmp_batch_id,
+                    link_name = gateLinkName,
+                    user = str(user),
+                    status="Running"
+            )
+        new_Batch.save()
 def gateLink_get_batch_data(request):
     pp = pprint.PrettyPrinter(indent = 4)
     batch_array=[]
@@ -920,20 +871,19 @@ def gateLink_get_batch_data(request):
                    
     elif m_type == '1':
        
-        Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Stopped")
-        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
-        for mm in tmp_gate:
-            mm.status =2
+        Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Stopped",finish_time = datetime.now())
+        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 2)
+       
     elif m_type == '2':
         Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
-        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
-        for mm in tmp_gate:
-            mm.status = 0
+        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 0)
+        
     elif m_type == '3':
         Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
-        tmp_gate = Gate.objects.filter(batch_id= int(m_batch_id)).all()
-        for mm in tmp_gate:
-            mm.status = 0
+        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 0)
+    elif m_type == '4':
+        addBatch(gateLink_name,m_batch_id,request.user)
+        pp.pprint(m_batch_id)
     m_btc  =  Batch.objects.filter(Q(link_name=str(gateLink_name)) and Q(user=str(request.user))).all()
     m_runBath_array = ""
     for btc in m_btc:
@@ -944,8 +894,8 @@ def gateLink_get_batch_data(request):
             'total':btc.total,
             'succeed':btc.succeed,
             'done':btc.done,
-            'start_time':btc.start_time,
-            'finish_time':btc.finish_time,
+            'start_time':btc.start_time.strftime("%d.%m.%Y %H:%M:%S"),
+            'finish_time':btc.finish_time.strftime("%d.%m.%Y %H:%M:%S"),
             'fail':btc.fail,
             'remains':btc.remains,
             'link_name':btc.link_name,

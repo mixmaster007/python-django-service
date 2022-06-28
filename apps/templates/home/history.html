@@ -108,65 +108,118 @@
                 csrfmiddlewaretoken:getCookie("csrftoken"),
             },
             success: function(response){
+                console.log(response);
                 $("#hi_Content").empty();
-                var tmp ="";
-                if(JSON.stringify(response).includes("trans_array"))
+                tmp="";
+                if(m_GroupOption == "op1")
                 {
-                    tmp ="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>Payment ID</th><th>Payment Method</th><th>Receiver Address</th>";
-                    tmp +="<th>Received Amount</th><th>Transaction Status</th><th>Deposit Amount</th><th>Date</th></tr></thead><tbody style=\"text-align: center;\">";
-                    for(key in response.trans_array)
-                    {
-                        tmp+="<tr><td>"+response.trans_array[key]['Transaction_ID']+"</td> <td>"+response.trans_array[key]['From_Ticket']+"</td><td>";                  
-                        tmp+=response.trans_array[key]['USDT_Reciver_Address']+"</td> <td>"+response.trans_array[key]['Amount_Recived']+"</td><td>";
-                        tmp+=response.trans_array[key]['Transaction_Status']+"</td> <td>"+response.trans_array[key]['User_Balance']+"</td><td>";
-                        tmp+=response.trans_array[key]['User_Balance_updated_At']+"</td></tr>";
-                    }
-                    tmp+="</tbody></table></div></div></div>"
-                }
-                else
-                {
-                    tmp = "<div class=\"col-sm-12 grid-margin\">";
-                    var cnt = 0;
                     for(key in response.batch_array)
-                    {
-                        cnt ++;
-
-                        tmp +="<div class=\"card\"> <div class=\"card-header\"><div class = \"row\"><div class =\"col\">Batch ID:";
-                        tmp += cnt+"</div><div class =\"col\" style=\"text-align: center;\"><a href=\"#\">Retry the Fails ones again click here</a></div> <div class =\"col\" style=\"text-align: center;\">Start time:";
-                        tmp += response.batch_array[key]['start_time']+"</div><div class =\"col\" style=\"text-align: right;\">Finish time:";
-                        tmp += response.batch_array[key]['finish_time']+"</div></div></div><div class=\"card-body\"><div class = \"row\"><div class =\"col\">Status:";
-                        tmp += response.batch_array[key]['status']+"</div><div class =\"col\">Total:"+ response.batch_array[key]['total'];
-                        tmp +="</div> <div class =\"col\">Successd:"+ response.batch_array[key]['succeed'] + "</div><div class =\"col\">Done:"+response.batch_array[key]['done'] ;
-                        tmp +="</div><div class =\"col\" id =\"glb_batch_fail\">Fails:"+response.batch_array[key]['fail']+"</div><div class =\"col\">Remains:"+ response.batch_array[key]['remains'];
-                        tmp += "</div><div class = \"col\" data-toggle = \"collapse\" href = \"#col_gate_link_" + key+ "\" aria-expanded=\"false\" ><a>Expand Frame</a></div></div><div class=\"collapse\" id=\"col_gate_link_"+key;
-                        tmp +="\"> <div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th>ID</th><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th>"
-                        tmp +="<th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead><tbody style=\"text-align: center;\">";
+                    {     
+                        tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id\"  value =";
+                        tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-2\" id=\"glb_batch_id\">Batch ID:"+ response.batch_array[key]['batch_id']+"</div>";
+                        tmp+="<div class =\"col-sm-2\" style=\"text-align: center;\">";
+                        if(response.batch_array[key]['status'] == "Stopped")
+                        {
+                            tmp+="<a onclick =\"gateLink_get_batch_data(2,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: #3c3636;\">Resume the stopped Click here</a></div>"
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: right;\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
+                        }
+                        
+                        else if(response.batch_array[key]['status'] == "Finised")
+                        {
+                            tmp+="<a onclick =\"gateLink_get_batch_data(3,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: #3c3636;\">Retry the Fails ones again click here</a></div>"
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: right;\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
+                        }
+                        else if(response.batch_array[key]['status'] == "Running")
+                        {
+                            tmp+="<a onclick =\"gateLink_get_batch_data(3,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: #3c3636;\">STOP the process of this batch click here</a></div>"
+                            tmp+="<div class =\"col-sm-4\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\">Finish time:--:--:--</div>";
+                        }
+                            
+                    
+                        tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
+                        tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
+                        tmp+="<div class =\"col\">Status:"+response.batch_array[key]['status']+"</div>";
+                        tmp+="<div class =\"col\">Total:"+response.batch_array[key]['total']+"</div>";
+                        tmp+="<div class =\"col\">Successd:"+response.batch_array[key]['succeed']+"</div>"  ;
+                        tmp+="<div class =\"col\">Done:"+response.batch_array[key]['done']+"</div>";
+                        tmp+="<div class =\"col\">Fails:"+response.batch_array[key]['fail']+"</div>"   ;            
+                        tmp+="<div class =\"col\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ;                             
+                        tmp+="<div class=\"collapse\" id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
+                        tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;\" >";
+                        tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
+                        tmp+="<tbody style=\"text-align: center;\">";
                         for(kk in response.gate_array)
                         {
-                            if(response.gate_array[kk]['bi'] == response.batch_array[key]['batch_id'])
+                            if(response.gate_array[kk]['batch_id'] == response.batch_array[key]['batch_id'])
                             {
-                                tmp+="<tr><td>"+kk +"</td> <td>"+response.gate_array[kk]['di']+"</td>";
-                                if( response.gate_array[kk]['st'] == 1)
+                                tmp+="<tr><td>"+response.gate_array[kk]['inserted_text']+"</td>"
+                                if(response.gate_array[kk]['status'] == 1)
                                 {
-                                    tmp+="<td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td>"
-                                    tmp+=" <td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>"
+                                    
+                                    tmp+="<td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
                                 }
                                 else
                                 {
-                                    tmp+="<td>"+response.gate_array[kk]['sf1']+"</td><td>"+response.gate_array[kk]['sf2']+"</td><td>"+response.gate_array[kk]['sf3']+"</td><td>"+response.gate_array[kk]['sf4']+"</td><td>"+response.gate_array[kk]['sf5']+"</td> <td>";
-                                    if(response.gate_array[kk]['st'] == 0) tmp+="In_Queue";
-                                    else if(response.gate_array[kk]['st'] == 2) tmp+="Fail";
-                                    else if(response.gate_array[kk]['st'] == 3) tmp+="Done";
-                                    tmp+="</td>"
+                                    tmp+="<td>"+response.gate_array[kk]['result1']+"</td><td>"+response.gate_array[kk]['result2']+"</td><td>"+response.gate_array[kk]['result3'];
+                                    tmp+="</td><td>"+response.gate_array[kk]['result4']+"</td><td>"+response.gate_array[kk]['result5']+"</td><td>";
+                                    if(response.gate_array[kk]['status'] == 0 ) tmp+="In_Queue";
+                                    else if(response.gate_array[kk]['status'] == 2) tmp+="Fail";
+                                    else if(response.gate_array[kk]['status'] == 3) tmp+="Done";
+                                    tmp+="</td>";
                                 }
-                                tmp+="</tr>"
+                                tmp+="</tr>";
                             }
-                            
                         }
-                        tmp+="</tbody></table></div></div></div></div>";
+                        tmp+="</tbody></table></div>";
+                        /*tmp+="<div style=\"margin-top:10px\"><form><a style=\"margin-right: 2%;color: red;\">Selected row copy data</a><label class=\"checkbox-inline\" style=\"margin-right:1%;\">";
+                        tmp+="<input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\"value=\"DI\" checked>Data as Inserted</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"><input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"SF1\" checked>SQL Field 1</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"> <input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"SF2\" checked>SQL Field 2</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"> <input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"SF3\" checked>SQL Field 3</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"> <input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"SF4\" checked>SQL Field 4</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"> <input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"SF5\" checked>SQL Field 5</label>";
+                        tmp+="<label class=\"checkbox-inline\" style=\"margin-right:1%;\"> <input type=\"checkbox\" name = \"gl_cpy_checkbox_"+response.batch_array[key]['batch_id']+"\" value=\"ST\" checked>Status</label></form></div>";*/
+                        /*tmp+="<div class=\"row\" style=\"text-align:center;\">";
+                        tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",0)\" name=\"copy_all_result\" class=\"btn btn-primary\">Copy All Result</a> </div>"; 
+                        tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",1)\" name=\"copy_succeed_only\" class=\"btn btn-primary\">Copy Succeed Only</a> </div>";
+                        tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",2)\" name=\"copy_done_only\" class=\"btn btn-primary\">Copy Done Only</a> </div>";
+                        tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",3)\" name=\"copy_fail_only\" class=\"btn btn-primary\">Copy Fail Only</a> </div>";                   */
+                        tmp+="</div></div></div></div></div>"; 
+                                
                     }
                 }
-                
+                else
+                {
+                    if(response.gate_array.length == 0) return;
+                    tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;\" >";
+                    tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
+                    tmp+="<tbody style=\"text-align: center;\">";
+                    for(kk in response.gate_array)
+                    {
+                        tmp+="<tr><td>"+response.gate_array[kk]['inserted_text']+"</td>"
+                        if(response.gate_array[kk]['status'] == 1)
+                        {
+                            
+                            tmp+="<td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td><div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
+                        }
+                        else
+                        {
+                            tmp+="<td>"+response.gate_array[kk]['result1']+"</td><td>"+response.gate_array[kk]['result2']+"</td><td>"+response.gate_array[kk]['result3'];
+                            tmp+="</td><td>"+response.gate_array[kk]['result4']+"</td><td>"+response.gate_array[kk]['result5']+"</td><td>";
+                            if(response.gate_array[kk]['status'] == 0 ) tmp+="In_Queue";
+                            else if(response.gate_array[kk]['status'] == 2) tmp+="Fail";
+                            else if(response.gate_array[kk]['status'] == 3) tmp+="Done";
+                            tmp+="</td>";
+                        }
+                        tmp+="</tr>";
+                        
+                    }
+                    tmp+="</tbody></table></div>";
+
+                }
                 $("#hi_Content").append(tmp);
 
                 console.log(response);

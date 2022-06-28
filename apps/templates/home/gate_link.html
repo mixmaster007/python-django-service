@@ -25,12 +25,14 @@
                     console.log(tmp_str);
                     if( tmp_str != response.str_status)
                     {
-                        
+                       
                         m_status = "";
                         for(kkk in response.batch)
                         {
+
                             temp_kkk = response.batch[kkk];
                             tmp1 = "#glb_batch_finish_time"+ response.batch[kkk]['batch_id'];
+                           
                             $(tmp1).empty();
                             tmp2 = "#glb_batch_start_time"+ response.batch[kkk]['batch_id'];
                             $(tmp2).empty();
@@ -67,11 +69,11 @@
                             var temp=""
                             for (var key in response.gate)
                             {
-                                if(response.gate[key]['batch_id'] == kkk.batch_id)
+                                if(response.gate[key]['batch_id'] == response.batch[kkk]['batch_id'])
                                 {
                                     var mm=response.gate[key];
                                     temp+="<tr><td>"+mm.inserted_text+"</td>";
-                                    m_status += str(response.gate[key]['status']);
+                                    m_status += mm.status;
                                     if(mm.status == 1)
                                     {
                                         temp+="<td><div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> <div class=\"spinner-border text-muted\"></div> </td><td> Processing</td>";
@@ -88,17 +90,19 @@
                                 }
                                 
                             }
+                            $(tmp9).append(temp);
                         }
-                        $(tmp9).append(temp);
-                        $("#input_running_batch_array").empty();
-                        $("#input_running_batch_array").append(m_status);
+                      
+                        console.log(m_status);
+                        document.getElementById('input_running_batch_array').value = m_status;
+                      
                     }
                 },
                 error: function(response){
                     //alert('An error occured')
                 }     
             });
-        },1000);
+        },100000);
     })
 
     function copy_result(m_batchID,type)//type:0-all,1-Success only ,2-Done only ,3-Fail only 
@@ -302,7 +306,7 @@
                         }
                    
                         temp_str111+="</table></div><hr></hr><div style =\"text-align:right;\"><button "
-                        temp_str111+="class=\"btn btn-primary\" name=\"gatelink_get_batch_data\" onclick=\"gateLink_get_batch_data(0,0)\"  value=\"ok\" type=\"submit\" >Insert Data</button>"
+                        temp_str111+="class=\"btn btn-primary\" name=\"gatelink_get_batch_data\" onclick=\"gateLink_get_batch_data(4,'{{Name}}',0)\"  value=\"ok\" >Insert Data</button>"
                         temp_str111+="</div></div>"
                         
                         $("#gatelink_result_data").empty();
@@ -319,10 +323,29 @@
     }
     function gateLink_get_batch_data(m_type,name,batch_id)
     {
-        console.log(m_type);
-        console.log(name);
-        console.log(batch_id);
+        m_tmpCheck="";
+        if(m_type == 4)
+        {
+            var markedCheckbox = document.getElementsByName('check');
+            cnt = 0;
+            for (var checkbox of markedCheckbox)
+            {  
+               
+                if (checkbox.checked)   
+                {
+                    cnt ++;
+                    if(cnt == 1 ) m_tmpCheck+=checkbox.value;
+                    else m_tmpCheck+="$$$"+checkbox.value;
+                }
+               
+            }
+            batch_id = m_tmpCheck;
 
+        }
+        console.log(m_tmpCheck);
+        $("#gatelink_result_data").empty("");
+        tmp = "<div class=\"spinner-border text-muted\"></div>"
+        $("#gatelink_result_data").append(tmp);
         $.ajax
         ({
             type: 'POST',
@@ -344,9 +367,10 @@
                 {
                     $("#gatelink_batch_data").empty();
                     $("#input_running_batch_array").empty();
+                    $("#gatelink_result_data").empty();
                     $("#input_running_batch_array").append(response.runnig_array);
                     tmp="";
-                   
+                    
                     m_runningBatch_array=[];
                     for(key in response.batch_array)
                     {
@@ -357,9 +381,9 @@
                             m_runningBatch_array.push(response.batch_array[key]['batch_id']);
                             tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id"+response.batch_array[key]['batch_id']+"\"  value =";
                             tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ response.batch_array[key]['batch_id']+"</div>";
-                            tmp+="<div class =\"col-sm-5\" style=\"text-align: center;\"><a onclick =\"gateLink_get_batch_data(1,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"status_info\" style=\"color: red;cursor: pointer;\">STOP the process of this batch click here</a></div>"
-                            tmp+="<div class =\"col-sm-2\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+response.batch_array[key]['start_time']+"</div>";
-                            tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\" id=\"glb_batch_finish_time"+response.batch_array[key]['batch_id']+"\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
+                            tmp+="<div class =\"col-sm-4\" style=\"text-align: center;\"><a onclick =\"gateLink_get_batch_data(1,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"status_info\" style=\"color: red;cursor: pointer;\">STOP the process of this batch click here</a></div>"
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\" id=\"glb_batch_finish_time"+response.batch_array[key]['batch_id']+"\">Finish time:--:--:--</div>";
                             tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
                             tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
                             tmp+="<div class =\"col\" id = \"glb_batch_status"+response.batch_array[key]['batch_id']+"\">Status:"+response.batch_array[key]['status']+"</div>";
@@ -391,13 +415,13 @@
                         {
                             tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id\"  value =";
                             tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ response.batch_array[key]['batch_id']+"</div>";
-                            tmp+="<div class =\"col-sm-5\" style=\"text-align: center;\">";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">";
                             if(response.batch_array[key]['status'] == "Stopped")
                                 tmp+="<a onclick =\"gateLink_get_batch_data(2,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: red;cursor: pointer;\">Resume the stopped Click here</a></div>"
                             else
                                 tmp+="<a onclick =\"gateLink_get_batch_data(3,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: red;cursor: pointer;\">Retry the Fails ones again click here</a></div>"
-                            tmp+="<div class =\"col-sm-2\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
-                            tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: right;\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
                             tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
                             tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
                             tmp+="<div class =\"col\">Status:"+response.batch_array[key]['status']+"</div>";
@@ -474,7 +498,7 @@
                 <h5 class="page-title" >
                     {{Name}}
                     <input type ="hidden" name ="now_page_name" id = "now_page_name" value="{{Name}}">
-                    <input type ="hidden" name ="input_running_batch_array" id = "input_running_batch_array" value="123">
+                    <input type = "hidden" name ="input_running_batch_array" id = "input_running_batch_array" value="123">
                 </h5>
             </div>
             <div class = "col-sm-4" style="text-align: right;">
@@ -550,13 +574,10 @@
         <!--[Gate1 Link] end-->
         <!--[Preview Data] Start-->
         <div class="col-sm-12 grid-margin"  >
-            <form method ="post" action="">
-                {% csrf_token %}
-                <div class="card" id = "gatelink_result_data">
+            <div class="card" id = "gatelink_result_data">
 
-                </div>
-            </form>
-                               
+            </div>
+          
         </div>
 
         {% if segment == "gate_link_result_error" %}
