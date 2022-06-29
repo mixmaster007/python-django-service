@@ -890,9 +890,9 @@ def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
             if(json_res['status'] == "finished"):
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
-                   m_balance = float(kk.balance) + float(json_res['expectedReceiveAmount'])
+                   m_balance = float(kk.balance) + float(json_res['amountReceive'])
                 balance.objects.filter(user=user).update(balance = m_balance)
-                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],User_Balance=m_balance)
+                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['amountReceive'],User_Balance=m_balance)
                 return 'end'
         except requests.exceptions.ConnectTimeout:
             pp.pprint("Error ConnectTimeout")
