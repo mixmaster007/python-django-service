@@ -218,7 +218,7 @@ def convert_format(data):
     #if len(data) <5:  # Check to empty string
     #    return ""
     
-    pb_format_array = re.split('[^a-zA-Z0-9()+-] ', data)
+    pb_format_array = re.split('[^a-zA-Z0-9()+-]', data)
    
     pp.pprint("Test(convert_format)-------split data----------")
     pp.pprint(pb_format_array)
