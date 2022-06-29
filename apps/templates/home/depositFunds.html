@@ -57,7 +57,7 @@
 
 
         });
-    },100000);
+    },1000);
     })
 </script>
     <div class="content-wrapper">
@@ -224,8 +224,6 @@
                     {
                         if(response.error == 'Status Error')
                         {
-                            tmp ="<a>"+response.error+":</a>\t<a>"+ response.message +"</a>";
-                            $("#df_error").append(tmp);  
                             $("#df_qrcode_box").empty();
                             tmp="<div id = \"df_qrcode\" style=\"background-color: white;height: 200px;padding-top: 20px;padding-left: 7%;\"></div>";
                             $("#df_qrcode_box").append(tmp);

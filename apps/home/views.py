@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+from dataclasses import dataclass
 from math import fabs
 
 from django. contrib. auth. models import User
@@ -684,7 +685,12 @@ def df_get_history(request):
     pp = pprint.PrettyPrinter(indent = 4)
     m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
     m_tArray=[]
+    pp.pprint('__________HISTORY_________________________')
     for mta in m_trans_array:
+        tmp =datetime.now().day - mta.Deposit_Received_At.day 
+        if tmp >= 2:
+           mta.delete() 
+        pp.pprint(tmp)
         tmp_trans_array = {
             'Transaction_ID':mid(mta.Transaction_ID,0,8),
             'From_Ticket':mta.From_Ticket,
@@ -698,7 +704,7 @@ def df_get_history(request):
         }
         m_tArray.append(tmp_trans_array)
 
-    pp.pprint(m_tArray)
+  
     context={
         'trans_array':m_tArray
     }
@@ -736,6 +742,10 @@ def df_deposit_click(request):
             cnt+=1
     cnio.api_key(apiKey)
     if cnt == 0:
+      
+        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
+        new_res = res.decode('utf-8')
+        d = json.loads(new_res)
         if d.get('error') != None:
             pp.pprint("occur error!!")
         else:
@@ -759,18 +769,20 @@ def df_deposit_click(request):
             d['amount']=amount
     else:
         pp.pprint(tmp_id)
-        result = cnio.get_transaction_status(tmp_id)
-        
-        new_res = result.decode('utf-8')
-        json_res = json.loads(new_res)
-        pp.pprint(json_res)
-        d = {
-            'error':'Status Error',
-            'message':'Runnig exchange of the crypto',
-            'amount': json_res['expectedSendAmount'],
-            'tick':json_res['fromCurrency'],
-            'payinAddress':tmp_add
-        }
+        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
+        new_res = res.decode('utf-8')
+        d = json.loads(new_res)
+        if d.get('error') != None:
+            pp.pprint("occur error!!")
+        else:
+            amount = d['estimatedAmount']
+       
+            d = {
+                'error':'Status Error',
+                'amount': d['estimatedAmount'],
+                'tick':m_ticker,
+                'payinAddress':tmp_add
+            }
     return JsonResponse(d)
 
 def gl_copy_result(request):
