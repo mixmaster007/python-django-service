@@ -485,7 +485,7 @@ def send_message(request):
     message = request.POST['message']
     user_name = request.POST['user']
     adminUser=User. objects. filter(is_superuser=True)
-    tmp_admin = NULL
+    
     for  kk in adminUser:
         tmp_admin  = kk
     pp.pprint(adminUser)
@@ -686,7 +686,7 @@ def df_get_history(request):
     m_tArray=[]
     for mta in m_trans_array:
         tmp_trans_array = {
-            'Transaction_ID':mta.Transaction_ID,
+            'Transaction_ID':mid(mta.Transaction_ID,0,8),
             'From_Ticket':mta.From_Ticket,
             'USDT_Reciver_Address':mta.USDT_Reciver_Address,
             'Amount_Recived':mta.Amount_Recived,
@@ -725,9 +725,11 @@ def df_deposit_click(request):
     pp.pprint(address_number)
     m_amount = request.POST['amount']
     m_ticker = request.POST['ticker']
-    tmp_trans = Transaction.objects.filter(From_Ticket=m_ticker).all()
+    tmp_trans = Transaction.objects.filter(Q(From_Ticket=m_ticker) & Q(User_Name = str(request.user))).all()
     cnt=0
+    tmp_add = ""
     for k in tmp_trans:
+        tmp_add = k.USDT_Reciver_Address
         if k.Transaction_Status != "finished":
             cnt+=1
     if cnt == 0:
@@ -748,7 +750,9 @@ def df_deposit_click(request):
     else:
         d = {
             'error':'Status Error',
-            'message':'Runnig exchange of the crypto'
+            'message':'Runnig exchange of the crypto',
+            'amount': 0,
+            'payinAddress':tmp_add
         }
     return JsonResponse(d)
 
@@ -852,14 +856,14 @@ def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
             result = cnio.get_transaction_status(t_id)
             new_res = result.decode('utf-8')
             json_res = json.loads(new_res)
-            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
+            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
             Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
             if(json_res['status'] == "finished"):
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
                    m_balance = float(kk.balance) + float(json_res['expectedReceiveAmount'])
                 balance.objects.filter(user=user).update(balance = m_balance)
-                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=mid(t_id,0,8))).update(User_Balance=m_balance)
+                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['expectedReceiveAmount'],User_Balance=m_balance)
                 return 'end'
         except requests.exceptions.ConnectTimeout:
             pp.pprint("Error ConnectTimeout")
@@ -972,8 +976,8 @@ def gateLink_get_batch_data(request):
             'total':btc.total,
             'succeed':btc.succeed,
             'done':btc.done,
-            'start_time':btc.start_time.strftime("%d.%m.%Y %H:%M:%S"),
-            'finish_time':btc.finish_time.strftime("%d.%m.%Y %H:%M:%S"),
+            'start_time':btc.start_time,
+            'finish_time':btc.finish_time,
             'fail':btc.fail,
             'remains':btc.remains,
             'link_name':btc.link_name,

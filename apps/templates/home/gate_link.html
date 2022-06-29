@@ -32,6 +32,9 @@
                         {
 
                             temp_kkk = response.batch[kkk];
+                            var dateT = new Date(temp_kkk['start_time']);
+                            s_time=dateT.toLocaleString();
+                          
                             tmp1 = "#glb_batch_finish_time"+ response.batch[kkk]['batch_id'];
                            
                             $(tmp1).empty();
@@ -51,9 +54,9 @@
                             $(tmp8).empty();
                             tmp9 = "#glb_gate_body"+ response.batch[kkk]['batch_id'];
                             $(tmp9).empty();
-                            var temp ="Finish time:" + temp_kkk.finish_time;
+                            var temp ="Finish time:--:--:--";
                             $(tmp1).append(temp);
-                            var temp ="Start time:" + temp_kkk.start_time;
+                            var temp ="Start time:" + s_time;
                             $(tmp2).append(temp);
                             var temp ="Status:" + temp_kkk.status;
                             $(tmp3).append(temp);
@@ -386,16 +389,20 @@
                     {   
                         cnt++;
                         m_cnt = response.batch_array.length - cnt +1;
+                        dateT = new Date(response.batch_array[key]['start_time']);
+                        s_time=dateT.toLocaleString();
+                        dateT1 = new Date(response.batch_array[key]['finish_time']);
+                        f_time=dateT1.toLocaleString();
                         if(response.batch_array[key]['status'] == "Running")
                         {
-                            
+                           
                             m_runningBatch_array.push(response.batch_array[key]['batch_id']);
                             tmp+="<div class=\"col-sm-12 grid-margin\"><div class=\"card\"><div class=\"card-header\"><div class =\"row\"> <input type =\"hidden\" id =\"msg_running_batch_id"+response.batch_array[key]['batch_id']+"\"  value =";
                             tmp+= response.batch_array[key]['batch_id']+"> <div class =\"col-sm-1\" id=\"glb_batch_id\">Batch ID:"+ m_cnt+"</div>";
                             tmp+="<div class =\"col-sm-4\" style=\"text-align: center;\"><a onclick =\"gateLink_get_batch_data(1,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"status_info\" style=\"color: red;cursor: pointer;\">STOP the process of this batch click here</a></div>"
-                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+response.batch_array[key]['start_time']+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+s_time+"</div>";
                             tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\" id=\"glb_batch_finish_time"+response.batch_array[key]['batch_id']+"\">Finish time:--:--:--</div>";
-                            tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
+                            tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" style = \"text-align: right;\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
                             tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
                             tmp+="<div class =\"col\" id = \"glb_batch_status"+response.batch_array[key]['batch_id']+"\">Status:"+response.batch_array[key]['status']+"</div>";
                             tmp+="<div class =\"col\" id = \"glb_batch_total"+response.batch_array[key]['batch_id']+"\">Total:"+response.batch_array[key]['total']+"</div>";
@@ -403,8 +410,8 @@
                             tmp+="<div class =\"col\" id = \"glb_batch_done"+response.batch_array[key]['batch_id']+"\">Done:"+response.batch_array[key]['done']+"</div>";
                             tmp+="<div class =\"col\" id = \"glb_batch_fail"+response.batch_array[key]['batch_id']+"\">Fails:"+response.batch_array[key]['fail']+"</div>"   ;            
                             tmp+="<div class =\"col\" id = \"glb_batch_remains"+response.batch_array[key]['batch_id']+"\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ;                             
-                            tmp+="<div class=\"collapse\" id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
-                            tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;\" >";
+                            tmp+="<div class=\"collapse\"  id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
+                            tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center; border: 1px solid #2c2e33;\">";
                             tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
                             tmp+="<tbody id =\"glb_gate_body"+response.batch_array[key]['batch_id']+"\"></tbody></table></div>";
                             tmp+="<div style=\"margin-top:10px\"><form><a style=\"margin-right: 2%;color: red;\">Selected row copy data</a><label class=\"checkbox-inline\" style=\"margin-right:1%;\">";
@@ -431,9 +438,9 @@
                                 tmp+="<a onclick =\"gateLink_get_batch_data(2,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: red;cursor: pointer;\">Resume the stopped Click here</a></div>"
                             else
                                 tmp+="<a onclick =\"gateLink_get_batch_data(3,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"gateLink_get_batch_status\" style=\"color: red;cursor: pointer;\">Retry the Fails ones again click here</a></div>"
-                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">Start time:"+response.batch_array[key]['start_time']+"</div>";
-                            tmp+="<div class =\"col-sm-3\" style=\"text-align: right;\">Finish time:"+response.batch_array[key]['finish_time']+"</div>";
-                            tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\">Start time:"+s_time+"</div>";
+                            tmp+="<div class =\"col-sm-3\" style=\"text-align: right;\">Finish time:"+f_time+"</div>";
+                            tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" style = \"text-align: right;\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
                             tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
                             tmp+="<div class =\"col\">Status:"+response.batch_array[key]['status']+"</div>";
                             tmp+="<div class =\"col\">Total:"+response.batch_array[key]['total']+"</div>";
@@ -442,7 +449,7 @@
                             tmp+="<div class =\"col\">Fails:"+response.batch_array[key]['fail']+"</div>"   ;            
                             tmp+="<div class =\"col\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ;                             
                             tmp+="<div class=\"collapse\" id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
-                            tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;\" >";
+                            tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center; border: 1px solid #2c2e33;\" >";
                             tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
                             tmp+="<tbody style=\"text-align: center;\">";
                             for(kk in response.gate_array)
@@ -521,6 +528,7 @@
     <!-- [ Main Content ] start -->
     <div class="row">
         <!--[Select info] start-->
+        
         <div class="col-sm-12  grid-margin">
             <div class="card">
                 <div class="card-header" style="text-align: Center;" >
@@ -555,14 +563,18 @@
                 </div>
             </div>
         </div>
-        <!--[Select info] end-->
-        <!--[Gate1 Link] start-->
+    
+    
+    <!--[Select info] end-->
+    <!--[Gate1 Link] start-->
+    
         <div class="col-sm-12 grid-margin">
             <div class="card">
                 <div class = "card-header">
                     <h4>Insert Data</h4>
-                   
+                    
                 </div>
+                <div class = "card-body">
                     <form name ="gatelink_preview_form">
                         
                         <input type ="hidden" name ="status_inserted_format" id = "status_inserted_format" value="">
@@ -577,29 +589,34 @@
                                 <a onclick="GateLink_Send_Preview_Data()" name="GateLink_Send_Preview_Data" class="btn btn-primary">Preview Data</a>
                             </div>
                         </div>
+            
+                    </form>    
+                </div>
 
-                       
-                    </form>                                       
             </div>
         </div>
-        <!--[Gate1 Link] end-->
-        <!--[Preview Data] Start-->
+    
+    
+    <!--[Gate1 Link] end-->
+    <!--[Preview Data] Start-->
+    
         <div class="col-sm-12 grid-margin"  >
             <div class="card" id = "gatelink_result_data">
 
             </div>
-          
+            
         </div>
         
         {% if segment == "gate_link_result_error" %}
-         <div class="col-sm-12 grid-margin" style="text-align: center;" id = "database_insert_error"> <p  style="color:red;text-align: center;">Error Data Insert,so you have to reinsert data!! </p></div>
-       
+            <div class="col-sm-12 grid-margin" style="text-align: center;" id = "database_insert_error"> <p  style="color:red;text-align: center;">Error Data Insert,so you have to reinsert data!! </p></div>
+        
         {% endif %}
-       
-       <div class="col-sm-12 grid-margin"  >
-            <div class="card" id = "gatelink_batch_data">
 
-            </div>
+       
+       
+        
+        <div id = "gatelink_batch_data" style="width: 100%;">
+
         </div>
        
        

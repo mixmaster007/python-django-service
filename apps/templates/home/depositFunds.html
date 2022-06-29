@@ -124,9 +124,7 @@
                             <div class = "col-sm-8" id = "df_address_info">
                                 
                             </div>
-                            <div class = "col-sm-4" id="df_qrcode" style="background-color: white;height: 200px;padding-top: 20px;padding-left: 4%;"  >
-                                
-                            </div>
+                            <div class = "col-sm-4" id="df_qrcode_box" ></div>
                         </dix>
                         
                     </div>
@@ -224,12 +222,38 @@
                     console.log(response);
                     if(JSON.stringify(response).includes("error"))
                     {
-                        tmp ="<a>"+response.error+":</a>\t<a>"+ response.message +"</a>";
-                        $("#df_error").append(tmp);
+                        if(response.error == 'Status Error')
+                        {
+                            tmp ="<a>"+response.error+":</a>\t<a>"+ response.message +"</a>";
+                            $("#df_error").append(tmp);  
+                            $("#df_qrcode_box").empty();
+                            tmp="<div id = \"df_qrcode\" style=\"background-color: white;height: 200px;padding-top: 20px;padding-left: 7%;\"></div>";
+                            $("#df_qrcode_box").append(tmp);
+                            $("#df_address_info").empty();
+                            $("#df_qrcode").empty();
+                            tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ "USDT" +"</a>"+"<p></p>";
+                            tmp +="<a>To this address:</a><br><a>"+response.payinAddress+"</a>";
+                            $("#df_address_info").append(tmp);
+                            qrc = new QRCode(document.getElementById("df_qrcode"), 
+                                {
+                                    text:response.payinAddress,
+                                    width: 150,
+                                    height: 150,
+                                });
+                        }
+                        else
+                        {
+                            tmp ="<a>"+response.error+":</a>\t<a>"+ response.message +"</a>";
+                            $("#df_error").append(tmp);
+                        }
+                       
                         
                     }
                     else
                     {
+                        $("#df_qrcode_box").empty();
+                        tmp="<div id = \"df_qrcode\" style=\"background-color: white;height: 200px;padding-top: 20px;padding-left: 7%;\"></div>";
+                         $("#df_qrcode_box").append(tmp);
                         $("#df_address_info").empty();
                         $("#df_qrcode").empty();
                         tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ "USDT" +"</a>"+"<p></p>";

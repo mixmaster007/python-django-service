@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
                             </li>-->
-                            <li class = "nav-item">
+                            <!--<li class = "nav-item">
                                 <div class="dropdown">
                                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Group Select </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li>-->
                         </li>
                     </ul>
                     <div class="tab-content" style = "height:1000px;" id="hi_Content">
@@ -96,22 +96,22 @@
 <script>
     function history_click(m_type)//type:0-all,1-Success only ,2-Done only ,3-Fail only 
     {
-        var m_GroupOption = document.querySelector( 'input[name="hi_groupOption"]:checked').value;
-        console.log(m_GroupOption);
+        //var m_GroupOption = document.querySelector( 'input[name="hi_groupOption"]:checked').value;
+        //console.log(m_GroupOption);
         $.ajax
         ({
             type: 'POST',
             url : "/history_get_info",
             data:{
                 type:m_type,
-                groupOption:m_GroupOption,
+                //groupOption:m_GroupOption,
                 csrfmiddlewaretoken:getCookie("csrftoken"),
             },
             success: function(response){
                 console.log(response);
                 $("#hi_Content").empty();
                 tmp="";
-                if(m_GroupOption == "op1")
+               /* if(m_GroupOption == "op1")
                 {
                     for(key in response.batch_array)
                     {     
@@ -187,14 +187,14 @@
                         tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",1)\" name=\"copy_succeed_only\" class=\"btn btn-primary\">Copy Succeed Only</a> </div>";
                         tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",2)\" name=\"copy_done_only\" class=\"btn btn-primary\">Copy Done Only</a> </div>";
                         tmp+="<div class = \"col-sm-3\"><a onclick=\"copy_result("+response.batch_array[key]['batch_id'] +",3)\" name=\"copy_fail_only\" class=\"btn btn-primary\">Copy Fail Only</a> </div>";                   */
-                        tmp+="</div></div></div></div></div>"; 
+                      /*  tmp+="</div></div></div></div></div>"; 
                                 
                     }
                 }
                 else
-                {
+                {*/
                     if(response.gate_array.length == 0) return;
-                    tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;\" >";
+                    tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center;border: 1px solid #2c2e33;\" >";
                     tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
                     tmp+="<tbody style=\"text-align: center;\">";
                     for(kk in response.gate_array)
@@ -219,7 +219,7 @@
                     }
                     tmp+="</tbody></table></div>";
 
-                }
+                //}
                 $("#hi_Content").append(tmp);
 
                 console.log(response);
