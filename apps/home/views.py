@@ -81,6 +81,8 @@ def check_format(format,data,format_user):
 
     pp.pprint(tmp_check_dic)
     if tmp_check_dic.get("YYYY") != None :
+        if len(tmp_check_dic.get("YYYY")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYYY"))[2:]
         tmp_format=tmp_format.replace("YYYY", "YY")
         tmp_check_dic.pop("YYYY")
@@ -133,32 +135,44 @@ def check_format(format,data,format_user):
         tmp_format=tmp_format.replace("DDMMYY", "DD#MM#YY")
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDMM") != None :
+        if len(tmp_check_dic.get("DDMM")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
         tmp_format=tmp_format.replace("DDMM", "DD#MM")
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDYY") != None :
+        if len(tmp_check_dic.get("DDYY")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMYY"))[2:4]
         tmp_format=tmp_format.replace("DDYY", "DD#YY")
         tmp_check_dic.pop("DDYY")
     if tmp_check_dic.get("MMYY") != None :
+        if len(tmp_check_dic.get("MMYY")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYY"))[2:4]
         tmp_format=tmp_format.replace("MMYY", "MM#YY")
         tmp_check_dic.pop("MMYY")
     if tmp_check_dic.get("MMDD") != None :
+        if len(tmp_check_dic.get("MMDD")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDD"))[2:4]
         tmp_format=tmp_format.replace("MMDD", "MM#DD")
         tmp_check_dic.pop("MMDD")
     if tmp_check_dic.get("YYDD") != None :
+        if len(tmp_check_dic.get("YYDD")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDD"))[2:4]
         tmp_format=tmp_format.replace("YYDD", "YY#DD")
         tmp_check_dic.pop("YYDD")
     if tmp_check_dic.get("YYMM") != None :
+        if len(tmp_check_dic.get("YYMM")) < 4:
+            tmp_check_dic['error']="count error\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMM"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMM"))[2:4]
         tmp_format=tmp_format.replace("YYMM", "YY#MM")
