@@ -738,12 +738,12 @@ def df_deposit_click(request):
     for k in tmp_trans:
         tmp_add = k.USDT_Reciver_Address
         tmp_id = k.Transaction_ID
-        if k.Transaction_Status != "finished":
+        if k.Transaction_Status == "waiting":
             cnt+=1
     cnio.api_key(apiKey)
     if cnt == 0:
       
-        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
+        res=cnio.est_exchange_rate(str(m_amount),"trx",m_ticker)
         new_res = res.decode('utf-8')
         d = json.loads(new_res)
         if d.get('error') != None:
@@ -753,7 +753,7 @@ def df_deposit_click(request):
             pp.pprint("____________________AMOUNT______________________")
             pp.pprint(d)
             #amount = 
-            result = cnio.create_transaction(amount,m_ticker,"usdttrc20",m_address_array[address_number])
+            result = cnio.create_transaction(amount,m_ticker,"trx",m_address_array[address_number])
             new_res = result.decode('utf-8')
             d = json.loads(new_res)
             pp.pprint(d)
@@ -769,7 +769,7 @@ def df_deposit_click(request):
             d['amount']=amount
     else:
         pp.pprint(tmp_id)
-        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
+        res=cnio.est_exchange_rate(str(m_amount),"trx",m_ticker)
         new_res = res.decode('utf-8')
         d = json.loads(new_res)
         if d.get('error') != None:
