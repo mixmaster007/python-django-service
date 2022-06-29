@@ -271,7 +271,7 @@
                        
                         for(kk in response.data_array)
                         {
-                            //if(response.data_array[kk].error == "count error\r\n") continue;
+                            
                                
                             tmp_id = parseInt(kk)+1;
                             var temp_return_str = ""
@@ -293,14 +293,15 @@
                                     temp_str111+="<td>"+response.data_array[kk][response.format_array[k]]+"</td>"
                                 }
                             }
-                            temp_str111+="<td><input type=\"checkbox\" value =" +temp_return_str;
+                                                 
                             if(response.data_array[kk].error == "") 
                             {
+                                temp_str111+="<td><input type=\"checkbox\" value =" +temp_return_str;
                                 temp_str111+=" name = \"check\" checked></td></tr>"
                             }
                             else
                             {
-                                temp_str111+="></td></tr>"
+                                temp_str111+="<td></td></tr>"
                             }
                             console.log(temp_return_str);
                                 
