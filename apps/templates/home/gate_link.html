@@ -268,11 +268,12 @@
                         }
                         temp_str111+="<th>CHECK</th></tr></thead><tbody>"
                         var tmp_id = 0;
-                       
+                        var cnt =0;
+                        var cnt1=0;
                         for(kk in response.data_array)
                         {
                             
-                               
+                            cnt ++;
                             tmp_id = parseInt(kk)+1;
                             var temp_return_str = ""
                             temp_str111+="<tr><td>"+tmp_id.toString()+"</td>";
@@ -296,19 +297,25 @@
                                                  
                             if(response.data_array[kk].error == "") 
                             {
+                               
                                 temp_str111+="<td><input type=\"checkbox\" value =" +temp_return_str;
                                 temp_str111+=" name = \"check\" checked></td></tr>"
                             }
                             else
                             {
+                                cnt1++;
                                 temp_str111+="<td></td></tr>"
                             }
                             console.log(temp_return_str);
                                 
                         }
-                   
-                        temp_str111+="</table></div><hr></hr><div style =\"text-align:right;\"><button "
-                        temp_str111+="class=\"btn btn-primary\" name=\"gatelink_get_batch_data\" onclick=\"gateLink_get_batch_data(4,'{{Name}}',0)\"  value=\"ok\" >Insert Data</button>"
+                        
+                        temp_str111+="</table></div><hr></hr><div style =\"text-align:right;\">"
+                        if(cnt > cnt1)
+                        {
+                            temp_str111+="<button class=\"btn btn-primary\" name=\"gatelink_get_batch_data\" onclick=\"gateLink_get_batch_data(4,'{{Name}}',0)\"  value=\"ok\" >Insert Data</button>"
+                        }
+                        
                         temp_str111+="</div></div>"
                         
                         $("#gatelink_result_data").empty();
