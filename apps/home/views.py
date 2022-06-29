@@ -204,6 +204,8 @@ def check_format(format,data,format_user):
             tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not number\r\n"
         elif len(tmp_check_dic['YY'])>2:
             tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not valid Year value\r\n"
+        elif int(tmp_check_dic['YY'])<datetime.now().year:
+             tmp_check_dic['error']+=tmp_check_dic['YY'] + ":is not valid Year value\r\n"
         
     pp.pprint("__________Check_format12_______________")
     pp.pprint(tmp_check_dic)
