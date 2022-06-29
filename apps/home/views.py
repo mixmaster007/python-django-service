@@ -69,7 +69,7 @@ def check_format(format,data,format_user):
                     tmp_check_dic[str(format[i])] = ""
                 else:
                     tmp_check_dic[str(format[i])] = data[i]
-                tmp_check_dic['error']="count error\r\n"
+                tmp_check_dic['error']="Missing Data\r\n"
         else:
             for i in range(len(format)):
                 tmp_check_dic[str(format[i])] = data[i]
@@ -82,13 +82,13 @@ def check_format(format,data,format_user):
     pp.pprint(tmp_check_dic)
     if tmp_check_dic.get("YYYY") != None :
         if len(tmp_check_dic.get("YYYY")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYYY"))[2:]
         tmp_format=tmp_format.replace("YYYY", "YY")
         tmp_check_dic.pop("YYYY")
     if tmp_check_dic.get("YYMMDD") != None :
         if len(tmp_check_dic.get("YYMMDD")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMMDD"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMMDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYMMDD"))[4:6]
@@ -96,7 +96,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("YYMMDD")
     if tmp_check_dic.get("YYDDMM") != None :
         if len(tmp_check_dic.get("YYDDMM")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDDMM"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDDMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYDDMM"))[4:6]
@@ -104,7 +104,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("YYDDMM")
     if tmp_check_dic.get("MMDDYY") != None :
         if len(tmp_check_dic.get("MMDDYY")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDDYY"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDDYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMDDYY"))[4:6]
@@ -112,7 +112,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("MMDDYY")
     if tmp_check_dic.get("MMYYDD") != None :
         if len(tmp_check_dic.get("MMYYDD")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYYDD"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYYDD"))[2:4]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMYYDD"))[4:6]
@@ -120,7 +120,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("MMYYDD")
     if tmp_check_dic.get("DDYYMM") != None :
         if len(tmp_check_dic.get("DDYYMM")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDYYMM"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDYYMM"))[2:4]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDYYMM"))[4:6]
@@ -128,7 +128,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("DDYYMM")
     if tmp_check_dic.get("DDMMYY") != None :
         if len(tmp_check_dic.get("DDMMYY")) < 6:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
@@ -136,7 +136,7 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDMM") != None :
         if len(tmp_check_dic.get("DDMM")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMMYY"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("DDMMYY"))[2:4]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMMYY"))[4:6]
@@ -144,35 +144,35 @@ def check_format(format,data,format_user):
         tmp_check_dic.pop("DDMMYY")
     if tmp_check_dic.get("DDYY") != None :
         if len(tmp_check_dic.get("DDYY")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["DD"] = str(tmp_check_dic.get("DDMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("DDMYY"))[2:4]
         tmp_format=tmp_format.replace("DDYY", "DD#YY")
         tmp_check_dic.pop("DDYY")
     if tmp_check_dic.get("MMYY") != None :
         if len(tmp_check_dic.get("MMYY")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMYY"))[:2]
         tmp_check_dic["YY"] = str(tmp_check_dic.get("MMYY"))[2:4]
         tmp_format=tmp_format.replace("MMYY", "MM#YY")
         tmp_check_dic.pop("MMYY")
     if tmp_check_dic.get("MMDD") != None :
         if len(tmp_check_dic.get("MMDD")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["MM"] = str(tmp_check_dic.get("MMDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("MMDD"))[2:4]
         tmp_format=tmp_format.replace("MMDD", "MM#DD")
         tmp_check_dic.pop("MMDD")
     if tmp_check_dic.get("YYDD") != None :
         if len(tmp_check_dic.get("YYDD")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYDD"))[:2]
         tmp_check_dic["DD"] = str(tmp_check_dic.get("YYDD"))[2:4]
         tmp_format=tmp_format.replace("YYDD", "YY#DD")
         tmp_check_dic.pop("YYDD")
     if tmp_check_dic.get("YYMM") != None :
         if len(tmp_check_dic.get("YYMM")) < 4:
-            tmp_check_dic['error']="count error\r\n"
+            tmp_check_dic['error']="Missing Data\r\n"
         tmp_check_dic["YY"] = str(tmp_check_dic.get("YYMM"))[:2]
         tmp_check_dic["MM"] = str(tmp_check_dic.get("YYMM"))[2:4]
         tmp_format=tmp_format.replace("YYMM", "YY#MM")
