@@ -231,7 +231,7 @@
                             $("#df_qrcode_box").append(tmp);
                             $("#df_address_info").empty();
                             $("#df_qrcode").empty();
-                            tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ "USDT" +"</a>"+"<p></p>";
+                            tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ response.fromCurrency +"</a>"+"<p></p>";
                             tmp +="<a>To this address:</a><br><a>"+response.payinAddress+"</a>";
                             $("#df_address_info").append(tmp);
                             qrc = new QRCode(document.getElementById("df_qrcode"), 
@@ -256,7 +256,7 @@
                          $("#df_qrcode_box").append(tmp);
                         $("#df_address_info").empty();
                         $("#df_qrcode").empty();
-                        tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ "USDT" +"</a>"+"<p></p>";
+                        tmp = "<a>Deposit Amount:</a><a>"+"\t\t" +response.amount +"\t"+ response.fromCurrency +"</a>"+"<p></p>";
                         tmp +="<a>To this address:</a><br><a>"+response.payinAddress+"</a>";
                         $("#df_address_info").append(tmp);
                         qrc = new QRCode(document.getElementById("df_qrcode"), 

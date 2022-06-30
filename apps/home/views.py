@@ -734,19 +734,30 @@ def df_deposit_click(request):
             cnt+=1
     if cnt == 0:
         cnio.api_key(apiKey)
-        result = cnio.create_transaction(m_amount,m_ticker,"usdttrc20",m_address_array[address_number])
-        new_res = result.decode('utf-8')
+        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
+        new_res = res.decode('utf-8')
         d = json.loads(new_res)
-        pp.pprint(d)
         if d.get('error') != None:
             pp.pprint("occur error!!")
         else:
-            info = {"stop": False}
-            user_balance=balance.objects.get(user=request.user).balance
+            amount = d['estimatedAmount']
+            pp.pprint("____________________AMOUNT______________________")
+            pp.pprint(d)
+            #amount = 
+            result = cnio.create_transaction(amount,m_ticker,"usdttrc20",m_address_array[address_number])
+            new_res = result.decode('utf-8')
+            d = json.loads(new_res)
+            pp.pprint(d)
+            if d.get('error') != None:
+                pp.pprint("occur error!!")
+            else:
+                info = {"stop": False}
+                user_balance=balance.objects.get(user=request.user).balance
 
-            thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
-            
-            thread.start()
+                thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
+                
+                thread.start()
+            d['amount']=amount
     else:
         d = {
             'error':'Status Error',
