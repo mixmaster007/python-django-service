@@ -890,13 +890,12 @@ def check_transaction(m_trans_array,user):
             json_res = json.loads(new_res)
             m_trans_array.filter(Transaction_ID =t_id).update(Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
             m_trans_array.filter(Transaction_ID =t_id).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
-            if(json_res['status'] == "finished"):
+            if json_res['status'] == "finished":
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
                     m_balance = float(kk.balance) + float(json_res['amountReceive'])
                 balance.objects.filter(user=user).update(balance = m_balance)
                 m_trans_array.filter(Transaction_ID =t_id).update(Amount_Recived=json_res['amountReceive'],User_Balance=m_balance)
-                return 'end'
             #except requests.exceptions.ConnectTimeout:
             #   pp.pprint("Error ConnectTimeout")
             pp.pprint(json_res)
