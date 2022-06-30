@@ -728,15 +728,14 @@ def df_deposit_click(request):
     tmp_trans = Transaction.objects.filter(Q(From_Ticket=m_ticker) & Q(User_Name = str(request.user))).all()
     cnt=0
     tmp_add = ""
+    tmp_id = ""
     for k in tmp_trans:
         tmp_add = k.USDT_Reciver_Address
+        tmp_id = k.Transaction_ID
         if k.Transaction_Status != "finished":
             cnt+=1
+    cnio.api_key(apiKey)
     if cnt == 0:
-        cnio.api_key(apiKey)
-        res=cnio.est_exchange_rate(str(m_amount),"usdttrc20",m_ticker)
-        new_res = res.decode('utf-8')
-        d = json.loads(new_res)
         if d.get('error') != None:
             pp.pprint("occur error!!")
         else:
@@ -759,10 +758,17 @@ def df_deposit_click(request):
                 thread.start()
             d['amount']=amount
     else:
+        pp.pprint(tmp_id)
+        result = cnio.get_transaction_status(tmp_id)
+        
+        new_res = result.decode('utf-8')
+        json_res = json.loads(new_res)
+        pp.pprint(json_res)
         d = {
             'error':'Status Error',
             'message':'Runnig exchange of the crypto',
-            'amount': 0,
+            'amount': json_res['expectedSendAmount'],
+            'tick':json_res['fromCurrency'],
             'payinAddress':tmp_add
         }
     return JsonResponse(d)
