@@ -686,6 +686,8 @@ def df_get_history(request):
     m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
     m_tArray=[]
     pp.pprint('__________HISTORY_________________________')
+    check_transaction(m_trans_array,request.user)
+    m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
     for mta in m_trans_array:
         tmp =datetime.now().day - mta.Deposit_Received_At.day 
         if tmp >= 2:
@@ -760,12 +762,9 @@ def df_deposit_click(request):
             if d.get('error') != None:
                 pp.pprint("occur error!!")
             else:
-                info = {"stop": False}
                 user_balance=balance.objects.get(user=request.user).balance
-
-                thread = threading.Thread(target=deposit_status, args=(info,apiKey,d['id'],request.user,m_time,user_balance))
-                
-                thread.start()
+                trans_obj = Transaction.objects.create(User_Name=str(request.user),Transaction_ID=d['id'],User_Balance=user_balance,Transaction_Status="waiting")
+                trans_obj.save()
             d['amount']=amount
     else:
         pp.pprint(tmp_id)
@@ -872,32 +871,36 @@ def history_get_info(request):
     }
     return JsonResponse(context,safe = False)
   
-def deposit_status(arg,apiKey,t_id,user,m_time,user_balance):
+def check_transaction(m_trans_array,user):
     pp = pprint.PrettyPrinter(indent = 4)
-   
-    trans_obj = Transaction.objects.create(User_Name=str(user),Transaction_ID=t_id,User_Balance=user_balance)
-    trans_obj.save()
     cnio = cnio_api.cnio()
+    pm = PaymentManage.objects.all()
+    apiKey = ""
+    for PayMan in pm:
+        apiKey = PayMan.Api_key
+      
     cnio.api_key(apiKey)
-    while not arg["stop"]:
-        pp.pprint("worker thread checking status")
-        try:
+    pp.pprint("worker thread checking status")
+    for mta in m_trans_array:
+        if mta.Transaction_Status != "finished":
+            t_id = mta.Transaction_ID
+            #try:
             result = cnio.get_transaction_status(t_id)
             new_res = result.decode('utf-8')
             json_res = json.loads(new_res)
-            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
-            Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
+            m_trans_array.filter(Transaction_ID =t_id).update(Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
+            m_trans_array.filter(Transaction_ID =t_id).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
             if(json_res['status'] == "finished"):
                 tmp_bb = balance.objects.filter(user=user)
                 for kk in tmp_bb:
-                   m_balance = float(kk.balance) + float(json_res['amountReceive'])
+                    m_balance = float(kk.balance) + float(json_res['amountReceive'])
                 balance.objects.filter(user=user).update(balance = m_balance)
-                Transaction.objects.filter(Q(User_Name=str(user)) & Q(Transaction_ID=t_id)).update(Amount_Recived=json_res['amountReceive'],User_Balance=m_balance)
+                m_trans_array.filter(Transaction_ID =t_id).update(Amount_Recived=json_res['amountReceive'],User_Balance=m_balance)
                 return 'end'
-        except requests.exceptions.ConnectTimeout:
-            pp.pprint("Error ConnectTimeout")
-        pp.pprint(json_res)
-        time.sleep(m_time)
+            #except requests.exceptions.ConnectTimeout:
+            #   pp.pprint("Error ConnectTimeout")
+            pp.pprint(json_res)
+ 
 def addBatch(gateLinkName,value,user):
     pp = pprint.PrettyPrinter(indent = 4)
     check = value.split("$$$")
