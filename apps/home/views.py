@@ -686,8 +686,8 @@ def df_get_history(request):
     m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
     m_tArray=[]
     pp.pprint('__________HISTORY_________________________')
-    check_transaction(m_trans_array,request.user)
-    m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
+   # check_transaction(m_trans_array,request.user)
+   # m_trans_array = Transaction.objects.filter(User_Name = str(request.user))
     for mta in m_trans_array:
         tmp =datetime.now().day - mta.Deposit_Received_At.day 
         if tmp >= 2:
