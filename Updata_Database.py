@@ -56,8 +56,8 @@ class TestThread(Thread):
                 mycursorA.execute(spl,(json_res['payinAddress'],mst[1]))
                 spl = "UPDATE home_transaction SET  USDT_Reciver_Address=%s  WHERE Transaction_ID = %s"
                 mycursorA.execute(spl,(json_res['payinAddress'],mst[1]))
-                spl = "UPDATE home_transaction SET  Deposit_Received_At=%s  WHERE Transaction_ID = %s"
-                mycursorA.execute(spl,(json_res['createdAt'],mst[1]))
+               # spl = "UPDATE home_transaction SET  Deposit_Received_At=%s  WHERE Transaction_ID = %s"
+                #mycursorA.execute(spl,(json_res['createdAt'],mst[1]))
                
                 #m_trans_array.filter(Transaction_ID =t_id).update(Deposit_Received_At=json_res['createdAt'],User_Balance_updated_At=json_res['updatedAt'])
                 #m_trans_array.filter(Transaction_ID =t_id).update(From_Ticket=json_res['fromCurrency'],USDT_Reciver_Address=json_res["payinAddress"],Transaction_Status=json_res["status"])
@@ -78,8 +78,8 @@ class TestThread(Thread):
                     mycursorA.execute(spl,(str(m_balance),str(tmp_user_id[0][0]),))
                     spl = "UPDATE home_transaction SET User_Balance =%s WHERE Transaction_ID = %s"
                     mycursorA.execute(spl,(str(m_balance),mst[1],))
-                    spl = "UPDATE home_transaction SET  User_Balance_updated_At=%s  WHERE Transaction_ID = %s"
-                    mycursorA.execute(spl,(json_res['updatedAt'],mst[1]))
+                   # spl = "UPDATE home_transaction SET  User_Balance_updated_At=%s  WHERE Transaction_ID = %s"
+                   # mycursorA.execute(spl,(json_res['updatedAt'],mst[1]))
                     spl = "UPDATE home_transaction SET  Amount_Recived=%s  WHERE Transaction_ID = %s"
                     mycursorA.execute(spl,(json_res['amountReceive'],mst[1]))
                     mydb.commit()
