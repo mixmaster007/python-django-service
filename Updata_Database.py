@@ -79,6 +79,8 @@ class TestThread(Thread):
                     mycursorA.execute(spl,(str(m_balance),mst[1],))
                     spl = "UPDATE home_transaction SET  User_Balance_updated_At=%s  WHERE Transaction_ID = %s"
                     mycursorA.execute(spl,(json_res['updatedAt'],mst[1]))
+                    spl = "UPDATE home_transaction SET  Amount_Recived=%s  WHERE Transaction_ID = %s"
+                    mycursorA.execute(spl,(json_res['amountReceive'],mst[1]))
                     mydb.commit()
                    
                     
