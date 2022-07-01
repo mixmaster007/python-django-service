@@ -23,7 +23,8 @@ class TestThread(Thread):
             host="localhost",
             user="root",
             password="Richman929!@#$%",
-            database='MyDatabase'
+            database='MyDatabase',
+            auth_plugin='mysql_native_password'
             )
           
             mycursor =mydb.cursor(buffered=True)
