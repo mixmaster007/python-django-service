@@ -17,6 +17,10 @@ class  main_Thread(Thread):
     pp = pprint.PrettyPrinter(indent = 4)  
     pp.pprint("Start main_Thread ")
     info = True
+
+
+
+
     while info:
         try:
             mydb = mysql.connector.connect(
@@ -60,11 +64,21 @@ class  main_Thread(Thread):
             mydb.commit()
             time.sleep(3)
             continue
-        else:
-            m_ba =m_userBalance-m_LinkPrice
-            tmp = "UPDATE home_balance SET balance =%s WHERE id= %s"
-            mycursor.execute(tmp,(m_ba,int(myresult_gate[0][0])))
-            mydb.commit()
+       
+        m_ba =m_userBalance-m_LinkPrice
+        tmp = "UPDATE home_balance SET balance =%s WHERE user_id= %s"
+        mycursor.execute(tmp,(format(m_ba,".2f"),m_userID))
+        mydb.commit()
+        
+        ##Batch Status Update___RUNNIG(1) ######################################
+        tmp = "SELECT batch_id FROM home_gate WHERE id= %s"
+        mycursor.execute(tmp,(int(myresult_gate[0][0]),))
+        m_result = mycursor.fetchall()
+        m_batchID = int(m_result[0][0])
+
+        tmp = "UPDATE home_batch SET status =%s WHERE batch_id= %s"
+        mycursor.execute(tmp,("Running",m_batchID))
+        ##Gate Status Update___RUNNIG(1) ######################################
         tmp = "UPDATE home_gate SET status =%s WHERE id= %s"
         mycursor.execute(tmp,(1,int(myresult_gate[0][0])))
         mydb.commit()

@@ -121,7 +121,7 @@ class Gate_Link(models.Model):
         return reverse('GateLink-detail', args=[str(self.id)])
 class balance(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null = True)
-    balance = models.FloatField(default = 0)
+    balance = models.FloatField(default = 0.00,max_length=3)
     def __str__(self):
         return str(self.user)
 
