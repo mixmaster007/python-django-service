@@ -197,6 +197,7 @@ class Gate(models.Model):
     status = models.IntegerField(default=0,help_text="0:In_Queue,1:Processing,2:Fail,3:Success")
     gate_link_name = models.CharField(max_length = 100, default="#",help_text = "Enter field gate_link_name")
     inserted_text = models.CharField(max_length = 100, default="#")
+    user = models.CharField(max_length= 20,default="")
     def __str__(self):
         return str(self.phone)
 

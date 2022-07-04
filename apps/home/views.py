@@ -952,6 +952,7 @@ def addBatch(gateLinkName,value,user):
                 gate_link_name = gateLinkName,
                 batch_id =tmp_batch_id,
                 inserted_text = temp_inserted_data_str,
+                user = str(user)
                 
             )
             new_gate.save()
