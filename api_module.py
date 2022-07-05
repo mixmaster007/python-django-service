@@ -31,9 +31,10 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
 
     m_result = get_status(api,phonenumber,day,month,year,zipcode,gatelink) 
     pp.pprint(m_result)
-    mydb.commit() 
+  
     if (m_result == bytes("phone registered successfully", 'utf-8') or m_result == bytes("Registration success", 'utf-8')) or (m_result == bytes("Thank you for your Registration", 'utf-8')):
         pp.pprint("_________________Success__________________")
+        pp.pprint(m_result)
         tmp = "UPDATE home_gate SET result1 =%s WHERE id= %s"
         mycursor.execute(tmp,("phone registered successfully",int(id)))
         tmp = "UPDATE home_gate SET result2 =%s WHERE id= %s"
@@ -49,7 +50,8 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
         mydb.commit()  
     elif (m_result == bytes("Phone Registration Fails .", 'utf-8') or m_result == bytes("Phone number is no more active.", 'utf-8')) or (m_result == bytes("Please check your phone number.", 'utf-8')):
         pp.pprint("_________________ERROR__________________")
-        tmp = "UPDATE home_gate SET result2 =%s WHERE id= %s"
+        pp.pprint(m_result)
+        tmp = "UPDATE home_gate SET result1 =%s WHERE id= %s"
         mycursor.execute(tmp,("Phone Registration Fails",int(id)))
         tmp = "UPDATE home_gate SET result2 =%s WHERE id= %s"
         mycursor.execute(tmp,("Registration Fails",int(id)))
@@ -75,6 +77,7 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
     elif (m_result == bytes("Please try again ", 'utf-8') or m_result == bytes("Please try again later", 'utf-8')) or (m_result == bytes("Problem while processing your request. ", 'utf-8'))  :
    
         pp.pprint("__________________ERROR1_________________")
+        pp.pprint(m_result)
         tmp = "UPDATE home_gate SET result1 =%s WHERE id= %s"
         mycursor.execute(tmp,("Please try again Later",int(id)))
         tmp = "UPDATE home_gate SET result2 =%s WHERE id= %s"
@@ -99,6 +102,7 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
         mydb.commit() 
     elif(m_result == bytes("Can’t process your request at the moment", 'utf-8') or m_result == bytes("Service is over load please try again later", 'utf-8')):
         pp.pprint("__________________ERROR1_________________")
+        pp.pprint(m_result)
         tmp = "UPDATE home_gate SET result1 =%s WHERE id= %s"
         mycursor.execute(tmp,("Please try again Later",int(id)))
         tmp = "UPDATE home_gate SET result2 =%s WHERE id= %s"
@@ -122,7 +126,8 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
 
         mydb.commit()
     else :
-        pp.pprint("__________________ERROR1_________________")
+        pp.pprint("__________________ERROR_NOERROR_________________")
+        pp.pprint(m_result)
         tmp = "UPDATE home_gate SET result1 =%s WHERE id= %s"
         mycursor.execute(tmp,("Unknown error please contact support ",int(id)))
         tmp = "UPDATE home_gate SET status =%s WHERE id= %s"
@@ -177,6 +182,8 @@ def getData_Thread(api,user_id,price,id,phonenumber,day,month,year,zipcode,gatel
     if m_inq == 0 and m_proc == 0:
         tmp = "UPDATE home_batch SET status =%s WHERE batch_id= %s"
         mycursor.execute(tmp,("Finished",m_batchID))
+        tmp = "UPDATE home_batch SET finish_time =%s WHERE batch_id= %s"
+        mycursor.execute(tmp,(datetime.now(),m_batchID))
        
    
     mydb.commit()

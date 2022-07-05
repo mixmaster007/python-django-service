@@ -24,10 +24,17 @@
                     console.log(response);
                     tmp_str = $("#input_running_batch_array").val();
                     console.log(tmp_str);
-                    if( tmp_str != response.str_status)
+                    if (tmp_str != response.str_status)
                     {
+                        m_status =  response.str_status;
+                        document.getElementById('input_running_batch_array').value = m_status;
+                        gateLink_get_batch_data(0,"{{Name}}",0);
+                        return;
+                    }
+                   // if( tmp_str != response.str_status)
+                    //{
                        
-                        m_status = "";
+                       // 
                         for(kkk in response.batch)
                         {
 
@@ -97,10 +104,9 @@
                             $(tmp9).append(temp);
                         }
                       
-                        console.log(m_status);
-                        document.getElementById('input_running_batch_array').value = m_status;
                       
-                    }
+                      
+                //    }
                 },
                 error: function(response){
                     //alert('An error occured')

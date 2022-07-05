@@ -531,7 +531,9 @@ def get_link_info(request):
     batch_array =[]
     gate_array = []
     tmp_status = ""
+    cnt =0
     for btc in m_btc:
+        cnt +=1
         m_gate = Gate.objects.filter(Q(gate_link_name=str(gateLink_name)) & Q(batch_id= btc.batch_id)).all()
         m_dicBtcItem = {
             'batch_id':btc.batch_id,
@@ -562,7 +564,7 @@ def get_link_info(request):
     context = {
             "gate": gate_array,
             "batch":batch_array,
-            "str_status":tmp_status
+           
         }  
     """  
     if request.POST.get('message') != None:
@@ -603,6 +605,7 @@ def get_link_info(request):
         context['status']='NO'
    #pp.pprint(context)
    """
+    context['str_status']=str(cnt)
     return JsonResponse(context,safe=False)
 def get_area_all(request):
     """
@@ -794,8 +797,10 @@ def gl_copy_result(request):
     pp.pprint(m_btType)
     if m_btType == '0' :
         m_gate = Gate.objects.filter(batch_id = m_batchID)
-    elif m_btType == '1' or m_btType == '2':
+    elif m_btType == '1' :
         m_gate = Gate.objects.filter(Q(batch_id = m_batchID) & Q(status = 3))
+    elif m_btType == '2':
+        m_gate = Gate.objects.filter(Q(batch_id = m_batchID) & (Q(status = 3) | Q(status = 2)))
     elif m_btType == '3':
         m_gate = Gate.objects.filter(Q(batch_id = m_batchID) & Q(status = 2))
     for k in m_gate:

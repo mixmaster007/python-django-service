@@ -71,6 +71,7 @@ class  main_Thread(Thread):
         mydb.commit()
         
         ##Batch Status Update___RUNNIG(1) ######################################
+         
         tmp = "SELECT batch_id FROM home_gate WHERE id= %s"
         mycursor.execute(tmp,(int(myresult_gate[0][0]),))
         m_result = mycursor.fetchall()
