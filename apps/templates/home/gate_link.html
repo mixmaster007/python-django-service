@@ -408,7 +408,7 @@
                             tmp+="<div class =\"col-sm-4\" style=\"text-align: center;\"><a onclick =\"gateLink_get_batch_data(1,\'{{Name}}\',"+response.batch_array[key]['batch_id']+")\" name= \"status_info\" style=\"color: red;cursor: pointer;\">STOP the process of this batch click here</a></div>"
                             tmp+="<div class =\"col-sm-3\" style=\"text-align: center;\" id=\"glb_batch_start_time"+response.batch_array[key]['batch_id']+"\" >Start time:"+s_time+"</div>";
                             tmp+="<div class =\"col-sm-2\" style=\"text-align: right;\" id=\"glb_batch_finish_time"+response.batch_array[key]['batch_id']+"\">Finish time:--:--:--</div>";
-                            tmp+="<div class =\"col-sm-2\" data-toggle=\"collapse\" style = \"text-align: right;\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
+                            tmp+="<div class =\"col-sm-2 \" data-toggle=\"collapse\" style = \"text-align: right;\" href=\"#col_gate_link_"+response.batch_array[key]['batch_id']+"\" aria-expanded=\"false\" ><a style=\"cursor: pointer;\">Expand Frame</a></div>";
                             tmp+="</div> </div> <div class=\"card-body\"> <div class =\"row\">";
                             tmp+="<div class =\"col\" id = \"glb_batch_status"+response.batch_array[key]['batch_id']+"\">Status:"+response.batch_array[key]['status']+"</div>";
                             tmp+="<div class =\"col\" id = \"glb_batch_total"+response.batch_array[key]['batch_id']+"\">Total:"+response.batch_array[key]['total']+"</div>";
@@ -416,7 +416,10 @@
                             tmp+="<div class =\"col\" id = \"glb_batch_done"+response.batch_array[key]['batch_id']+"\">Done:"+response.batch_array[key]['done']+"</div>";
                             tmp+="<div class =\"col\" id = \"glb_batch_fail"+response.batch_array[key]['batch_id']+"\">Fails:"+response.batch_array[key]['fail']+"</div>"   ;            
                             tmp+="<div class =\"col\" id = \"glb_batch_remains"+response.batch_array[key]['batch_id']+"\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ;                             
-                            tmp+="<div class=\"collapse\"  id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
+                            if(cnt == 1)
+                                tmp+="<div class=\"collapse show\"  id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
+                            else
+                                tmp+="<div class=\"collapse\"  id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
                             tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center; border: 1px solid #2c2e33;\">";
                             tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
                             tmp+="<tbody id =\"glb_gate_body"+response.batch_array[key]['batch_id']+"\"></tbody></table></div>";
@@ -453,8 +456,9 @@
                             tmp+="<div class =\"col\">Successd:"+response.batch_array[key]['succeed']+"</div>"  ;
                             tmp+="<div class =\"col\">Done:"+response.batch_array[key]['done']+"</div>";
                             tmp+="<div class =\"col\">Fails:"+response.batch_array[key]['fail']+"</div>"   ;            
-                            tmp+="<div class =\"col\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ;                             
-                            tmp+="<div class=\"collapse\" id=\"col_gate_link_"+ response.batch_array[key]['batch_id'] +"\">";
+                            tmp+="<div class =\"col\">Remains:"+response.batch_array[key]['remains']+"</div></div>" ; 
+                                                
+                           
                             tmp+="<div class=\"table-responsive\" style=\"overflow-y: auto;max-height: 550px;\"><table class=\"table table-bordered\" style=\"text-align: center; border: 1px solid #2c2e33;\" >";
                             tmp+="<thead><tr><th>Data as Inserted</th><th> SQL Field 1</th><th> SQL Field 2</th><th> SQL Field 3</th><th> SQL Field 4</th><th> SQL Field 5</th><th> Status </th></tr></thead>";
                             tmp+="<tbody style=\"text-align: center;\">";
