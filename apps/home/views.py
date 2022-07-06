@@ -991,15 +991,15 @@ def gateLink_get_batch_data(request):
     elif m_type == '1':
        
         Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Stopped",finish_time = datetime.now())
-        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 2)
+        Gate.objects.filter(Q(batch_id= int(m_batch_id)) & (Q(status = 0) | Q(status = 1))).all().update(status = 2)
        
     elif m_type == '2':
         Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
-        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 0)
+        Gate.objects.filter(Q(batch_id= int(m_batch_id)) & Q(status = 2)).all().update(status = 0)
         
     elif m_type == '3':
         Batch.objects.filter(batch_id = int(m_batch_id)).update(status = "Running")
-        Gate.objects.filter(batch_id= int(m_batch_id)).all().update(status = 0)
+        Gate.objects.filter(Q(batch_id= int(m_batch_id)) & Q(status =2)).all().update(status = 0)
     elif m_type == '4':
         addBatch(gateLink_name,m_batch_id,request.user)
         pp.pprint(m_batch_id)
